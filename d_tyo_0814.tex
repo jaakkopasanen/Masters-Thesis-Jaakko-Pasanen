@@ -1,0 +1,1050 @@
+\documentclass[12pt,a4paper,english
+% ,twoside,openright
+]{tutthesis}
+%\documentclass[12pt,a4paper,finnish]{tutthesis}
+
+% Note that you must choose either Finnish or English here and there in this
+% file.
+% Other options for document class
+  % ,twoside,openright   % If printing on both sides (>80 pages)
+  % ,twocolumn           % Can be used in lab reports, not in theses
+
+% Ensure the correct Pdf size (not needed in all environments)
+\special{papersize=210mm,297mm}
+
+
+% LaTeX file for BSC/MSc theses and lab reports.
+% Requires the class file (=template) tutthesis.cls and figure files,
+% either tut-logo, exampleFig (as pdf or eps) and example_code.c
+% Author: Sami Paavilainen (2006)
+% Modified: Heikki Huttunen (heikki.huttunen@tut.fi) 31.7.2012.
+%           Erno Salminen, @tut.fi, 2014-08-15
+%             - added text snippets from the writing guide
+%             - added lots of comments: both tips and alternative styles
+%             - added an example table
+%             - and so on...
+
+
+
+% More information about Latex basics:
+% [Tobias Oetiker, Hubert Partl, Irene Hyna, Elisabeth Schlegl, The
+% Not So Short Introduction to LATEX2e, Version 5.03, April 2014, 171
+% pages.  Availbale: http://tobi.oetiker.ch/lshort/lshort.pdf]
+
+
+%
+% Define your basic information
+%
+\author{Teemu Teekkari}
+\title{Thesis title} % primary title (for front page)
+\titleB{Otsikko}     % translated title for abstract
+\thesistype{Master of Science thesis} % or Bachelor of Science, Laboratory Report... 
+\examiner{Vilma Välkky} % without title Prof., Dr., MSc or such
+
+% Put your thesis' main language last
+% http://mirrors.ctan.org/macros/latex/required/babel/base/babel.pdf
+\usepackage[finnish, main=english]{babel}
+
+
+
+%
+% You can include special packages or define new commands here at the
+% beginning. Options are given in brackets and package name is in
+% braces:  \usepackage{opt]{pkg_name}
+
+% Option1) for bibliography does not need additional packages.
+
+% Option2b) for bibliography: old way for using Name-year citations
+% http://www.ctan.org/tex-archive/macros/latex/contrib/harvard/ 
+%\usepackage{harvard}  
+
+
+% Option3) for bibliography: newer way, esp. for Name-year citations
+% http://www.ctan.org/pkg/biblatex
+%\usepackage[style=authoryear,maxcitenames=2,backend=bibtex,
+%  firstinits=true]{biblatex}
+%% Note that option style=numeric works as well
+%\addbibresource{thesis_refs.bib}
+
+
+
+
+% You can also add your own commands
+\newcommand\todo[1]{{\color{red}!!!TODO: #1}} % Remark text in braces appears in red
+\newcommand{\angs}{\textsl{\AA}}              % , e.g. slanted symbol for Ångstöm
+
+% Preparatory content ends here
+
+
+
+\pagenumbering{roman} % was: {Roman}
+\pagestyle{headings}
+\begin{document}
+
+
+
+% Special trick so that internal macros (denoted with @ in their name)
+% can be used outside the cls file (e.g. \@author)
+\makeatletter
+
+
+
+%
+% Create the title page.
+% First the logo. Check its language.
+\thispagestyle{empty}
+\vspace*{-.5cm}\noindent
+\includegraphics[width=8cm]{tty_tut_logo}   % Bilingual logo
+
+
+
+% Then lay out the author, title and type to the center of page.
+\vspace{6.8cm}
+\maketitle
+\vspace{7.7cm} % -> 6.7cm if thesis title needs two lines
+
+% Last some additional info to the bottom-right corner
+\begin{flushright}  
+  \begin{minipage}[c]{6.8cm}
+    \begin{spacing}{1.0}
+      %\textsf{Tarkastaja: Prof. \@examiner}\\
+      %\textsf{Tarkastaja ja aihe hyväksytty}\\ 
+      %\textsf{xxxxxxx tiedekuntaneuvoston}\\
+      %\textsf{kokouksessa dd.mm.yyyy}\\
+      \textsf{Examiner: Prof. \@examiner}\\
+      \textsf{Examiner and topic approved by the}\\ 
+      \textsf{Faculty Council of the Faculty of}\\
+      \textsf{xxxx}\\
+      \textsf{on 30th July 2014}\\
+    \end{spacing}
+  \end{minipage}
+\end{flushright}
+
+% Leave the backside of title page empty in twoside mode
+\if@twoside
+\clearpage
+\fi
+
+
+
+%
+% Use Roman numbering I,II,III... for the first pages (abstract, TOC,
+% termlist etc)
+\pagenumbering{Roman} 
+\setcounter{page}{0} % Start numbering from zero because command 'chapter*' does page break
+
+
+% Some fields in abstract are automated, namely those with \@ (author,
+% title in the main language, thesis type, examiner).
+\chapter*{Abstract}
+
+\begin{spacing}{1.0}
+         {\bf \textsf{\MakeUppercase{\@author}}}: \@title\\   % use \@titleB when thesis is in Finnish
+         \textsf{Tampere University of Technology}\\
+         \textsf{\@thesistype, xx pages, x Appendix pages} \\
+         \textsf{xxxxxx 201x}\\
+         \textsf{Master's Degree Programme in xxx Technology}\\
+         \textsf{Major: }\\
+         \textsf{Examiner: Prof. \@examiner}\\ % 
+         \textsf{Keywords: }\\
+\end{spacing}
+
+
+The abstract is a concise 1-page description of the work: what was the
+problem, what was done, and what are the results. Do not include
+charts or tables in the abstract.
+
+Put the abstract in the primary language of your thesis first and then
+the translation (when that is needed).
+
+
+
+% Foreign students do not need Fininsh abstract (tiivistelmä). Move
+% this before English abstract if thesis is in Finnish. Move also the
+% otherlanguage command to the English abstract (if needed).
+
+\begin{otherlanguage}{finnish} %  Following text in in 2nd language
+\chapter*{Tiivistelmä} % Asterisk * turns numbering off
+
+\begin{spacing}{1.0}
+         {\bf \textsf{\MakeUppercase{\@author}}}: \@titleB\\  % or use \@title when thesis is in Finnish
+         \textsf{Tampereen teknillinen yliopisto}\\
+         \textsf{Diplomityö, xx sivua, x liitesivua}\\ %
+         \textsf{xxxkuu 201x}\\
+         \textsf{xxx koulutusohjelma}\\
+         \textsf{Pääaine: }\\
+         \textsf{Tarkastajat:  Prof. \@examiner}\\ % automated, if just 1 examiner
+         \textsf{Avainsanat: }\\
+\end{spacing}
+
+
+The abstract in Finnish. Foreign students do not need this page.
+
+Suomenkieliseen diplomityöhön kirjoitetaan tiivistelmä sekä suomeksi
+että englanniksi.
+
+Kandidaatintyön tiivistelmä kirjoitetaan ainoastaan kerran, samalla
+kielellä kuin työ. Kuitenkin myös suomenkielisillä kandidaatintöillä
+pitää olla englanninkielinen otsikko arkistointia varten.
+
+\end{otherlanguage} % End on 2nd language part
+
+
+
+
+\chapter*{Preface}
+
+This document template conforms to Guide to Writing a Thesis at
+Tampere University of Technology (2014) and is based on the previous
+template. The main purpose is to show how the theses are formatted
+using LaTeX (or \LaTeX ~ to be extra fancy) .
+
+The thesis text is written into file \texttt{d\_tyo.tex}, whereas
+\texttt{tutthesis.cls} contains the formatting instructions. Both
+files include lots of comments (start with \%) that should help in
+using LaTeX. TUT specific formatting is done by additional settings on
+top of the original \texttt{report.cls} class file. This example needs
+few additional files: TUT logo, example figure, example code, as well
+as example bibliography and its formatting (\texttt{.bst}) An example
+makefile is provided for those preferring command line. You are
+encouraged to comment your work and to keep the length of lines
+moderate, e.g. <80 characters. In Emacs, you can use \texttt{Alt-Q} to
+break long lines in a paragraph and \texttt{Tab} to indent commands
+(e.g. inside figure and table environments). Moreover, tex files are
+well suited for versioning systems, such as Subversion or Git.  
+% \url{http://www.ctan.org/tex-archive/info/lshort/english/lshort.pdf}
+
+
+Acknowledgements to those who contributed to the thesis are generally
+presented in the preface. It is not appropriate to criticize anyone in
+the preface, even though the preface will not affect your grade. The
+preface must fit on one page. Add the date, after which you have not
+made any revisions to the text, at the end of the preface.
+
+~ 
+% Tilde ~ makes an non-breakable spce in LaTeX. Here it is used to get
+% two consecutive paragraph breaks
+
+Tampere, 11.8.2014
+
+~
+
+
+On behalf of the working group, Erno Salminen
+
+
+
+
+
+% Add the table of contents, optioanlly also the lists of figures,
+% tables and codes.
+
+%\renewcommand\contentsname{Sisällys} % Set Finnish name, remove this if using English
+\setcounter{tocdepth}{3}              % How many header level are included
+\tableofcontents                      % Create TOC
+
+%\renewcommand\listfigurename{Kuvaluettelo}  % Set Finnish name, remove this if using English
+\listoffigures                               % Optional: create the list of figures
+\markboth{}{}                                % no headers
+
+
+%\renewcommand\listtablename{Taulukkoluettelo} % Set Finnish name, remove this if using English
+\listoftables                                  % Optional: create the list of tables
+\markboth{}{}                                  % no headers
+
+
+
+
+%\renewcommand\lstlistlistingname{Ohjelmaluettelo} % SetFinnish name, remove this if using English
+%\lstlistoflistings                                % Optional: create the list of program codes
+%\markboth{}{}                                     % no headers
+
+
+
+
+%
+% Term and symbol exaplanations use a special list type
+%
+
+\chapter*{List of abbreviations and symbols}
+\markboth{}{}                                % no headers
+%\chapter*{Lyhenteet ja merkinnät}
+
+% You don't have to align these with whitespaces, but it makes the
+% .tex file more readable
+\begin{termlist}
+\item [CC license] Creative Commons license
+\item [LaTeX] 	   Typesetting system for scientific documentation
+\item [SI system]  Syst\`eme international d'unités, International System of Units
+\item [TUT] 	   Tampere University of Technology
+\item [URL]        Uniform Resource Locator
+\end{termlist} 
+
+\begin{termlist}
+\item [$a$] acceleration
+\item [$F$] force
+\item [$m$] mass
+\end{termlist} 
+
+The abbreviations and symbols used in the thesis are collected into a
+list in alphabetical order. In addition, they must be explained upon
+first usage in the text.
+
+
+
+
+% The actual text begins here and page numbering changes to 1,2...
+% Leave the backside of title empty in twoside mode
+\if@twoside
+%\newpage
+\cleardoublepage
+\fi
+
+\pagenumbering{arabic}
+\setcounter{page}{1} % Start numbering from zero because command
+                     % 'chapter*' does page break
+\renewcommand{\chaptername}{} % This disables the prefix 'Chapter' or
+                              % 'Luku' in page headers (in 'twoside'
+                              % mode)
+
+
+\chapter{Introduction}
+\label{ch:intro} 
+% \label{...} allows cross-referencing, e.g. 'as explained in
+% Chapter~\ref{ch:intro}' Note that you may have to run the command
+% 'latex' or 'pdflatex' twice to get cross-references correctly.  You
+% can add labels e.g. to chapters, sections, figures, tables, and
+% equations.
+
+% You can write everything into single tex file. Alternatively, you
+% can write each chapter into separate file and then include them her
+% \include{intro} % no postfix .tex to the command
+% \include{related_works} % and so on...
+
+
+This document template conforms to Guide to Writing a Thesis Tampere
+University of technology (TUT) \cite{thesisguide13}. A thesis or a
+report typically include the following chapters:
+\begin{itemize}
+  \setlength{\itemsep}{-10pt} % Put these lines closer to each other
+\item[] Title page           % Empty bracket[] remove the bullet
+\item[] Abstract
+\item[] Preface
+\item[] Contents
+\item[] List of abbreviations and symbols
+\item[] 1. Introduction
+\item[] 2. Theoretical background
+\item[] 3. Research methodology and materials
+\item[] 4. Results and analysis (possibly split into separate chapters)
+\item[] 5. Conclusions
+\item[] References
+\item[] Appendices (if applicable)
+\end{itemize}
+
+
+Each of these chapters starts from a new page in a thesis. The titles
+of chapters from 1 to 5 are provided as examples only. You should use
+more descriptive ones.  The title page of your thesis features the
+University's logo (approximately 8 cm wide), your name, the thesis
+title and type. The name of the examiner is included at the bottom
+right corner of the title page. The table of contents lists all the
+numbered headings after it, but not always the preceding headings.
+
+Introduction outlines the purpose and objectives of the presented
+research. The background information, utilized methods and source
+material are presented next at a level that is necessary to understand
+the rest of the text. Then comes the discussion regarding the achieved
+results, their significance, error sources, deviations from the
+expected results, and the reliability of your research. Conclusions is
+the most important chapter. It does repeat the details already
+presented, but summarizes and them and analyzes their
+consequences. List of references enables your reader to find the cited
+sources.
+
+
+
+This document is structured as follows. Chapter~\ref{ch:style}
+discusses briefly the basics of writing and presentation style
+regarding the text, figures, tables and mathematical
+notations. Chapters~\ref{sec:ref_styles} and \ref{ch:concl} summarize
+the referencing basics and the whole document. There are two example
+appendices as well (Appendix A and B).
+% ~\ref{app:A} and \ref{app:B}). Labels do not with \chapter*
+
+
+\chapter{Writing style}
+\label{ch:style}
+
+Effective written communication requires both sound content and clear
+style. Keep the layout of your thesis neat and pay attention to your
+writing style.
+
+\section{Using LaTeX}
+
+This document serves as an example, rather than tutorial, since there
+are plenty of those available, see for example 
+\cite{mittelbach04,oetiker14, latex13}. The source files are compiled
+with the command \texttt{pdflatex d\_tyo.tex} (or \texttt{latex
+  d\_tyo.tex}). Depending on your bibliography style, you might also
+need to run \texttt{bibtex d\_tyo}.
+
+Unfortunately, compilation may fail, if your LaTeX environment does
+not have all the needed packages installed. If you cannot install
+them, you can momentarily disable them by putting them inside comments
+in the file tutthesis.cls:
+\begin{center}
+\texttt{\% \textbackslash usepackage\{hyperref\}}
+\end{center}
+Of course, depending on the package, some of the features are also
+disabled and you must remove those parts from your tex file.
+Spellchecking can done, for example, by running 
+\texttt{aspell -t -c d\_tyo.tex}.
+
+Moreover, certain characters need escape symbols, e.g. per cent should
+be written as \textbackslash\% (otherwise it starts a comment),
+underscore as \textbackslash\_, tilde as \textbackslash\~{}\{\}, hash
+as \textbackslash\#, dollar sign as \textbackslash\$, and opening
+brace as \textbackslash\{ and so on. Note that double backslash
+\textbackslash\textbackslash makes a line break.
+
+\section{Text}
+A thesis is written with a single-column layout on one- or two-sided
+A4 sheets (210 mm x 297 mm). The font type of the body text is usually
+Times New Roman and the font size is 12 pt. The spacing is 1.2 and the
+text is fully justified and hyphenated. You do not have to indent the
+paragraphs.
+
+Arial 18 pt font is used for the headings in this guide, and there is
+a 42 pt space above and below. The font size of subheadings is
+14. There is an18 pt space above subheadings and 12 pt space below
+them.
+
+Brief basics of writing style are:
+\begin{itemize}
+\item Always think of your reader when you are writing and proceed
+  logically from general to specific.
+\item Highlight your key points, for example, by discussing them in
+  separate chapters or presenting them in a table or figure. Use
+  \textit{italics} or \textbf{boldface} for emphasis, but don't overdo
+  it.  Moreover, this template uses \texttt{teletype} font for LaTeX
+  specific names, such as commands and files.
+\item Avoid long sentences and complicated statements. A full stop is
+  the best way to end a sentence.
+\item Use active verbs to make a dynamic impression but avoid the
+  first person pro-noun ``I'', except in your preface.
+\item Avoid jargon and wordiness. Use established terminology and
+  neutral language.
+\item The minimum length of chapters and subchapters is two
+  paragraphs, and you need to consider the balance of
+  chapters. Paragraphs must always consist of more than one sentence.
+\item Do not use more than three levels of headings, such as 4.4.2.
+\item Do not use too many abbreviations. Use capital and small letter
+  consistently
+\end{itemize}
+
+Sometimes ending a section with list is considered as bad
+style. Therefore, it is better to have some text after it.
+
+
+\section{Figures}
+You must refer to all the figures in the body text. The reference
+should preferably appear on the same page as the actual figure or
+before it. Figures and tables must be numbered consistently thesis
+and primarily placed at the top of the page, but you are free to
+decide where they fit best. Never start a chapter with a figure, table
+or list.
+
+Figures and the caption are either consistently centered (or aligned
+to the left). The caption is placed under the figure and always on the
+same page as the figure. All figures must be explained in the body
+text, so that readers know what they are supposed to notice. Figures
+generated by analysis software usually need further editing, see
+Figure~\ref{fig:ex_fig} for example. The figures should be in the same
+language as other text (even if Figure~\ref{fig:ex_fig} violates this
+recommendation). The recommended font size is the same as that of the
+body text but no smaller than 10 pt. The figures must be readable,
+even if your thesis is printed in greyscale.
+% Note: put tilde between text and ref command, like in
+% 'Figure~\ref{fig:ex_fig}' above. Tilde (~) puts a white space but
+% prevents line break. Same thing applies to Table~\ref{tab:summary}
+% as well.
+
+% Here's an example how to add a figure. Default placement of figures
+% is at top of page, i.e. placement specifier is '[t]' could be
+% omitted.  The dimensions can be relative to text width (or height)
+% or absolute (4 cm).
+
+% You can leave out the figure postfix (.pdf, .eps, .png). Utilized
+% tool (pdflatex, latex...) decides what file type to look for.
+% http://en.wikibooks.org/wiki/LaTeX/Importing_Graphics#Compiling_with_latex
+
+% Note that figure is placed _after_ this point and also after the
+% previous figures. You can cut-paste the figure insertion point
+% earlier to get it in better place, i.e. the figure can be before
+% reference to it in the Tex file, but otherway round in final pdf.
+% More information: [Oetker, pp. 49-52]. 
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[width=1.0\textwidth]{exampleFig}
+  \end{center}
+  \caption[Diagrams should be edited before publication.]{Diagrams
+    should be edited before publication. The diagram on the right is
+    an edited version of the one on the left.}
+  % Optional shorter caption in brackets is used in Table of Figures
+  % (tof).
+  \label{fig:ex_fig}
+\end{figure}
+
+% In conference and journals articles with two columns, the
+% command \begin{figure*} is useful. The asterisk makes the figure
+% width equal to the whole page. The same applies to \begin{table*} as
+% well.
+
+
+
+The basic command \texttt{latex} accepts only encapsulated postscript
+(eps) format. Therefore it is usually easiest to compile with
+\texttt{pdflatex} which can handle \verb+*.png+, \verb+*.jpg+ and
+\verb+*.pdf+ formats. Eps and pdf are recommended since their support
+vector graphics (zooming). For example Figure~\ref{fig:ex_fig} is in
+pdf format. 
+%Some programs, such as PowerPoint, store pdf figures A4
+%sized. Fortunately, pdf editors, such as PDF-X-Change, have a feature
+%'remove white spaces' or 'crop'.
+
+
+LaTeX has a package \texttt{subfigure} to layout multiple figures
+together, for example Figure~\ref{subfig:draft} to
+\ref{subfig:small_fig}. There might be newer packages as well, but this is
+already a quantum leap ahead of some other, unnamed word processors.
+% See http://www.ctan.org/pkg/subfigure
+\begin{figure*}
+  \begin{center}
+    \subfigure[Option \texttt{draft} helps to makes a placeholder box for figure. The file must exist.]{
+      \includegraphics[draft, width=0.35\textwidth]{exampleFig}
+      \label{subfig:draft}}
+    \qquad                        % i) Ugly hack to get more horizontal space between figures
+    %\hspace{0.05\textwidth}      % ii) Another ugly way to hack space
+    % ~~                          % iii) Yet another... 
+    \subfigure[Another way ot make a placeholder box with the command
+      \texttt{rule}.]{
+      \textcolor{blue}{\rule{0.3\textwidth}{3cm}}
+      \label{subfig:rule}}
+    \subfigure[Actual figure included but scaled down.]{
+      \includegraphics[width=0.35\textwidth]{exampleFig}
+      \label{subfig:small_fig}}
+    \caption[Example of subfigures]{Example of subfigures. Pay attention to how nicely they
+      are laid out and their neat subcaptions.}
+    % Optional shorter caption in brackets is used in Table of Figures
+    % (tof).
+
+    \label{fig:subfigs}
+  \end{center}
+\end{figure*}
+
+
+\section{Tables}
+
+Tables have numbered captions, see Table\ref{tab:thin_film} for
+example. The caption is placed on the same page but above the table,
+unlike the captions that accompany figures. You must refer to all the
+tables in the body text. In addition, you must discuss the content of
+any tables in the body text to ensure that readers understand their
+relevance.
+%
+%TODO: translate the thin film explanation in English
+%
+
+\todo{translate the thin film explanation in English}
+
+\begin{table}[ht]
+  \small
+  \begin{center}
+    \caption{Example of evaporation conditions in a thin film structure.}
+    \label{tab:thin_film}
+    \begin{tabular}{l | r r r r r r}
+      % l = align to left (e.g. text), c=align to center, r=align to
+      % right (e.g. numbers), Pipe | creates vertical line
+      % Let's put 1 horinzontal line above the table, 2 after header rows,  and 1 below
+      \hline
+      \textbf{Substance} & \textbf{Thickness}& \textbf{Correction } & \textbf{Pressure} & \textbf{Temper-}          & \textbf{Current} & \textbf{Speed} \\
+                         & \textbf{(nm)}     & \textbf{coefficient} & \textbf{(mbar)}   & \textbf{ature ($^\circ$C)} & \textbf{(mA)}    & \textbf{(nm/s)} \\
+      \hline 
+      \hline
+      SiO2	& 181.0	& 1.10	& $3.0\cdot10^5$	& 90.6	& 20-23	 &0.2 \\
+      TiO2	& 122.1	& 1.55	& $1.5\cdot10^4$	& 91.1	& 100-93 &0.1 \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+Often it is better to create the table in, e.g. MS Excel, and import
+it as .eps or .pdf file, for example, when you calculate some of the
+values automatically.
+%\begin{table}[h]
+%  \begin{center}
+%    \caption{Example of evaporation conditions in a thin film structure.}
+%    \label{tab:thin_film_graphics}
+%    \includegraphics[width=8cm]{my_table.eps}
+%  \end{center}
+%\end{table}
+
+
+
+The titles of the columns in your table are specified and data is
+added to the table. You can use boldface to highlight the titles and
+use a double horizontal line to separate the from the rest of the
+table. The order of the columns and rows must be carefully
+considered. Do not surround all the cells with a border, as it may
+make your table harder to read. Put a line on top and bottom of the
+table. You can add a horizontal line between every $4-5$ rows, if the
+data is not grouped into categories. If the table is large, the rows
+should be numbered if you plan to refer to the rows in the body text.
+
+The numbers are right aligned (optimally lined up at the decimal
+point) for easy comparison. You should preferably use SI units,
+established prefixes and rewrite large numbers so that the power of
+ten should be placed in the title of the column instead of each row,
+if possible. More suggestions can be found in \cite{salminen09}.
+
+\section{Mathematical notations}
+
+Numbers are generally written using numerals for the sake of clarity,
+for example ``6 stages'' rather than ``six stages'', which is
+nevertheless strongly preferred to ``a couple of stages''. You should
+also use a thousand separators\footnote{Use tilde \~{} in LaTeX and a
+  special character \textit{non-breaking space} in MS Word},
+i.e. instead of 55700125 write 55~700~125. Never omit the leading zero
+in decimals. For example, it is correct to write ``0.5'' and wrong to
+write ``.5''. A comma is used as a decimal separator in the Finnish
+language and a period in the English language.
+
+Like numbers, it is advisable to abbreviate units of
+measurement. There is a space between the number and the unit, but you
+should keep them on the same line. It is better to compile a table or
+graph than include a great deal of numerical values in the body
+text. Use precise language and put numbers on a scale (small, fast,
+expensive).
+
+Use generally known and well defined concepts and standard conventions
+and symbols for representing them. New concepts should be defined when
+they appear in the text for the first time. Upper case and lower case
+letters mean different things in symbols and units of measurement. Do
+not use the same symbol to mean different things.
+
+Newton's Second Law can be presented in the following way:
+
+\begin{equation}
+  \label{eq:newton2}
+ ma= F,
+\end{equation}
+
+where $m$ denotes the mass of an object, $a$ means acceleration, and
+$F$ means force. Please note that all the variables must be defined at
+the point of their first appearance. All sen-tences end with a
+punctuation mark, and the main elements of a sentence are separated by
+a comma in accordance with the rules of English grammar.  Mathematical
+formulas are numbered, if they are written on separate lines and
+referred to in the main body of the text. The number is usually put in
+parenthesis and right aligned, see equation \ref{eq:newton2} for
+example. Occasionally mathematical notations are preceded by an
+identifier, such as 'Definition 1' or 'Theorem 1'
+\cite{ruohonen09}. Simple formulas may be displayed within the body of
+the text without numbering.
+
+Do not start a sentence with a mathematical symbol but add some word,
+such as the name or type of the symbol, in front of it. Variables,
+such as x and y, are generally presented in italics, whereas
+elementary functions, special functions and operators are not:
+\begin{center}
+sin$(2x+y)$, 	grad $T$, 	div $B$, 	lim $(x^2 - 1)/(x + 1)$.
+\end{center}
+
+At first, it is better to rely on the automated formatting of an
+equation editor. You may have to make compromises between logical
+clarity and readability.
+
+
+LaTeX is the best editor for writing also the more complex equations, such as
+\begin{equation}
+  \label{eq:fourier}
+  G^+(t,t')= \int G^+(E) exp[-iE(t-t')/\hbar] dE.
+\end{equation}
+
+
+
+
+\section{Programs and algorithms}
+
+Codes and algorithms are written using monospaced font, such as
+Courier New, Consolas or their variations. If the length of the code
+or algorithm is less than 10 lines and you do not refer to it later on
+in the text, you can present it similarly to formulas.  Here's an
+example showing a snippet from the makefile. These commands were
+written directly to the .tex file and appear without numbering.
+
+\begin{lstlisting}[style=console, % title={Template files}
+  ] 
+all: ${TARGET}.tex
+	pdflatex ${TARGET}.tex
+	bibtex ${TARGET}
+	pdflatex ${TARGET}.tex
+\end{lstlisting}  
+% You can add an extra dollar sign here to turn off the accidental
+% syntax highlight (when there is an odd number of dollar signs in
+% listing)
+
+If the code is longer but shorter than a page, you present like a
+figure (Program 4.1) titled ``Program'' or ``Algorithm''.
+% This is controlled from .cls file with command
+% \renewcommand\lstlistingname{Program} % or {Ohjelma} in Finnish
+You should add some comments to the code and indent it
+consistently. The actions performed by the code must be outlined in
+broad terms in the body text. Line numbers make it much easier to
+refer to the code in the text. 
+
+LaTeX has a package listings \cite{heinz06} which can handle code
+very conveniently, include real code files, add row numbers, and
+highlight the reserved words.  Program~\ref{code:sort} shows another
+example which is included from a separate file
+\textit{example\_code.c}, and includes both line numbers and a code
+numbering.
+
+\begin{minipage}{\linewidth} % Optional: Minipage prevents a page break in the middle of listing
+\lstinputlisting[style=a1listing, language=C, emph={koko} 
+  , numberstyle=\tiny, stepnumber=2, numbersep=5pt
+  , caption={Example of algorithm. Variable \textit{koko} is emphasized to highlight some important aspect.}
+  , captionpos=b, nolol=false, label={code:sort}
+] {example_code.c}
+\end{minipage}
+
+
+% Alternatively you can add your code also inside the figure
+% environment, but use only style consistently in your thesis.
+%\begin{figure}
+% \lstinputlisting[style=a1listing, language=C,...
+% \caption{Example of algorithm...}
+% \label{code:sort}
+%\end{figure}
+
+
+
+\chapter{Referencing styles}
+\label{sec:ref_styles}
+
+Different referencing styles determine how you create 1) in-text
+citations and 2) the bibliography. Two common referencing styles are
+presented in this chapter:
+\begin{enumerate}
+\item	Numeric referencing (Vancouver system), such as [1],[2]...
+\item	Name-year system (Harvard system), such as (Weber 2001), (Kaunisto 2003)...
+\end{enumerate}
+
+A numeric reference is inserted in square brackets [~], whereasthe last
+name of the author and the year of publication are given in round
+brackets ().
+
+Both styles are acceptable, but the conventions for referencing vary
+between disciplines. You must pick one and use is consistently
+throughout your thesis.
+
+\section{In-text citations}
+
+In-text citations are placed within the body of the text as close to
+the actual citation as possible. The citation is generally placed
+within the sentence before the full stop. LaTeX has a command
+\texttt{\textbackslash cite} for this \cite[p. 85]{oetiker14}. See the
+tex file for additional remarks for Harvard style citations.
+% The package Harvard has also additional commands, such as
+% \citename{heinz06}, \citeyear{heinz06}, \citeasnoun{heinz06} and so
+% on.
+%
+% Similarly the biblatex has a command \parencite{heinz06} to produce
+% '(Heinz 2006)' instead of mere 'Heinz 2006'
+%
+
+
+
+\begin{itemize}
+  \setlength{\itemsep}{-10pt} % Put these lines closer to each other
+  \small
+\item[] Weber argues that [1]. 
+\item[] Cattaneo et al. introduce in their study [2] a new...
+\item[] The result is ... [1, p. 23]. One must also note... [1, s. 33-36]
+\item[]
+\item[] In accordance with the presented theory ... (Weber 2001).
+\item[] It must especially be noted... (Cattaneo et al.).
+\item[] Weber (2001, p. 230) has stated...
+\item[]
+\item[] Based on literature in the field [1,3,5]...
+\item[] Based on literature in the field [1][3][5]...
+\item[] The topic has been widely studied [6-18]...
+\item[]
+\item[] ...existing literature (Weber 2001; Kaunisto 2003; Cattaneo et al. 2004) has...
+\end{itemize}
+
+
+\section{Bibliography}
+The entries must include all the details listed in Table~\ref{tab:bibl}.
+\begin{table}[!ht]
+  \small
+  \begin{center}
+    \caption{Necessary bibliographic information.}
+    \label{tab:bibl}
+    \begin{tabular}{r l | r l }
+\hline 
+\textbf{\#}  
+   & \textbf{Numeric system}
+                       & \textbf{\#}  
+                                & \textbf{Name-year system}\\
+\hline
+\hline
+1. &	authors,	   & 1. & authors,  \\
+   &                       & 2. & (year in parentheses) \\
+2. &	title,             & 3.	& title,    \\
+3. &	publisher,         & 4.	& publisher,\\
+4. &	year of publication, &  &	 \\
+5. &	pages,             & 5.  & pages, \\
+6. &	URL, if applicable & 6.	& URL, if applicable    \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+Formatting examples of an journal article in bibliography are provided
+below, first in the numeric style and then the name-year style.
+
+% Define columns widths to get text wrapped
+\begin{tabular}{p{1cm}p{12cm}}
+\small
+[100] & K. Keutzer, A.R. Newton, J.M. Rabaey,
+A. Sangiovanni-Vincentelli, System-level design: orthogonalization of
+concerns and platform-based design, IEEE Transactions on
+Computer-Aided Design of Integrated Circuits and Systems, vol.19,
+no.12, Dec 2000, pp.1523-1543.\\
+\end{tabular}
+
+\begin{tabular}{p{13cm}}
+\small
+Keutzer, K., Newton, A.R., Rabaey, J.M. \& Sangiovanni-Vincentelli
+A. (2000). System-level design: orthogonalization of concerns and
+platform-based design. IEEE Transactions on Computer-Aided Design of
+Integrated Circuits and Systems. Vol.19(12), s.1523-1543. \\
+\end{tabular}
+
+Your references are listed at the end of your thesis in alphabetical
+order based on the first author's last name. If the author is unknown,
+alphabetize the source using the corporate author or title.
+
+
+LaTeX has two ways for making reference list
+\begin{enumerate}
+\item using automated Bibtex tool
+\item manually
+\end{enumerate}
+
+The tex source of this document has both versions, and the other is in
+comments. Bibtex\footnote{\url{http://ctan.org/pkg/bibtex}} formats the
+reference list according to a setup file, which is usually provided by
+academic journals. You need to write the basic information into
+\texttt{.bib} file. Citations in your tex file at looked up by bibtex
+and it produces the list of references automatically.
+
+\subsection{Header at 3rd level}
+\label{sec:3rd}
+Some text...
+
+\subsection{Another header at 3rd level}
+\label{sec:3rd_partner}
+
+Section~\ref{sec:3rd} cannot appear alone, but needs some company
+(i.e.~\ref{sec:3rd_partner}).
+
+%\subsubsection{Avoid 4th level headers}
+%Luckliy they are not numbered in this LaTeX template
+
+
+% \paragraph{Paragraph}
+% Fifth level header
+% Empty line is a paragraph separator in LaTeX.
+
+
+\chapter{Conclusions}
+\label{ch:concl}
+This template and the mathching Latex document class file together
+with general writing guidelines should help achieving a consistently
+formatted and clear documents. Similar template is also available for
+MS Word.
+
+Every writing and presentation must have a conclusion. This fact is
+here emphasized by having this short and rather artificial summary
+also in this template. A concise summary table is a good way for
+providing an overview of the most important points.
+
+
+
+
+%
+% The bibliography, i.e the list of references (3 options available)
+%
+\newpage
+
+
+% Extra for Finnish theses
+
+\renewcommand{\bibname}{Bibliography}     % Bilingual babel puts Finnish ``Kirjallisuttaa'' otherwise. Strange...
+%\renewcommand{\bibname}{Lähteet}         % Set Finnish header, remove this if using English
+%\addcontentsline{toc}{chapter}{Lähteet}  % Include this in TOC
+\addcontentsline{toc}{chapter}{\bibname}  % Include this in TOC
+
+
+%
+% Option1: Write the bibliographic information into .bib file
+% (e.g. thesis_refs.bib) and use bibtex tool to do the formatting.
+%
+
+% You must execute: pdflatex d_tyo.tex; bibtex d_tyo; pdflatex.tex
+% First command creates the cross-refeerence file .aux for bibtex and
+% last combines the bibtex output to the rest.  Many styles are
+% available, see e.g. at
+% http://www.ctan.org/tex-archive/biblio/bibtex/base
+% http://www.reed.edu/cis/help/latex/bibtexstyles.html
+
+% 1a) Numeric style:
+\bibliographystyle{IEEEtranS}   % the IEEE's sorted numeric style
+% List is sorted first by author if present. If not, then by editor,
+% organization, title, and last by key.
+% http://mirrors.ctan.org/macros/latex/contrib/IEEEtran/bibtex/IEEEtran_bst_HOWTO.pdf
+
+% 1b) Author-year style:
+% see http://www.ctan.org/tex-archive/macros/latex/contrib/harvard/
+
+
+\bibliography{thesis_refs}    % Insert {author,title,year...} info of your reference
+\markboth{\bibname}{\bibname} % Set page header
+
+
+%
+% Option2: Write all information directly into this tex file. They
+% appear as written here. Note that these is no check if you actually
+% cite these.
+%
+
+%\begin{thebibliography}{99}        % Up to 99 items
+%\markboth{\bibname}{}              % Set page header
+
+% 2a) Numerical refs
+
+%\bibitem{heinz06} C. Heinz, B. Moses, J. Hoffmann, listings - Typeset
+%  source code listings using LaTeX, Comprehensive TeX Archive Network
+%  (CTAN), 2006. Available: \url{http://www.ctan.org/pkg/listings}
+
+%\bibitem{latex13} LaTeX, Wikibooks, March 2013, 706 pages.  Available:
+%  \url{http://en.wikibooks.org/wiki/LaTeX/}
+
+%\bibitem{mittelbach04} F. Mittelbach, M. Goossens, J. Braams,
+%  D. Carlisle, C. Rowley, The Latex Companion, 2nd ed., Boston,
+%  Addison-Wesley, 2004, 1120 s.
+
+%\bibitem{oetiker14} T. Oetiker, H. Partl, I. Hyna, E. Schlegl, The Not
+%  So Short Introduction to LATEX2$\epsilon$ - Or LATEX2$\epsilon$ in
+%  157 minutes, Version 5.03, 2014, 171 p. Available:
+%  \url{http://www.ctan.org/tex-archive/info/lshort/english/}
+
+%\bibitem{ruohonen09} K. Ruohonen, Matemaattisen tekstin
+%  kirjoittaminen, Tampereen teknillinen yliopisto, 2009, 7
+%  s. Available: \url{http://math.tut.fi/~ruohonen/D-tyo-ohje.pdf}
+
+%\bibitem{salminen09} E. Salminen, Practical advice for writing
+%  publications, course material, TKT-9617 Scientific Publishing,
+%  Tampere University of Technology, Nov 2009 (updated Aug 2012), 101
+%  p. Available:
+%  \url{http://www.cs.tut.fi/~ege/Misc/salminen_figures_styles_v15.pdf}
+
+%\bibitem{thesisguide13} Thesis Writing Guide in English, Tampere
+%  University of Technology guidelines, Tampere, 2013. Available:
+%  \url{https://www.tut.fi/pop} > Study info > Master's thesis > MSc
+%  thesis guidelines
+
+%
+% 2b) Author-year style
+%
+%% Harvard-like referencing needs adding \usepackage{harvard}
+%% to the preamble and using \harvarditems instead of \bibitem
+%\harvarditem{Heinz, Moses and Hoffmann}{2006}{heinz06}
+% C. Heinz, B. Moses, J. Hoffmann, listings - Typeset source code
+% listings using LaTeX, Comprehensive TeX Archive Network (CTAN),
+% 2006. Available: \url{http://www.ctan.org/pkg/listings}
+% http://mirrors.ctan.org/macros/latex/contrib/harvard/harvard.pdf
+
+% \end{thebibliography}
+
+
+%
+% Option 3: Use newer package biblatex .Check that your environment
+% has it installed.
+%
+% http://www.ctan.org/pkg/biblatex
+%
+
+%\printbibliography                  % a) heading in English
+%\printbibliography[title=Lähteet]   % b) heading in Finnish
+%\addtocontents{toc}{%               % b) add Finnish heading to table of contents
+% \protect\noindent Lähteet\protect\par
+%} 
+
+
+
+%
+% Appendices are optional. 
+% This part is semi-ugly at the moment. Please give feedback if can
+% improve it.
+
+
+\appendix
+\pagestyle{headings}
+% \renewcommand{\appendixname}{Liite} % Extra. Set Finnish prefix for page header
+
+
+
+%
+% a) Not-so-handy way, but at least it works
+% 
+\def\appA{APPENDIX A. Something extra} % Define the name and numbering manually
+\chapter*{\appA}                       % Create chapter heading
+\markboth{\appA}{\appA}                % Set page header
+\addcontentsline{toc}{chapter}{\appA}  % Include this in TOC
+% Note that \label does not work with unnumbered chapter
+
+Appendices are purely optional.  All appendices must be referred to in
+the body text
+
+\def\appB{APPENDIX B. Something completely different} % Define another new command
+\chapter*{\appB}                       % As above, but use \appB instead of \appA
+\label{app:B}
+\markboth{\appB}{\appB}                     
+\addcontentsline{toc}{chapter}{\appB}  
+
+
+You can append to your thesis, for example, lengthy mathematical
+derivations, an important algorithm in a programming language, input
+and output listings, an extract of a standard relating to your thesis,
+a user manual, empirical knowledge produced while preparing the
+thesis, the results of a survey, lists, pictures, drawings, maps,
+complex charts (conceptual schema, circuit diagrams, structure charts)
+and so on.
+
+
+%
+% b) The other option is to use numbered chapter and our baseline
+% template report.cls numbers them as A, B... The heading and TOC do
+% not include prefix 'Appendix' although the page header does.
+%\chapter{name of the appendix}
+%\label{app:A}                          % For cross-references
+
+
+
+\end{document}
+
