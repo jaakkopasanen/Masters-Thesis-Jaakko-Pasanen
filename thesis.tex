@@ -35,11 +35,11 @@
 %
 % Define your basic information
 %
-\author{Teemu Teekkari}
-\title{Thesis title} % primary title (for front page)
-\titleB{Otsikko}     % translated title for abstract
+\author{Jaakko Pasanen}
+\title{NLP for Customer Support Agent} % primary title (for front page)
+\titleB{Luonnollisen kielen ymmärrys asiakapalveluagentilla}     % translated title for abstract
 \thesistype{Master of Science thesis} % or Bachelor of Science, Laboratory Report... 
-\examiner{Vilma Välkky} % without title Prof., Dr., MSc or such
+\examiner{Ari Visa} % without title Prof., Dr., MSc or such
 
 % Put your thesis' main language last
 % http://mirrors.ctan.org/macros/latex/required/babel/base/babel.pdf
@@ -61,12 +61,17 @@
 
 % Option3) for bibliography: newer way, esp. for Name-year citations
 % http://www.ctan.org/pkg/biblatex
-%\usepackage[style=authoryear,maxcitenames=2,backend=bibtex,
-%  firstinits=true]{biblatex}
+\usepackage[
+  style=authoryear,
+  maxcitenames=2,
+  backend=biber,
+  firstinits=true
+]{biblatex}
+\bibliography{thesis_refs.bib}
 %% Note that option style=numeric works as well
 %\addbibresource{thesis_refs.bib}
 
-
+\usepackage{fontspec}
 
 
 % You can also add your own commands
@@ -905,7 +910,7 @@ providing an overview of the most important points.
 % (e.g. thesis_refs.bib) and use bibtex tool to do the formatting.
 %
 
-% You must execute: pdflatex d_tyo.tex; bibtex d_tyo; pdflatex.tex
+% You must execute: lualatex thesis.tex; bibtex d_tyo; pdflatex.tex
 % First command creates the cross-refeerence file .aux for bibtex and
 % last combines the bibtex output to the rest.  Many styles are
 % available, see e.g. at
@@ -913,7 +918,7 @@ providing an overview of the most important points.
 % http://www.reed.edu/cis/help/latex/bibtexstyles.html
 
 % 1a) Numeric style:
-\bibliographystyle{IEEEtranS}   % the IEEE's sorted numeric style
+% \bibliographystyle{IEEEtranS}   % the IEEE's sorted numeric style
 % List is sorted first by author if present. If not, then by editor,
 % organization, title, and last by key.
 % http://mirrors.ctan.org/macros/latex/contrib/IEEEtran/bibtex/IEEEtran_bst_HOWTO.pdf
@@ -922,8 +927,8 @@ providing an overview of the most important points.
 % see http://www.ctan.org/tex-archive/macros/latex/contrib/harvard/
 
 
-\bibliography{thesis_refs}    % Insert {author,title,year...} info of your reference
-\markboth{\bibname}{\bibname} % Set page header
+% \bibliography{thesis_refs}    % Insert {author,title,year...} info of your reference
+% \markboth{\bibname}{\bibname} % Set page header
 
 
 %
@@ -989,10 +994,10 @@ providing an overview of the most important points.
 % http://www.ctan.org/pkg/biblatex
 %
 
-%\printbibliography                  % a) heading in English
+\printbibliography                  % a) heading in English
 %\printbibliography[title=Lähteet]   % b) heading in Finnish
 %\addtocontents{toc}{%               % b) add Finnish heading to table of contents
-% \protect\noindent Lähteet\protect\par
+%\protect\noindent Lähteet\protect\par
 %} 
 
 
