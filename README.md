@@ -48,5 +48,5 @@ I highly recommend Mendeley for handling all your sources and generating the bib
 3. Launch client and sign in
 4. Create folder in My Library for your thesis and name it `thesis_refs`
 5. Add your papers to `sources` folder
-5. Add sources to Mendeley by opening dropdown on `Add Files` and selecting `Add Folder...`, select `sources` folder. Repeat every time you add papers to `sources` folder.
-6. Setup BibTeX syncing (Tools -> Options -> BibTeX -> Enable BibTeX syncing). Select `Create one BibTeX file per group`. Point path to your thesis folder. If you use git, you might want to add other .bib files created by Mendeley to your .gitignore file. Optionally you can point the path to another folder on your PC, but in that case you have to copy thesis_refs.bib to your thesis folder every time the bibliography changes.
+6. Add sources to Mendeley by opening dropdown on `Add Files` and selecting `Add Folder...`, select `sources` folder. Repeat every time you add papers to `sources` folder.
+7. Setup BibTeX syncing (Tools -> Options -> BibTeX -> Enable BibTeX syncing). Select `Create one BibTeX file per group`. Point path to your thesis folder. If you use git, you might want to add other .bib files created by Mendeley to your .gitignore file. Optionally you can point the path to another folder on your PC, but in that case you have to copy thesis_refs.bib to your thesis folder every time the bibliography changes.
