@@ -42,6 +42,7 @@ When changing only Tex file contents just run Quickbuild (F1)
 
 ## Using Mendeley for Bibliography
 I highly recommend Mendeley for handling all your sources and generating the bibliography. It's basically better than RefWorks in every way and doesn't need TUT IP address.
+
 1. Register at mendeley.com
 2. Download and install Mendeley desktop client
 3. Launch client and sign in
