@@ -228,22 +228,11 @@ On behalf of the working group, Erno Salminen
 % You don't have to align these with whitespaces, but it makes the
 % .tex file more readable
 \begin{termlist}
-\item [CC license] Creative Commons license
-\item [LaTeX] 	   Typesetting system for scientific documentation
-\item [SI system]  Syst\`eme international d'unités, International System of Units
-\item [TUT] 	   Tampere University of Technology
-\item [URL]        Uniform Resource Locator
+\item[NER] Named entity recognition
+\item[NLP] Natural Language Processing
+\item[POS] Part-of-speech also called lexical category
+\item[TUT] Tampere University of Technology
 \end{termlist} 
-
-\begin{termlist}
-\item [$a$] acceleration
-\item [$F$] force
-\item [$m$] mass
-\end{termlist} 
-
-The abbreviations and symbols used in the thesis are collected into a
-list in alphabetical order. In addition, they must be explained upon
-first usage in the text.
 
 
 % The actual text begins here and page numbering changes to 1,2...
@@ -264,6 +253,35 @@ first usage in the text.
 \chapter{Introduction}
 \label{ch:intro} 
 Testing citation \cite{Andor2016}
+
+\chapter{Natural Language Processing}
+\label{ch:natural_language_processing}
+
+\section{POS Tagging}
+\label{se:pos_tagging}
+POS (part-of-speech) is the process of marking up a word in a text corpus to particular prat of speech based on both its definition and its context.
+
+POS, also called lexical category, is a category of words which have similar grammatical properties. English parts of speech are noun, verb, adjective, adverb, pronoun, preposition, conjunction, interjection, and sometimes numeral, article or determiner.
+
+POS tagging may also use additional finer lexical categories to a word for additional information on word's role. Fundamental problem in coarse and fine POS tagging is the lack of standardized terminology for POS tags. Universal dependencies project tries to address this issue.
+
+POS tagging is often the first step in Natural language processing (NLP) pipeling. Currently (October 2016) the best part-of-speech tagger is described by Andor et. al (2016) and implemented as Google's SyntaxNet. Other notable POS tagging software include Stanford University's POS tagger, spaCy - python library for NLP, Python Natural Language Toolkit.
+
+
+\section{Dependecy Parsing}
+\label{se:dependecy_parsing}
+
+
+\section{Co-Reference Parsing}
+\label{se:co-reference_parsing}
+
+
+\section{Sentence Segmentation}
+\label{se:sentence_segmentation}
+
+
+\section{Lemmatization}
+\label{se:lemmatisation}
 
 
 %
