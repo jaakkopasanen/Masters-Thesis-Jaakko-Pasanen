@@ -205,18 +205,6 @@ On behalf of the working group, Erno Salminen
 \setcounter{tocdepth}{3}              % How many header level are included
 \tableofcontents                      % Create TOC
 
-%\renewcommand\listfigurename{Kuvaluettelo}  % Set Finnish name, remove this if using English
-\listoffigures                               % Optional: create the list of figures
-\markboth{}{}                                % no headers
-
-%\renewcommand\listtablename{Taulukkoluettelo} % Set Finnish name, remove this if using English
-\listoftables                                  % Optional: create the list of tables
-\markboth{}{}                                  % no headers
-
-%\renewcommand\lstlistlistingname{Ohjelmaluettelo} % SetFinnish name, remove this if using English
-%\lstlistoflistings                                % Optional: create the list of program codes
-%\markboth{}{}                                     % no headers
-
 
 %
 % Term and symbol exaplanations use a special list type
@@ -232,7 +220,20 @@ On behalf of the working group, Erno Salminen
 \item[NLP] Natural Language Processing
 \item[POS] Part-of-speech also called lexical category
 \item[TUT] Tampere University of Technology
-\end{termlist} 
+\end{termlist}
+
+
+\chapter*{Terms and Notes}
+\begin{termlist}
+\item[Bag-of-words]
+\item[Constituent] In syntactic analysis, a constituent is a word or a group of words that function(s) as a single unit within a hierarchical structure. Many constituents are phrases. \textit{Yesterday I saw \textbf{an orange bird with a white neck}}
+\item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
+\item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
+\item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
+\item[Skip-gram]
+\item[Tree bank] Parsed text corpus that annotates syntactic or semantic sentence structure. Contains trees for sentences where phrases in a sentence are structured in a tree of syntactic or semantic relations. Very useful for training POS-taggers etc...
+\item[Word vector] vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
+\end{termlist}
 
 
 % The actual text begins here and page numbering changes to 1,2...
@@ -259,13 +260,6 @@ Testing citation \cite{Andor2016}
 
 \section{POS Tagging}
 \label{se:pos_tagging}
-POS (part-of-speech) is the process of marking up a word in a text corpus to particular prat of speech based on both its definition and its context.
-
-POS, also called lexical category, is a category of words which have similar grammatical properties. English parts of speech are noun, verb, adjective, adverb, pronoun, preposition, conjunction, interjection, and sometimes numeral, article or determiner.
-
-POS tagging may also use additional finer lexical categories to a word for additional information on word's role. Fundamental problem in coarse and fine POS tagging is the lack of standardized terminology for POS tags. Universal dependencies project tries to address this issue.
-
-POS tagging is often the first step in Natural language processing (NLP) pipeling. Currently (October 2016) the best part-of-speech tagger is described by Andor et. al (2016) and implemented as Google's SyntaxNet. Other notable POS tagging software include Stanford University's POS tagger, spaCy - python library for NLP, Python Natural Language Toolkit.
 
 
 \section{Dependecy Parsing}
@@ -280,7 +274,7 @@ POS tagging is often the first step in Natural language processing (NLP) pipelin
 \label{se:sentence_segmentation}
 
 
-\section{Lemmatization}
+\section{Lemmatisation}
 \label{se:lemmatisation}
 
 
