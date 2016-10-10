@@ -19,7 +19,15 @@ sudo apt-get install texmaker
 ```
 
 ## Windows
-Coming soon...
+1. Install MikTex https://miktex.org/howto/install-miktex
+2. Install `biblatex` and `mixtex-biber-bin` packages with MixTeX Package Manager if not already installed
+3. Optionally install Texmaker http://www.xm1math.net/texmaker/download.html#windows
+
+MikTex will propt you to install several packages during the first run, just accept everything and don't ask questions...
+
+## Mac
+1. Install MacTex http://www.tug.org/mactex/ (it should also contain BibLaTex and Biber)
+2. Optionally intall Texmaker http://www.xm1math.net/texmaker/download.html#macosx
 
 ## Using Texmaker
 Use LuaLaTex and View PDF for Quick build
@@ -50,3 +58,5 @@ I highly recommend Mendeley for handling all your sources and generating the bib
 5. Add your papers to `sources` folder
 6. Add sources to Mendeley by opening dropdown on `Add Files` and selecting `Add Folder...`, select `sources` folder. Repeat every time you add papers to `sources` folder.
 7. Setup BibTeX syncing (Tools -> Options -> BibTeX -> Enable BibTeX syncing). Select `Create one BibTeX file per group`. Point path to your thesis folder. If you use git, you might want to add other .bib files created by Mendeley to your .gitignore file. Optionally you can point the path to another folder on your PC, but in that case you have to copy thesis_refs.bib to your thesis folder every time the bibliography changes.
+
+If you need to force resync of BibTex bibliography from Mendeley, you can select thesis_refs folder and toggle one of the articles as read-unread (the green of grey dot before name)

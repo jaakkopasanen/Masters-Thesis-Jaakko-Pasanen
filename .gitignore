@@ -1,6 +1,6 @@
 *~
-Illumination.bib
-library.bib
+*.bib
+!thesis_refs.bib
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
