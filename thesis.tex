@@ -261,6 +261,29 @@ Testing citation \cite{Andor2016}
 \section{POS Tagging}
 \label{se:pos_tagging}
 
+\subsection{Turku Dependecy Treebank}
+\begin{itemize}
+\item Treebanks are needed in computational linguistics.
+\item First Finnish treebank.
+\item Open licence, including for text annotated
+\item 204339 tokens, 15126 sentences
+\item Based on Stanford Dependency scheme with minor modifications to exclude phenomena not present in Finnish and to include new annotations not present in English.
+\item Transposed to CoNNL-U scheme by universal dependencies project
+\item Connexor Machinese Syntax is the only currenty availavle Finnish full dependency parser.
+\item Texts from 10 different categories ranging from news and legal text to blog entries and fiction.
+\item Dependency parsing is done manually with full double annotation process.
+\item Uses Omorfi for morphological analysis. Ambiguous tokens are handled partly manually, partly rule based and partly with machine learning.
+\item FTB uses 3 different taggers for morphology, check them out!
+\item FTB is 97\% grammar examples, meant for rule based POS tagger development
+\end{itemize}
+
+\subsection{Syntaxnet}
+\begin{itemize}
+\item Transition based
+\item Locally and globally normalized
+\item Backpropagation through entire net
+\item State-of-the-Art
+\end{itemize}
 
 \section{Dependecy Parsing}
 \label{se:dependecy_parsing}
@@ -276,7 +299,9 @@ Testing citation \cite{Andor2016}
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
-
+\begin{itemize}
+\item See OMorFi
+\end{itemize}
 
 %
 % The bibliography, i.e the list of references (3 options available)
