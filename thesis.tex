@@ -216,10 +216,15 @@ On behalf of the working group, Erno Salminen
 % You don't have to align these with whitespaces, but it makes the
 % .tex file more readable
 \begin{termlist}
+\item[LAS] Labelled Attachment Score
+\item[LSTM] Long short term memory; type of RNN with short term memory.
 \item[NER] Named entity recognition
 \item[NLP] Natural Language Processing
-\item[POS] Part-of-speech also called lexical category
+\item[POS] Part-of-speech; also called lexical category
+\item[RNN] Recurrent neural network
+\item[S-LSTM] Stack long short term memory
 \item[TUT] Tampere University of Technology
+\item[UAS] Unlabelled Attachment Score
 \end{termlist}
 
 
@@ -232,6 +237,7 @@ On behalf of the working group, Erno Salminen
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
 \item[Skip-gram]
 \item[Tree bank] Parsed text corpus that annotates syntactic or semantic sentence structure. Contains trees for sentences where phrases in a sentence are structured in a tree of syntactic or semantic relations. Very useful for training POS-taggers etc...
+\item[Tri-Training] Parsing unlabeled data with two different parses and selecting only the sentences for which the two parsers produce the same trees \cite{Weiss2015}
 \item[Word vector] vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
 \end{termlist}
 
@@ -277,12 +283,21 @@ Testing citation \cite{Andor2016}
 \item FTB is 97\% grammar examples, meant for rule based POS tagger development
 \end{itemize}
 
+\subsection{Transition Based Parsers}
+\begin{itemize}
+\item Good balance between efficiency and accuracy \cite{Weiss2015}
+\item Parsed left to right; at each position the parses chooses action from a set of possible actions.
+\item Greedy models are fast but error prone and need hand engineered features \cite{Weiss2015}
+\item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
+\end{itemize}
+
 \subsection{Syntaxnet}
 \begin{itemize}
 \item Transition based
 \item Locally and globally normalized
 \item Backpropagation through entire net
 \item State-of-the-Art
+\item \cite{Andor2016}
 \end{itemize}
 
 \section{Dependecy Parsing}
