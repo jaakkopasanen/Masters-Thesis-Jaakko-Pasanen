@@ -232,10 +232,14 @@ On behalf of the working group, Erno Salminen
 \begin{termlist}
 \item[Bag-of-words]
 \item[Constituent] In syntactic analysis, a constituent is a word or a group of words that function(s) as a single unit within a hierarchical structure. Many constituents are phrases. \textit{Yesterday I saw \textbf{an orange bird with a white neck}}
+\item[Feature] Data representation that can be effectively exploited in machine learning tasks. E.g. Word occurrence frequencies.
+\item[Feature Vector] 
 \item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
+\item[n-gram]
 \item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
 \item[Skip-gram]
+\item[Structured Prediction] Predicting structured objects, rather than scalar discrete or real values. Translating a natural language sentence into a syntactic representation such as a parse tree can be seen as a structured prediction problem in which the structured output domain is the set of all possible parse trees.
 \item[Tree bank] Parsed text corpus that annotates syntactic or semantic sentence structure. Contains trees for sentences where phrases in a sentence are structured in a tree of syntactic or semantic relations. Very useful for training POS-taggers etc...
 \item[Tri-Training] Parsing unlabeled data with two different parses and selecting only the sentences for which the two parsers produce the same trees \cite{Weiss2015}
 \item[Word vector] vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
@@ -261,8 +265,19 @@ On behalf of the working group, Erno Salminen
 \label{ch:intro} 
 Testing citation \cite{Andor2016}
 
+
 \chapter{Natural Language Processing}
 \label{ch:natural_language_processing}
+
+\section{Feature Engingeering in NLP}
+\label{ch:feature_engineering_in_nlp}
+
+\subsection{Word Embeddings}
+\subsection{Word2vec}
+\begin{itemize}
+\item Continuous Bag-of-Words is better for small datasets, Skip-gram is better for large datasets.
+\end{itemize}
+
 
 \section{POS Tagging}
 \label{se:pos_tagging}
