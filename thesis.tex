@@ -113,11 +113,11 @@
          {\bf \textsf{\MakeUppercase{\@author}}}: \@title\\   % use \@titleB when thesis is in Finnish
          \textsf{Tampere University of Technology}\\
          \textsf{\@thesistype, xx pages, x Appendix pages} \\
-         \textsf{xxxxxx 201x}\\
-         \textsf{Master's Degree Programme in xxx Technology}\\
-         \textsf{Major: }\\
+         \textsf{December 2016}\\
+         \textsf{Master's Degree Programme in Automation Technology}\\
+         \textsf{Major: Learning and Intelligent Systems}\\
          \textsf{Examiner: Prof. \@examiner}\\ % 
-         \textsf{Keywords: }\\
+         \textsf{Keywords: Hype}\\
 \end{spacing}
 
 
@@ -140,11 +140,11 @@ the translation (when that is needed).
          {\bf \textsf{\MakeUppercase{\@author}}}: \@titleB\\  % or use \@title when thesis is in Finnish
          \textsf{Tampereen teknillinen yliopisto}\\
          \textsf{Diplomityö, xx sivua, x liitesivua}\\ %
-         \textsf{xxxkuu 201x}\\
-         \textsf{xxx koulutusohjelma}\\
-         \textsf{Pääaine: }\\
+         \textsf{Joulukuu 2016}\\
+         \textsf{Automaatiotekniikan koulutusohjelma}\\
+         \textsf{Pääaine: Oppivat ja älykkäät järjestelmät}\\
          \textsf{Tarkastajat:  Prof. \@examiner}\\ % automated, if just 1 examiner
-         \textsf{Avainsanat: }\\
+         \textsf{Avainsanat: Hype}\\
 \end{spacing}
 
 The abstract in Finnish. Foreign students do not need this page.
@@ -223,16 +223,107 @@ On behalf of the working group, Erno Salminen
 \end{termlist}
 
 
-\chapter*{Terms and Notes}
+\chapter*{Notes}
+
+\section{Terms for Computational Linguistics}
 \begin{termlist}
 \item[Bag-of-words]
+\item[Clausal Complement] 
 \item[Constituent] In syntactic analysis, a constituent is a word or a group of words that function(s) as a single unit within a hierarchical structure. Many constituents are phrases. \textit{Yesterday I saw \textbf{an orange bird with a white neck}}
+\item[Corpus] A collection of texts with linguistic annotations.
 \item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
+\item[Lexeme] A basic lexical unit of a language consisting of one word or several words, the elements of which do not separately convey the meaning of the whole.
 \item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
 \item[Skip-gram]
+\item[Token] A structure representing a lexeme that explicitly indicates its categorization for the purpose of parsing.
 \item[Tree bank] Parsed text corpus that annotates syntactic or semantic sentence structure. Contains trees for sentences where phrases in a sentence are structured in a tree of syntactic or semantic relations. Very useful for training POS-taggers etc...
 \item[Word vector] vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
+\end{termlist}
+
+\section{Universal Dependecies}
+
+\subsection{CoNNL-U format}
+Universal dependencies use CoNNL-U format for treebanks, CoNNL-U is revised version of CoNNL-X. Annotations are encoded in text files with word lines, blank lines for sentence boundaries and comments starting with hash (\#).
+
+Word lines consist of following columns:
+\begin{termlist}
+\item[ID] Word ID in sentence
+\item[FORM] Word form or punctuation symbol
+\item[LEMMA] Lemma or stem of word form
+\item[UPOSTAG] Universal part-of-speech tag
+\item[XPOSTAG] Language specific part-of-speech tag
+\item[FEATS] List of morphological features
+\item[HEAD] Head of the curren token, value of ID or zero (0)
+\item[DEPREL] Universal dependecy relation to the HEAD
+\item[DEPS] List of secondary dependencies
+\item[MISC] Any other annotation
+\end{termlist}
+
+Example in Finnish: Jäällä kävely avaa aina hauskoja ja erikoisia näkökulmia kaupunkiin
+
+\begin{tabular}{l l l l l} 
+ID & FORM & LEMMA & UPOSTAG & XPOSTAG \\
+\hline
+1 & Jäällä & jää & NOUN & N \\
+2 & kävely & kävely & NOUN & N \\
+3 & avaa & avata & VERB & V \\
+4 & aina & aina & ADV & Adv \\
+5 & hauskoja & hauska & ADJ & A \\
+6 & ja & ja & CONJ & C \\
+7 & erikoisia & erikoinen & ADJ & A \\
+8 & näkökulmia & näkö\#kulma & NOUN & N \\
+9 & kaupunkiin & kaupunki & NOUN & N \\
+10 & . & . & PUNCT & Punct
+\end{tabular}
+
+\begin{tabular}{l}
+FEATS \\
+\hline
+Case=Ade|Number=Sing \\
+Case=Nom|Number=Sing \\
+Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act \\
+\_ \\
+Case=Par|Degree=Pos|Number=Plur \\
+\_ \\
+Case=Par|Degree=Pos|Number=Plur \\
+Case=Par|Number=Plur \\
+Case=Ill|Number=Sing \\
+\_
+\end{tabular}
+
+\begin{tabular}{l l l l}
+HEAD & DEPREL & DEPS & MISC \\
+\hline
+2 & nmod & \_ & \_ \\
+3 & nsubj & \_ & \_ \\
+0 & root & \_ & \_ \\
+3 & advmod & \_ & \_ \\
+8 & amod & \_ & \_ \\
+5 & cc & \_ & \_ \\
+5 & conj & 8:amod & \_ \\
+3 & dobj & \_ & \_ \\
+8 & nmod & \_ & SpaceAfter=No
+\end{tabular}
+
+\subsection{Universal POS tags}
+\begin{termlist}
+\item[ADJ] Adjective. Describing word qualifying noun or noun phrase. \textbf{deep}, \textbf{intelligent}
+\item[ADP] Adposition. Word expressing spatial or temporal relations \textbf{under}, \textbf{around}, \textbf{before} or mark various semantic roles \textbf{of}, \textbf{for}
+\item[ADV] Adverb. Modifies another word. Typically express manner, place, time, frequency etc. She sang \textbf{loudly}. You are \textbf{quite} right.
+\item[AUX] Auxiliary verb. A verb used in forming the tenses, moods, and voices of other verbs. \textbf{Do} you want tea?. He \textbf{has} given his all.
+\item[CONJ] Coordinating conjunction. Conjunction placed between words, phrases, clauses or sentences of equal rank. \textbf{and}, \textbf{but}, \textbf{or}.
+\item[DET] Determiner. Expresses reference of a noun (group). \textbf{The} girl is \textbf{a} student. \textbf{Which} book is that?
+\item[INTJ] Interjection. Shows emotion or feeling of the author, includes exclamations, curses, greetings and such. \textbf{Ouch!}, \textbf{hey}, \textbf{huh?}.
+\item[NOUN] Noun. Denotes a person, animal, place thing or idea. The \textbf{cat} sat on a \textbf{mat}.
+\item[NUM] Numeral. Number, written with digits or letters. \textbf{12}, \textbf{eleven}.
+\item[PART] Particle. Cannot be inflected. Interjections and conjunctions. In finnish also \textbf{että}, \textbf{jotta}, \textbf{koska}, \textbf{kun} etc...
+\item[PRON] Pronoun. Replaces (often previously introduced) noun. Joe saw Jill, and \textbf{he} waved at \textbf{her}.
+\item[PUNCT] Punctuation. Full stop, comma, bracket etc.
+\item[SCONJ] Subordinating conjunction. A conjunction that introduces a subordinating clause, e.g. \textbf{although}, \textbf{because}, \textbf{whenever}.
+\item[SYM] Symbol.
+\item[VERB] Verb. Conveys an action \textbf{bring}, \textbf{read}, an occurrence \textbf{happen}, \textbf{become}, or a state of being \textbf{be}, \textbf{exist}.
+\item[X] Other
 \end{termlist}
 
 
@@ -252,11 +343,14 @@ On behalf of the working group, Erno Salminen
 
 
 \chapter{Introduction}
-\label{ch:intro} 
+\label{ch:intro}
 Testing citation \cite{Andor2016}
 
 \chapter{Natural Language Processing}
 \label{ch:natural_language_processing}
+
+\section{Pre-processing}
+\label{ch:pre-processing}
 
 \section{POS Tagging}
 \label{se:pos_tagging}
@@ -276,6 +370,9 @@ Testing citation \cite{Andor2016}
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
+
+\section{Synonym recognition}
+\label{se:synonym_recognition}
 
 
 %
