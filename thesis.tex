@@ -46,8 +46,8 @@
 ]{biblatex}
 \bibliography{thesis_refs.bib}
 %% Note that option style=numeric works as well
-
 \usepackage{fontspec}
+\usepackage{amsfonts}
 
 
 % You can also add your own commands
@@ -234,26 +234,49 @@ On behalf of the working group, Erno Salminen
 \chapter*{Notes}
 
 \section{Terms for Computational Linguistics}
-\begin{termlist}
-\item[1-of-V Coding] Representing words as sparse binary vectors which have 1 at the word's vocabulary index and 0 all others. With vocabulary {dog, cat, mouse}, dog becomes [1, 0, 0], cat becomes [0, 1, 0] and mouse [0, 0, 1].
-\item[Bag-of-words]
+\begin{description}
+\item[1-of-V Coding] Representing words as sparse binary vectors which have 1 at the word's vocabulary index and 0 all others. With vocabulary \{dog, cat, mouse\}, dog becomes [1, 0, 0], cat becomes [0, 1, 0] and mouse [0, 0, 1].
+
+\item[Bag-of-words] Multiset of words appearing in a text with occurrence counts for each word. Used as a tool for feature generation. Does not preserve word order or grammar.
+
 \item[Clausal Complement] 
+
 \item[Constituent] In syntactic analysis, a constituent is a word or a group of words that function(s) as a single unit within a hierarchical structure. Many constituents are phrases. \textit{Yesterday I saw \textbf{an orange bird with a white neck}}
+
 \item[Corpus] A collection of texts with linguistic annotations.
+
+\item[Dimensionality] When discussing word embeddings and word vector spaces the dimensionality refers to definition in linear algebra. Dimensionality of arrays in computing means the number of indices required to specify an element in the array. Word vector in 50 dimensional vector space $\mathbb{R}^{50}$ would be represented in computing as one dimensional array of length 50 [d1, d2, d3, ..., d50]
+
 \item[Feature] Data representation that can be effectively exploited in machine learning tasks. E.g. Word occurrence frequencies.
+
 \item[Feature Vector] 
+
 \item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
+
 \item[Lexeme] A basic lexical unit of a language consisting of one word or several words, the elements of which do not separately convey the meaning of the whole.
-\item[n-gram]
+
+\item[n-gram] Probabilistic language model where probability of current word is the joint probability of previous \textit{n} words. Example of a bigram model is \textit{P(I, saw, the, red, house) = P(I | <s>)P(saw | I)P(red | the)P(house | red)P(</s>) | house)}. The words unigram, bigram and trigram language model denote n-gram model language models with n = 1, n = 2 and n = 3, respectively.
+
+\item[One-hot] Group of bits which the legal comibations of values are only those with a single high (1) and all the others low (0). See also 1-of-V Coding.
+
 \item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
+
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
-\item[Skip-gram]
+
 \item[Structured Prediction] Predicting structured objects, rather than scalar discrete or real values. Translating a natural language sentence into a syntactic representation such as a parse tree can be seen as a structured prediction problem in which the structured output domain is the set of all possible parse trees.
-\item[Token] A structure representing a lexeme that explicitly indicates its categorization for the purpose of parsing.
+
+\item[Token] A structure representing a lexeme that explicitly indicates its categorization for the purpose of parsing. In plain words tokens are instances of words in a text. Not to be confused with word type.
+
 \item[Tree bank] Parsed text corpus that annotates syntactic or semantic sentence structure. Contains trees for sentences where phrases in a sentence are structured in a tree of syntactic or semantic relations. Very useful for training POS-taggers etc...
+
 \item[Tri-Training] Parsing unlabeled data with two different parses and selecting only the sentences for which the two parsers produce the same trees \cite{Weiss2015}
+
+\item[Word Lookup Table] Matrix $\textbf{P} \in \mathbb{R}^{d \times |V|}$ of d rows and |V| columns, where d is the word vector dimensionality and |V| is the size of vocalbulary. Word lookup tables are unable to generate representations for previoulsy unseen words, as is required for morphology. \cite{Ling2015}
+
+\item[Word Type] Unique words in a text. \textit{Good wine is good} has 4 tokens but only 3 word types.
+
 \item[Word vector] N-dimensional vector representation of a word with interesting properties such as: vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
-\end{termlist}
+\end{description}
 
 \section{Universal Dependecies}
 
