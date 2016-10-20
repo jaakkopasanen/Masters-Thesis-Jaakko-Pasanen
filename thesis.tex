@@ -216,10 +216,18 @@ On behalf of the working group, Erno Salminen
 % You don't have to align these with whitespaces, but it makes the
 % .tex file more readable
 \begin{termlist}
+\item[ANN] Artificial Neural Network
+\item[LAS] Labelled Attachment Score
+\item[LDA] Latent Dirilecht Allocation
+\item[LSA] Latent Semantic Analysis
+\item[LSTM] Long short term memory; type of RNN with short term memory.
 \item[NER] Named entity recognition
 \item[NLP] Natural Language Processing
-\item[POS] Part-of-speech also called lexical category
+\item[POS] Part-of-speech; also called lexical category
+\item[RNN] Recurrent neural network
+\item[S-LSTM] Stack long short term memory
 \item[TUT] Tampere University of Technology
+\item[UAS] Unlabelled Attachment Score
 \end{termlist}
 
 
@@ -227,18 +235,24 @@ On behalf of the working group, Erno Salminen
 
 \section{Terms for Computational Linguistics}
 \begin{termlist}
+\item[1-of-V Coding] Representing words as sparse binary vectors which have 1 at the word's vocabulary index and 0 all others. With vocabulary {dog, cat, mouse}, dog becomes [1, 0, 0], cat becomes [0, 1, 0] and mouse [0, 0, 1].
 \item[Bag-of-words]
 \item[Clausal Complement] 
 \item[Constituent] In syntactic analysis, a constituent is a word or a group of words that function(s) as a single unit within a hierarchical structure. Many constituents are phrases. \textit{Yesterday I saw \textbf{an orange bird with a white neck}}
 \item[Corpus] A collection of texts with linguistic annotations.
+\item[Feature] Data representation that can be effectively exploited in machine learning tasks. E.g. Word occurrence frequencies.
+\item[Feature Vector] 
 \item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
 \item[Lexeme] A basic lexical unit of a language consisting of one word or several words, the elements of which do not separately convey the meaning of the whole.
+\item[n-gram]
 \item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
 \item[Skip-gram]
+\item[Structured Prediction] Predicting structured objects, rather than scalar discrete or real values. Translating a natural language sentence into a syntactic representation such as a parse tree can be seen as a structured prediction problem in which the structured output domain is the set of all possible parse trees.
 \item[Token] A structure representing a lexeme that explicitly indicates its categorization for the purpose of parsing.
 \item[Tree bank] Parsed text corpus that annotates syntactic or semantic sentence structure. Contains trees for sentences where phrases in a sentence are structured in a tree of syntactic or semantic relations. Very useful for training POS-taggers etc...
-\item[Word vector] vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
+\item[Tri-Training] Parsing unlabeled data with two different parses and selecting only the sentences for which the two parsers produce the same trees \cite{Weiss2015}
+\item[Word vector] N-dimensional vector representation of a word with interesting properties such as: vector('Paris') - vector('France') + Vector('Italy') -> vector('Rome')
 \end{termlist}
 
 \section{Universal Dependecies}
@@ -346,15 +360,88 @@ HEAD & DEPREL & DEPS & MISC \\
 \label{ch:intro}
 Testing citation \cite{Andor2016}
 
+
 \chapter{Natural Language Processing}
 \label{ch:natural_language_processing}
 
+<<<<<<< HEAD
 \section{Pre-processing}
 \label{ch:pre-processing}
+=======
+\section{Feature Engingeering in NLP}
+\label{ch:feature_engineering_in_nlp}
+
+\subsection{Word Embeddings}
+\begin{itemize}
+\item Traditionally words have been represented by indices. \cite{Mikolov2013}
+\item Index representation is simple as computationally cheap, making use of huge datasets possible. Simple models with huge data outperform complex models with less data. \cite{Mikolov2013}
+\item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
+\item see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings
+\item See LSA and LDA for previous systems. Neural networks significantly outperform LSA in preserving linearities. LDA doesn't scale for large datasets. \cite{Mikolov2013}
+\item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as France and Italy are countries but dogs and triangles are both in plural form. \cite{Mikolov2013a}
+\end{itemize}
+
+\subsection{Word2vec}
+\begin{itemize}
+\item \cite{Mikolov2013}
+\item Can be used with datasets of billions of words
+\item Has two models: Continuous bag-of-words and continuous skip-gram
+\item Continuous bag-of-words predicts current word from the context (surrounding words)
+\item Continuous skip-gram predicts context (surrounding words) from current word.
+\item Continuous Bag-of-Words is better for small datasets, continuous skip-gram is better for large datasets.
+\item CBOW is better for syntax, Skip-gram is better for semantics.
+\item Can be used to find semantic relationships like vector('biggest') - vector('big') + vector('small') => vector('smallest') 
+\item State of the art (as of 2013)
+\end{itemize}
+
+>>>>>>> 8cd92d9ca35d891b791a7766ebdda27ffd07f5f1
 
 \section{POS Tagging}
 \label{se:pos_tagging}
+\begin{itemize}
+\item Started from rule based taggers
+\item Tagger by \cite{Brill1992} (known as Brill tagger) learns the rules and as such can be considered as a hybrid approach
+\item Contemporary research is focused on statistical and ANN based taggers
+\item Rest of this section focuses on statistical parsers
+\item \cite{Ling2015} introduced S-LSTM based State-of-the-art tagger
+\item \cite{Andor2016} Improved accuracy with transition based tagger
+\item \cite{Chen2014} were first to represent POS-tag and arc labels as embeddings
+\item \cite{Andor2016} and \cite{Weiss2015} built their solutions based on \cite{Chen2014}
+\item \cite{Nivre2004} introduced system for transition based taggers known as arc-starndard system \cite{Chen2014}
+\end{itemize}
 
+\subsection{Turku Dependecy Treebank}
+\begin{itemize}
+\item Treebanks are needed in computational linguistics.
+\item First Finnish treebank.
+\item Open licence, including for text annotated
+\item 204339 tokens, 15126 sentences
+\item Based on Stanford Dependency scheme with minor modifications to exclude phenomena not present in Finnish and to include new annotations not present in English.
+\item Transposed to CoNNL-U scheme by universal dependencies project
+\item Connexor Machinese Syntax is the only currenty available Finnish full dependency parser.
+\item Texts from 10 different categories ranging from news and legal text to blog entries and fiction.
+\item Dependency parsing is done manually with full double annotation process.
+\item Uses Omorfi for morphological analysis. Ambiguous tokens are handled partly manually, partly rule based and partly with machine learning.
+\item FTB uses 3 different taggers for morphology, check them out!
+\item FTB is 97\% grammar examples, meant for rule based POS tagger development
+\end{itemize}
+
+\subsection{Transition Based Parsers}
+\begin{itemize}
+\item Good balance between efficiency and accuracy \cite{Weiss2015}
+\item Parsed left to right; at each position the parses chooses action from a set of possible actions.
+\item Greedy models are fast but error prone and need hand engineered features \cite{Weiss2015}
+\item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
+\end{itemize}
+
+\subsection{Syntaxnet}
+\begin{itemize}
+\item Transition based
+\item Locally and globally normalized
+\item Backpropagation through entire net
+\item State-of-the-Art
+\item \cite{Andor2016}
+\end{itemize}
 
 \section{Dependecy Parsing}
 \label{se:dependecy_parsing}
@@ -370,10 +457,16 @@ Testing citation \cite{Andor2016}
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
+<<<<<<< HEAD
 
 \section{Synonym recognition}
 \label{se:synonym_recognition}
 
+=======
+\begin{itemize}
+\item See OMorFi
+\end{itemize}
+>>>>>>> 8cd92d9ca35d891b791a7766ebdda27ffd07f5f1
 
 %
 % The bibliography, i.e the list of references (3 options available)
