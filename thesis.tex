@@ -28,7 +28,7 @@
 % Define your basic information
 %
 \author{Jaakko Pasanen}
-\title{NLP for Customer Support Agent} % primary title (for front page)
+\title{Natural Language Understanding for Information Retrieval in Chat Based Customer Support} % primary title (for front page)
 \titleB{Luonnollisen kielen ymmärrys asiakapalveluagentilla}     % translated title for abstract
 \thesistype{Master of Science thesis} % or Bachelor of Science, Laboratory Report... 
 \examiner{Ari Visa} % without title Prof., Dr., MSc or such
@@ -75,7 +75,7 @@
 % Then lay out the author, title and type to the center of page.
 \vspace{6.8cm}
 \maketitle
-\vspace{7.7cm} % -> 6.7cm if thesis title needs two lines
+\vspace{6.7cm} % -> 6.7cm if thesis title needs two lines
 
 % Last some additional info to the bottom-right corner
 \begin{flushright}  
@@ -88,8 +88,8 @@
       \textsf{Examiner: Prof. \@examiner}\\
       \textsf{Examiner and topic approved by the}\\ 
       \textsf{Faculty Council of the Faculty of}\\
-      \textsf{xxxx}\\
-      \textsf{on 30th July 2014}\\
+      \textsf{Engineering Sciences}\\
+      \textsf{on 31st December 2016}\\
     \end{spacing}
   \end{minipage}
 \end{flushright}
@@ -237,7 +237,7 @@ On behalf of the working group, Erno Salminen
 \begin{description}
 \item[1-of-V Coding] Representing words as sparse binary vectors which have 1 at the word's vocabulary index and 0 all others. With vocabulary \{dog, cat, mouse\}, dog becomes [1, 0, 0], cat becomes [0, 1, 0] and mouse [0, 0, 1].
 
-\item[Bag-of-words] Multiset of words appearing in a text with occurrence counts for each word. Used as a tool for feature generation. Does not preserve word order or grammar.
+\item[Bag-of-words] Multiset of words appearing in a text with occurrence counts for each word. Used as a tool for feature generation. Does not preserve word order or grammar. Can implemented as a dictionary (or associative array) where words are the keys and counts are the values.
 
 \item[Clausal Complement] 
 
@@ -247,21 +247,25 @@ On behalf of the working group, Erno Salminen
 
 \item[Dimensionality] When discussing word embeddings and word vector spaces the dimensionality refers to definition in linear algebra. Dimensionality of arrays in computing means the number of indices required to specify an element in the array. Word vector in 50 dimensional vector space $\mathbb{R}^{50}$ would be represented in computing as one dimensional array of length 50 [d1, d2, d3, ..., d50]
 
-\item[Feature] Data representation that can be effectively exploited in machine learning tasks. E.g. Word occurrence frequencies.
+\item[Feature] Numeric data representation that can be effectively exploited in machine learning tasks. E.g. Word occurrence frequencies.
 
-\item[Feature Vector] 
+\item[Feature Vector] Vector containing all the features. For an image a feature vector could be all the raw values of pixels as a single sequence. For a trigram model with 300 dimensional word embeddings a feature vector would be a 900 dimensional vector formed by concatenating all the separate word embedding vectors.
+
+\item[Language Model] Probability distribution over sequences of words. Given such a sequence, say of length m, it assigns a probability $P(w_{1},\ldots ,w_{m})$ to the whole sequence. Problems caused by growing vocabulary can be addressed with continuous language models such as neural net language models (NNML). Word2Vec by \cite{Mikolov2013} addresses this problem with Continuous Bag-of-words and Skip-gram models.
 
 \item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
 
 \item[Lexeme] A basic lexical unit of a language consisting of one word or several words, the elements of which do not separately convey the meaning of the whole.
 
-\item[n-gram] Probabilistic language model where probability of current word is the joint probability of previous \textit{n} words. Example of a bigram model is \textit{P(I, saw, the, red, house) = P(I | <s>)P(saw | I)P(red | the)P(house | red)P(</s>) | house)}. The words unigram, bigram and trigram language model denote n-gram model language models with n = 1, n = 2 and n = 3, respectively.
+\item[n-gram] Probabilistic language model where probability of current word is the joint probability of previous \textit{n} words. Bigram example: $P(I, saw, the, red, house) \approx P(I | ^\wedge)P(saw | I)P(red | the)P(house | red)P(\$ | house)$. The words unigram, bigram and trigram language model denote n-gram model language models with n = 1, n = 2 and n = 3, respectively.
 
 \item[One-hot] Group of bits which the legal comibations of values are only those with a single high (1) and all the others low (0). See also 1-of-V Coding.
 
 \item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
 
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
+
+\item[Skip-gram] Language model which predicts the context (previous and next \textit{n} words) of a current word from the current word instead of traditional way of predicting current word from the context.
 
 \item[Structured Prediction] Predicting structured objects, rather than scalar discrete or real values. Translating a natural language sentence into a syntactic representation such as a parse tree can be seen as a structured prediction problem in which the structured output domain is the set of all possible parse trees.
 
