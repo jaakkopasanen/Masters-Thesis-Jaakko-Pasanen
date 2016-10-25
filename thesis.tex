@@ -29,7 +29,7 @@
 %
 \author{Jaakko Pasanen}
 \title{Natural Language Understanding for Information Retrieval in Chat Based Customer Support} % primary title (for front page)
-\titleB{Luonnollisen kielen ymmärrys asiakapalveluagentilla}     % translated title for abstract
+\titleB{Luonnollisen kielen ymmärrys tiedon hakua varten chat-pohjaisessa asiakaspalvelussa}     % translated title for abstract
 \thesistype{Master of Science thesis} % or Bachelor of Science, Laboratory Report... 
 \examiner{Ari Visa} % without title Prof., Dr., MSc or such
 
@@ -107,7 +107,7 @@
 
 % Some fields in abstract are automated, namely those with \@ (author,
 % title in the main language, thesis type, examiner).
-\chapter*{Abstract}
+late\chapter*{Abstract}
 
 \begin{spacing}{1.0}
          {\bf \textsf{\MakeUppercase{\@author}}}: \@title\\   % use \@titleB when thesis is in Finnish
@@ -367,6 +367,7 @@ HEAD & DEPREL & DEPS & MISC \\
 \item[X] Other
 \end{termlist}
 
+\newpage
 
 % The actual text begins here and page numbering changes to 1,2...
 % Leave the backside of title empty in twoside mode
@@ -390,22 +391,28 @@ Testing citation \cite{Andor2016}
 
 \chapter{Natural Language Processing}
 \label{ch:natural_language_processing}
+\begin{itemize}
+\item Most of the NLP work has been for english.
+\item Cross-linguistic annotation and parsing has been a reality only after introduction of The Universal Dependencies project and SyntaxNet.
+\item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
+\end{itemize}
 
-<<<<<<< HEAD
 \section{Pre-processing}
 \label{ch:pre-processing}
-=======
+
 \section{Feature Engingeering in NLP}
 \label{ch:feature_engineering_in_nlp}
 
 \subsection{Word Embeddings}
 \begin{itemize}
 \item Traditionally words have been represented by indices. \cite{Mikolov2013}
+\item Next step was to use 1-of-V coding.
 \item Index representation is simple as computationally cheap, making use of huge datasets possible. Simple models with huge data outperform complex models with less data. \cite{Mikolov2013}
 \item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
-\item see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings
+\item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
 \item See LSA and LDA for previous systems. Neural networks significantly outperform LSA in preserving linearities. LDA doesn't scale for large datasets. \cite{Mikolov2013}
 \item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as France and Italy are countries but dogs and triangles are both in plural form. \cite{Mikolov2013a}
+\item Word embeddings can be generated from character sequences with significantly better performance for morphological languages. \cite{Ling2015}
 \end{itemize}
 
 \subsection{Word2vec}
@@ -421,7 +428,25 @@ Testing citation \cite{Andor2016}
 \item State of the art (as of 2013)
 \end{itemize}
 
->>>>>>> 8cd92d9ca35d891b791a7766ebdda27ffd07f5f1
+\subsection{GloVe}
+\cite{Pennington2014}
+
+\subsection{Charater to Word}
+\cite{Ling2015}
+
+
+\section{Annotations}
+\label{se:annotations}
+\begin{itemize}
+\item Stanford Dependencies \cite{DeMarneffe2006}
+\item Stanford Dependencies emerged as de facto annotation scheme for english, but has been adapted to several other languages including Finnish. \cite{Nivre2016}, \cite{Haverinen2014}.
+\item Turku Dependency Treebank has been tranformed into universal dependencies. \cite{Pyysalo2015}
+\item Unified annotation scheme reduces need for cross-language adaptations in downstream development. \cite{Petrov2012}
+\item Universal Dependencies project started from the requirement for cross-linguistically consistent treebank annotations even for morphological languages. \cite{Nivre2016}.
+\item Universal Dependencies project was born from merging several previous attempts to form a cross-linguistically sound dependency annotation schemes. \cite{Nivre2016}
+\item UD data has been encoded in the CoNLL-U format, a revision of the popular CoNLL-X format. \cite{Nivre2016}
+\item UD treebanks released in November 2015. \cite{Nivre2016}
+\end{itemize}
 
 \section{POS Tagging}
 \label{se:pos_tagging}
@@ -480,20 +505,65 @@ Testing citation \cite{Andor2016}
 
 \section{Sentence Segmentation}
 \label{se:sentence_segmentation}
+This is not relevant in our system?
 
+\section{Machine Translation}
+\label{se:machine_translation}
+See section \ref{ss:translating_colloquial_speech} for more info on our implementation.
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
-<<<<<<< HEAD
 
 \section{Synonym recognition}
 \label{se:synonym_recognition}
-
-=======
 \begin{itemize}
 \item See OMorFi
 \end{itemize}
->>>>>>> 8cd92d9ca35d891b791a7766ebdda27ffd07f5f1
+
+
+\chapter{Chat Based Customer Support}
+\label{ch:chat_based_customer_support}
+Customer support problem domain. History?
+\section{Chat Revolution}
+\section{Automation with Virtual Agents}
+\section{Existing Systems}
+
+
+\chapter{Our System}
+\label{ch:our_system}
+\begin{itemize}
+\item This thesis only considers customer message understanding.
+\item Greetings, Chatting, information retrieval and response generation are important part of a dialogue system but have been left out of scope of this thesis.
+\item Large portion of the research on the conversational models focus on chatter systems where utterance responses are retrieved or generated from response corpus. These systems do not aim to solve customer problem by incorporating relevant information retrieved from a specific knowledge base.
+\item Utterance systems are not suitable for customer support out side of simple frequently asked questions.
+\item Furthermore large portion of responses generated by neural conversation models are safe responses e.g. \textit{I don't know} \cite{Li2015}.
+\item Conversational models trained on customer support history incorporate data from long time period and as such data may contain outdated information which cannot be corrected unless sentences containing outdated information are replaced. Finding and replacing such information from customer support dialogues requires reading much of the dialogues by humans and rewriting conversation history; task both time consuming, error prone and expensive.
+\item Also incorporating new information into such dataset requires manual conversation synthesis where humans write new simulated conversations into a dialogue history used for training the system.
+\item Other ways for updating old and adding new information are required for real world customer support. Our system draws it's information from a knowledge base with traditional user interface for updating and adding new knowledge.
+\end{itemize}
+
+\section{Pipeline}
+\label{se:pipeline}
+
+\subsection{Translating Colloquial Speech}
+\label{ss:translating_colloquial_speech}
+Mä -> Minä
+
+\section{Evaluation}
+\label{se:evaluation}
+\begin{itemize}
+\item Recently end-to-end dialogue system have adopted metrics from amchine translation and text summarization. These don't work so well. \cite{Liu2016}
+\item \cite{Liu2016} considers unsupervised utterance systems where response is generated or selected from a set of possible responses. This is irrelevant since we are building a problem solving dialogue system instead of chattering system.
+\end{itemize}
+
+
+\chapter{Customer Business Value and Satisfaction}
+\label{ch:customer_business_value_and_satisfaction}
+
+
+\chapter{Conclusions and Future Work}
+\label{ch:conclusions_and_future_work}
+
 
 %
 % The bibliography, i.e the list of references (3 options available)
