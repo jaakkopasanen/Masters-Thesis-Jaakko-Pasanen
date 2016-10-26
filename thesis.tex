@@ -223,6 +223,7 @@ On behalf of the working group, Erno Salminen
 \item[LSTM] Long short term memory; type of RNN with short term memory.
 \item[NER] Named entity recognition
 \item[NLP] Natural Language Processing
+\item[PMI] Pointwise mutual information
 \item[POS] Part-of-speech; also called lexical category
 \item[RNN] Recurrent neural network
 \item[S-LSTM] Stack long short term memory
@@ -232,6 +233,10 @@ On behalf of the working group, Erno Salminen
 
 
 \chapter*{Notes}
+
+\section{Reading}
+These vectors can be used as features in a variety of applications, such as information retrieval (Manning et al., 2008), document classification (Sebastiani, 2002), question answering (Tellex et al., 2003). \cite{Pennington2014}
+
 
 \section{Terms for Computational Linguistics}
 \begin{description}
@@ -246,6 +251,8 @@ On behalf of the working group, Erno Salminen
 \item[Corpus] A collection of texts with linguistic annotations.
 
 \item[Dimensionality] When discussing word embeddings and word vector spaces the dimensionality refers to definition in linear algebra. Dimensionality of arrays in computing means the number of indices required to specify an element in the array. Word vector in 50 dimensional vector space $\mathbb{R}^{50}$ would be represented in computing as one dimensional array of length 50 [d1, d2, d3, ..., d50]
+
+\item[Distributional Hypothesis] Words that are used and occur in the same contexts tend to purport similar meanings. \cite{Harris1954}
 
 \item[Feature] Numeric data representation that can be effectively exploited in machine learning tasks. E.g. Word occurrence frequencies.
 
@@ -262,6 +269,8 @@ On behalf of the working group, Erno Salminen
 \item[One-hot] Group of bits which the legal comibations of values are only those with a single high (1) and all the others low (0). See also 1-of-V Coding.
 
 \item[Parsing] Within computational linguistics the term is used to refer to the formal analysis by a computer of a sentence or other string of words into its constituents, resulting in a parse tree showing their syntactic relation to each other, which may also contain semantic and other information.
+
+\item[PMI] Word co-occurence probability metric. High values for words that occur often together.
 
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
 
@@ -392,6 +401,7 @@ Testing citation \cite{Andor2016}
 \chapter{Natural Language Processing}
 \label{ch:natural_language_processing}
 \begin{itemize}
+\item Natural Language Processing is vastly wide field, this thesis discusses only on the sections of NLP relevant to the experiments.
 \item Most of the NLP work has been for english.
 \item Cross-linguistic annotation and parsing has been a reality only after introduction of The Universal Dependencies project and SyntaxNet.
 \item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
@@ -411,8 +421,13 @@ Testing citation \cite{Andor2016}
 \item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
 \item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
 \item See LSA and LDA for previous systems. Neural networks significantly outperform LSA in preserving linearities. LDA doesn't scale for large datasets. \cite{Mikolov2013}
-\item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as France and Italy are countries but dogs and triangles are both in plural form. \cite{Mikolov2013a}
+\item LSA leverages statistical information of a corpus but performs poorly on word analogy task. \cite{Pennington2014}
+\item Skip-gram is good for word analogies but doesn't utilize corpus statistics well since vectors are trained on local context. \cite{Pennington2014}
+\item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as \textit{France} and \textit{Italy} are countries but \textit{dogs} and \textit{triangles} are both in plural form. \cite{Mikolov2013a}
 \item Word embeddings can be generated from character sequences with significantly better performance for morphological languages. \cite{Ling2015}
+\item GloVe by \cite{Pennington2014} capture global corpus statistics with log-bilinear co-occurence count model.
+\item Memory requirements for GloVe are substantial since global co-occurence matrix for entire vocabulary is required, even though GloVe eliminates the need for zero occurence elements. Problem becomes worse for inflectional languages such as Finnish were vocabulary requires word type for each infliction for each word.
+\item GloVe outperforms other methods on almost all tested tasks. All tasks are English only. \cite{Pennington2014}
 \end{itemize}
 
 \subsection{Word2vec}
