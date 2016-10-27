@@ -258,6 +258,8 @@ These vectors can be used as features in a variety of applications, such as info
 
 \item[Feature Vector] Vector containing all the features. For an image a feature vector could be all the raw values of pixels as a single sequence. For a trigram model with 300 dimensional word embeddings a feature vector would be a 900 dimensional vector formed by concatenating all the separate word embedding vectors.
 
+\item[Gazzetteer] In Named Entity Recognition a gazzetteer is a dictionary of known named entities.
+
 \item[Language Model] Probability distribution over sequences of words. Given such a sequence, say of length m, it assigns a probability $P(w_{1},\ldots ,w_{m})$ to the whole sequence. Problems caused by growing vocabulary can be addressed with continuous language models such as neural net language models (NNML). Word2Vec by \cite{Mikolov2013} addresses this problem with Continuous Bag-of-words and Skip-gram models.
 
 \item[Lemmatisation] Process of finding the base form of a word, e.g. flew -> fly
@@ -273,6 +275,8 @@ These vectors can be used as features in a variety of applications, such as info
 \item[PMI] Word co-occurence probability metric. High values for words that occur often together.
 
 \item[POS-tagging] Process of marking up a word to particular part-of-speech (nouns, verbs, etc...) based on both its definition and its context.
+
+\item[ReLU] Rectified Linear Unit. $h(x) = max\{0, x\}$. Used as non-linear activation function in neural nets particularly in convolutional net
 
 \item[Skip-gram] Language model which predicts the context (previous and next \textit{n} words) of a current word from the current word instead of traditional way of predicting current word from the context.
 
@@ -405,6 +409,8 @@ Testing citation \cite{Andor2016}
 \item Most of the NLP work has been for english.
 \item Cross-linguistic annotation and parsing has been a reality only after introduction of The Universal Dependencies project and SyntaxNet.
 \item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
+\item Traditionally NLP systems are tailored to the single problem at hand with hand engineered features suited for the problem. Recently general approach has received interest where feature engineering and task specific architectures are not needed. \cite{Collobert2011}, \cite{Zhang2015}
+\item This thesis focuses on task specific systems because general language understanding systems are still lacking a good support for production systems and depend on vast amounts of good data \cite{Zhang2015} unobtainable within our time frame and resources.
 \end{itemize}
 
 \section{Pre-processing}
@@ -412,22 +418,25 @@ Testing citation \cite{Andor2016}
 
 \section{Feature Engingeering in NLP}
 \label{ch:feature_engineering_in_nlp}
-
-\subsection{Word Embeddings}
 \begin{itemize}
+\item Machine learning algorithms require words to be represented quantifiable features such as IDs or real number vectors.
+\item Traditional feature selection requires hand engineered features.
+\item Engineered features hog 95\% of the computation time. \cite{Chen2014}
 \item Traditionally words have been represented by indices. \cite{Mikolov2013}
 \item Next step was to use 1-of-V coding.
 \item Index representation is simple as computationally cheap, making use of huge datasets possible. Simple models with huge data outperform complex models with less data. \cite{Mikolov2013}
-\item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
-\item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
 \item See LSA and LDA for previous systems. Neural networks significantly outperform LSA in preserving linearities. LDA doesn't scale for large datasets. \cite{Mikolov2013}
+\end{itemize}
+
+\subsection{Word Embeddings}
+\begin{itemize}
+\item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
+\item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
 \item LSA leverages statistical information of a corpus but performs poorly on word analogy task. \cite{Pennington2014}
 \item Skip-gram is good for word analogies but doesn't utilize corpus statistics well since vectors are trained on local context. \cite{Pennington2014}
 \item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as \textit{France} and \textit{Italy} are countries but \textit{dogs} and \textit{triangles} are both in plural form. \cite{Mikolov2013a}
-\item Word embeddings can be generated from character sequences with significantly better performance for morphological languages. \cite{Ling2015}
-\item GloVe by \cite{Pennington2014} capture global corpus statistics with log-bilinear co-occurence count model.
-\item Memory requirements for GloVe are substantial since global co-occurence matrix for entire vocabulary is required, even though GloVe eliminates the need for zero occurence elements. Problem becomes worse for inflectional languages such as Finnish were vocabulary requires word type for each infliction for each word.
-\item GloVe outperforms other methods on almost all tested tasks. All tasks are English only. \cite{Pennington2014}
+\item \cite{Chen2014} use 50 dimensional word embeddings created with Word2vec.
+\item \cite{Chen2014} also use embeddings for POS tags and dependecy arcs. Only embedding POS tags has clear benefit, \cite{Chen2014} suspect that embedding arc labels have no effect since POS tags already contain the relational information.
 \end{itemize}
 
 \subsection{Word2vec}
@@ -444,16 +453,21 @@ Testing citation \cite{Andor2016}
 \end{itemize}
 
 \subsection{GloVe}
-\cite{Pennington2014}
+\begin{itemize}
+\item GloVe by \cite{Pennington2014} capture global corpus statistics with log-bilinear co-occurence count model.
+\item Memory requirements for GloVe are substantial since global co-occurence matrix for entire vocabulary is required, even though GloVe eliminates the need for zero occurence elements. Problem becomes worse for inflectional languages such as Finnish were vocabulary requires word type for each infliction for each word.
+\item GloVe outperforms other methods on almost all tested tasks. All tasks are English only. \cite{Pennington2014}
+\end{itemize}
 
 \subsection{Charater to Word}
-\cite{Ling2015}
-
+\begin{itemize}
+\item Word embeddings can be generated from character sequences with significantly better performance for morphological languages. \cite{Ling2015}
+\end{itemize}
 
 \section{Annotations}
 \label{se:annotations}
 \begin{itemize}
-\item Stanford Dependencies \cite{DeMarneffe2006}
+\item Stanford Dependencies by \cite{DeMarneffe2006}
 \item Stanford Dependencies emerged as de facto annotation scheme for english, but has been adapted to several other languages including Finnish. \cite{Nivre2016}, \cite{Haverinen2014}.
 \item Turku Dependency Treebank has been tranformed into universal dependencies. \cite{Pyysalo2015}
 \item Unified annotation scheme reduces need for cross-language adaptations in downstream development. \cite{Petrov2012}
@@ -463,22 +477,9 @@ Testing citation \cite{Andor2016}
 \item UD treebanks released in November 2015. \cite{Nivre2016}
 \end{itemize}
 
-\section{POS Tagging}
-\label{se:pos_tagging}
-\begin{itemize}
-\item Started from rule based taggers
-\item Tagger by \cite{Brill1992} (known as Brill tagger) learns the rules and as such can be considered as a hybrid approach
-\item Contemporary research is focused on statistical and ANN based taggers
-\item Rest of this section focuses on statistical parsers
-\item \cite{Ling2015} introduced S-LSTM based State-of-the-art tagger
-\item \cite{Andor2016} Improved accuracy with transition based tagger
-\item \cite{Chen2014} were first to represent POS-tag and arc labels as embeddings
-\item \cite{Andor2016} and \cite{Weiss2015} built their solutions based on \cite{Chen2014}
-\item \cite{Nivre2004} introduced system for transition based taggers known as arc-starndard system \cite{Chen2014}
-\end{itemize}
-
 \subsection{Turku Dependecy Treebank}
 \begin{itemize}
+\item \cite{Haverinen2014}
 \item Treebanks are needed in computational linguistics.
 \item First Finnish treebank.
 \item Open licence, including for text annotated
@@ -491,6 +492,29 @@ Testing citation \cite{Andor2016}
 \item Uses Omorfi for morphological analysis. Ambiguous tokens are handled partly manually, partly rule based and partly with machine learning.
 \item FTB uses 3 different taggers for morphology, check them out!
 \item FTB is 97\% grammar examples, meant for rule based POS tagger development
+\end{itemize}
+
+\section{Syntactic Parsing}
+\label{se:syntactic_parsing}
+\begin{itemize}
+\item Commonly divided to constituency parsing and dependency parsing.
+\item Constituency parser creates a parse tree of constituencies.
+\item Dependency parser creates a parse tree of word token dependencies.
+\item Constituency parsers are slower but more informal than dependency parsers. \cite{Fernandez-Gonzalez2015}
+\item \cite{Fernandez-Gonzalez2015} show that it is possible to build constituency parser with dependency parser by reducing constituents to dependency parsing.
+\end{itemize}
+
+\subsection{POS-tagging}
+\begin{itemize}
+\item Started from rule based taggers
+\item Tagger by \cite{Brill1992} (known as Brill tagger) learns the rules and as such can be considered as a hybrid approach
+\item Contemporary research is focused on statistical and ANN based taggers
+\item Rest of this section focuses on statistical parsers
+\item \cite{Ling2015} introduced S-LSTM based State-of-the-art tagger
+\item \cite{Andor2016} Improved accuracy with transition based tagger
+\item \cite{Chen2014} were first to represent POS-tag and arc labels as embeddings
+\item \cite{Andor2016} and \cite{Weiss2015} built their solutions based on \cite{Chen2014}
+\item \cite{Nivre2004} introduced system for transition based taggers known as arc-starndard system. \cite{Chen2014}
 \end{itemize}
 
 \subsection{Transition Based Parsers}
@@ -509,10 +533,6 @@ Testing citation \cite{Andor2016}
 \item State-of-the-Art
 \item \cite{Andor2016}
 \end{itemize}
-
-\section{Dependecy Parsing}
-\label{se:dependecy_parsing}
-
 
 \section{Co-Reference Parsing}
 \label{se:co-reference_parsing}
