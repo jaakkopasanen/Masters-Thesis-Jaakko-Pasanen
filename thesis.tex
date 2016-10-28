@@ -288,7 +288,7 @@ These vectors can be used as features in a variety of applications, such as info
 
 \item[Tri-Training] Parsing unlabeled data with two different parses and selecting only the sentences for which the two parsers produce the same trees \cite{Weiss2015}
 
-\item[Word Lookup Table] Matrix $\textbf{P} \in \mathbb{R}^{d \times |V|}$ of d rows and |V| columns, where d is the word vector dimensionality and |V| is the size of vocalbulary. Word lookup tables are unable to generate representations for previoulsy unseen words, as is required for morphology. \cite{Ling2015}
+\item[Word Lookup Table] Matrix $\textbf{P} \in \mathbb{R}^{d \times |V|}$ of d rows and |V| columns, where d is the word vector dimensionality and |V| is the size of vocalbulary. I.e. each column represent a single word and each row represent single dimension in vector space.
 
 \item[Word Type] Unique words in a text. \textit{Good wine is good} has 4 tokens but only 3 word types.
 
@@ -461,7 +461,15 @@ Testing citation \cite{Andor2016}
 
 \subsection{Charater to Word}
 \begin{itemize}
-\item Word embeddings can be generated from character sequences with significantly better performance for morphological languages. \cite{Ling2015}
+\item \cite{Ling2015}
+\item Word embeddings can be generated from character sequences with significantly better performance for morphological languages.
+\item Requires only single vector for each character type. Particularly good for morphological languages where word type count may be infinite.
+\item Orthographical and functional (syntactic and semantic) relationships are non-trivial: \textit{butter} and \textit{batter} are orthographically close but functionally distant, \textit{rich} and \textit{affluent} are orthographically distant but functionally close. \cite{Ling2015} resort to LSTM networks for learning the relationships.
+\item Word lookup tables are unable to generate representations for previously unseen words, as is required for morphology. \cite{Ling2015}
+\item C2W can generate embeddings for unseen words.
+\item C2W is computationally more expensive than word lookup tables, but can be eased by saving word embeddings for most frequent words since the words embedding for a character sequence (word) does not change.
+\item During training word embeddings change but not inside a single batch, thus it is computationally cheaper to use large batches for training.
+\item C2W can be replaced with word lookup tables for downstream processing since input and output of both methods are the same.
 \end{itemize}
 
 \section{Annotations}
