@@ -406,6 +406,7 @@ Testing citation \cite{Andor2016}
 \label{ch:natural_language_processing}
 \begin{itemize}
 \item Natural Language Processing is vastly wide field, this thesis discusses only on the sections of NLP relevant to the experiments.
+\item Subfields such as sentence segmentation and sentiment analysis are out of scope of this thesis.
 \item Most of the NLP work has been for english.
 \item Cross-linguistic annotation and parsing has been a reality only after introduction of The Universal Dependencies project and SyntaxNet.
 \item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
@@ -535,20 +536,15 @@ Testing citation \cite{Andor2016}
 
 \subsection{Syntaxnet}
 \begin{itemize}
+\item \cite{Andor2016}
 \item Transition based
 \item Locally and globally normalized
 \item Backpropagation through entire net
 \item State-of-the-Art
-\item \cite{Andor2016}
 \end{itemize}
 
 \section{Co-Reference Parsing}
 \label{se:co-reference_parsing}
-
-
-\section{Sentence Segmentation}
-\label{se:sentence_segmentation}
-This is not relevant in our system?
 
 \section{Machine Translation}
 \label{se:machine_translation}
@@ -556,9 +552,6 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
-
-\section{Synonym recognition}
-\label{se:synonym_recognition}
 \begin{itemize}
 \item See OMorFi
 \end{itemize}
@@ -587,6 +580,21 @@ Customer support problem domain. History?
 
 \section{Pipeline}
 \label{se:pipeline}
+\begin{enumerate}
+\item Spell checking and correction (Omorfi)
+\item Machine translation from colloquial speech to standard dialect
+\item Co-Reference replacement
+\item Named Entity Recognition and replacement
+\item POS-tagging (Syntaxnet)
+\item Dependency parsing (Syntaxnet)
+\item Lemmatization (Omorfi)
+\item Character to word with \cite{Ling2015} for word lemmas and POS-tags
+\item 1-of-V coding for features
+\item Dependencies?
+\item Query generation
+\item Querying knowledge base with generated query
+\item Response rendering with templates (sprintf?)
+\end{enumerate}
 
 \subsection{Translating Colloquial Speech}
 \label{ss:translating_colloquial_speech}
