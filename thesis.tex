@@ -416,6 +416,7 @@ Testing citation \cite{Andor2016}
 \item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
 \item Traditionally NLP systems are tailored to the single problem at hand with hand engineered features suited for the problem. Recently general approach has received interest where feature engineering and task specific architectures are not needed. \cite{Collobert2011}, \cite{Zhang2015}
 \item This thesis focuses on task specific systems because general language understanding systems are still lacking a good support for production systems and depend on vast amounts of good data \cite{Zhang2015} unobtainable within our time frame and resources.
+\item See Chapter 2.1 for Finnish Language quirks in \cite{Korenius2004}
 \end{itemize}
 
 \section{Pre-processing}
@@ -557,7 +558,15 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \section{Lemmatisation}
 \label{se:lemmatisation}
 \begin{itemize}
-\item See OMorFi
+\item Lemmatization is the process of finding a base form for a word.
+\item Lemmatization is a normalization technique. \cite{Korenius2004}
+\item Homographic and inflectional word forms cause ambiquity. \cite{Korenius2004}
+\item Compound words cause problems. \cite{Korenius2004}
+\item Lemmatization is better than stemming for clustering of documents written in Finnish because of it's highly inflectional nature. \cite{Korenius2004}
+\item Lemmatization catches better the semantic meaning of a word, as can be deducted from a better clustering performance.
+\item Omorfi does lemmatization based on morphological analysis
+\item Omorfi produces multiple lemmas which need to be disambiguated
+\item Disambiguation can be done with selecting most probable word, given the context, by language model
 \end{itemize}
 
 
