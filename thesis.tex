@@ -567,8 +567,19 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item Omorfi does lemmatization based on morphological analysis
 \item Omorfi produces multiple lemmas which need to be disambiguated
 \item Disambiguation can be done with selecting most probable word, given the context, by language model
+\item \cite{Kestemont2016} try to solve lemmatization as a neural net classification problem, where lemmas are the class labels
+\item Method of \cite{Kestemont2016} cannot produce lemmas not seen on training time. This restriction also applies to Word2vec by \cite{Mikolov2013}
+\item Lemmatization has received a lot of research attention for highly inflectional languages, see \cite{Kestermont2016}
+\item Unknown token can be taken as a variation of known token, search with e.g. Levenshtein edit distance
+\item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
 \end{itemize}
 
+\section{Machine Translation}
+\label{se:machine_translation}
+\begin{itemize}
+\item See section 2 of \cite{Kestemont2016} for sources on Internet to standard language translitteration
+\item NLP tools suffer with texts with a lot of ortographical variation, one solution is to translate them. \cite{Kestemont2016}
+\end{itemize}
 
 \chapter{Chat Based Customer Support}
 \label{ch:chat_based_customer_support}
