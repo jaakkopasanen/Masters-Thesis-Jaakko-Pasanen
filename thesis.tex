@@ -592,6 +592,10 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item \cite{Bhargava2013} find no significant difference for slot detection by using context information.
 \item Performance of \cite{Bhargava2013} for intent prediction is increased from 97,1\% to 97.3\% on transcribed data. However they use Viterbi algorithm with full access to future of the dialog, not realistic in production.
 \item Most systems assume a single intent per utterance leading to unnatural dialogue experience. \cite{Xu2013}
+\item Approaching multi-intent recognition by selecting top-K hypotheses from a single intent classifier yields poor results. \cite{Xu2013}
+\item Multi-label learning works better. Splitting into a K binary classifiers, or combining multiple labels into a single label classification problem. \cite{Xu2013}
+\item Usually K is a system design choice. \cite{Xu2013}
+
 \end{itemize}
 
 \chapter{Chat Based Customer Support}
