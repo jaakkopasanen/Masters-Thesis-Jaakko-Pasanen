@@ -443,6 +443,8 @@ Testing citation \cite{Andor2016}
 \item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as \textit{France} and \textit{Italy} are countries but \textit{dogs} and \textit{triangles} are both in plural form. \cite{Mikolov2013a}
 \item \cite{Chen2014} use 50 dimensional word embeddings created with Word2vec.
 \item \cite{Chen2014} also use embeddings for POS tags and dependecy arcs. Only embedding POS tags has clear benefit, \cite{Chen2014} suspect that embedding arc labels have no effect since POS tags already contain the relational information.
+\item Word embeddings with lookup table generalize poorly with morpohlogically rich languages such as Finnish. \cite{Takala2016}
+\item Morphologically rich languages benefit from breaking the word into sub-parts, RNN based character level model is not compared with Stem+ending. \cite{Takala2016}
 \end{itemize}
 
 \subsection{Word2vec}
@@ -579,6 +581,17 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \begin{itemize}
 \item See section 2 of \cite{Kestemont2016} for sources on Internet to standard language translitteration
 \item NLP tools suffer with texts with a lot of ortographical variation, one solution is to translate them. \cite{Kestemont2016}
+\end{itemize}
+
+\section{Intent Recognition and Slot Detection}
+\label{se:intetn_prediction_and_slot_detection}
+\begin{itemize}
+\item Intent prediction is determining user's intents from their utterances (messages). Intents can be seen as functions to call in traditional programming.
+\item Slot detection is identifying relevant actionable pieces of utterance \cite{Bhargava2013}. Slots can be seen as function parameters.
+\item \cite{Bhargava2013} reduce error rates of intent prediction by 6,7\% and 8.7\% for transcribed data and automatically recognized data respectively when using intents from previous messages.
+\item \cite{Bhargava2013} find no significant difference for slot detection by using context information.
+\item Performance of \cite{Bhargava2013} for intent prediction is increased from 97,1\% to 97.3\% on transcribed data. However they use Viterbi algorithm with full access to future of the dialog, not realistic in production.
+\item Most systems assume a single intent per utterance leading to unnatural dialogue experience. \cite{Xu2013}
 \end{itemize}
 
 \chapter{Chat Based Customer Support}
