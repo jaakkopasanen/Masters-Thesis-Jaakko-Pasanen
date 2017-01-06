@@ -583,6 +583,19 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item NLP tools suffer with texts with a lot of ortographical variation, one solution is to translate them. \cite{Kestemont2016}
 \end{itemize}
 
+\section{Encoder-Decoder}
+\begin{itemize}
+\item Used in machine translation
+\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}
+\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}
+\item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
+\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state and previous generated sample. \cite{Cho2014}
+\item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
+\item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{cho2014}
+\item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
+\item 
+\end{itemize}
+
 \section{Intent Recognition and Slot Detection}
 \label{se:intetn_prediction_and_slot_detection}
 \begin{itemize}
@@ -636,6 +649,26 @@ Customer support problem domain. History?
 \item Querying knowledge base with generated query
 \item Response rendering with templates (sprintf?)
 \end{enumerate}
+
+\section{C2W2V}
+\begin{itemize}
+\item Learning word2vec embeddings from character level sequences by mapping character embeddings sequentially with RNN to pre-trained word2vec vector representations.
+\item Training with word2vec vocabulary of 2208293 words
+\item Word2vec embeddings trained by \cite{Ginter2014} from 5-gram data.
+\item character level sequences are embedded with C2W architecture of \cite{Ling2015}.
+\item Using additive inverse of cosine similarity of word2vec embedding and predicted C2W embedding as loss function.
+\item Using mean squared error as loss function yielded even worse results when validating with cosine similarities of different words and comparing to cosine similarities of the same words calculated from word2vec embeddings.
+\item Optimizing with Adam gradient descent optimizer.
+\item Training converged to cosine similarity of 0.3680 and would not get past that with varying hyperparameters and increasing model size.
+\item Fail to learn word2vec representations from character level sequences is probably due to word2vec representations capturing distributional sematics which don't seem to be captured in character level sequences.
+\item In other words lemma, stem, morphology and inflections convey only a part of word's semantic meaning.
+\item Purpose is to use C2W2V to create vector embeddings for words not found in word2vec vocabulary.
+\item Cosine similarity of 0.3680 conveys some meaning and might function as a alternative to using unknown token representation.
+\item Character vocabulary needs to fixed for character embedding layer.
+\item We selected \verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¤§®´ÄÅÖáãäåéíóöüš̈д–—’“”…€£
+\item This contains ASCII from 32 to 127, scandic character in lower and upper case and 83 (99.99\% coverage) most frequent characters in Finnish internet parsebank
+\item Selected character vocabulary covers 99,9919\% of character usages in Finnish internet parsebank n-gram dataset. N-gram data does not contain uppercased letters, those are in the ASCII set.
+\end{itemize}
 
 \subsection{Translating Colloquial Speech}
 \label{ss:translating_colloquial_speech}
