@@ -650,6 +650,16 @@ Customer support problem domain. History?
 \item Response rendering with templates (sprintf?)
 \end{enumerate}
 
+\section{C2W}
+\label{se:c2w}
+\begin{itemize}
+\item Character vocabulary needs to fixed for character embedding layer.
+\item We selected \verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ£ \verb£[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÖäåö€£ as our character vocabulary.
+\item This contains ASCII characters from 32 to 127, scandic characters in lower and upper case and € sign.
+\item Selected character vocabulary covers 99,933\% of character usages in Finnish internet parsebank n-gram dataset.
+\item ASCII end-of-text (ETX) and substition (SUB) characters were added to character vocabulary to handle sequence length padding and out of vocabulary characters respectively.
+\end{itemize}
+
 \section{C2W2V}
 \begin{itemize}
 \item Learning word2vec embeddings from character level sequences by mapping character embeddings sequentially with RNN to pre-trained word2vec vector representations.
@@ -664,10 +674,6 @@ Customer support problem domain. History?
 \item In other words lemma, stem, morphology and inflections convey only a part of word's semantic meaning.
 \item Purpose is to use C2W2V to create vector embeddings for words not found in word2vec vocabulary.
 \item Cosine similarity of 0.3680 conveys some meaning and might function as a alternative to using unknown token representation.
-\item Character vocabulary needs to fixed for character embedding layer.
-\item We selected \verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¤§®´ÄÅÖáãäåéíóöüš̈д–—’“”…€£
-\item This contains ASCII from 32 to 127, scandic character in lower and upper case and 83 (99.99\% coverage) most frequent characters in Finnish internet parsebank
-\item Selected character vocabulary covers 99,9919\% of character usages in Finnish internet parsebank n-gram dataset. N-gram data does not contain uppercased letters, those are in the ASCII set.
 \end{itemize}
 
 \subsection{Translating Colloquial Speech}
