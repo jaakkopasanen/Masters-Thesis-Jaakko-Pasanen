@@ -583,19 +583,6 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item NLP tools suffer with texts with a lot of ortographical variation, one solution is to translate them. \cite{Kestemont2016}
 \end{itemize}
 
-\section{Encoder-Decoder}
-\begin{itemize}
-\item Used in machine translation
-\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}
-\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}
-\item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
-\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state and previous generated sample. \cite{Cho2014}
-\item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
-\item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{Cho2014}
-\item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
-\item 
-\end{itemize}
-
 \section{Intent Recognition and Slot Detection}
 \label{se:intetn_prediction_and_slot_detection}
 \begin{itemize}
@@ -611,12 +598,32 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 
 \end{itemize}
 
-\chapter{Chat Based Customer Support}
-\label{ch:chat_based_customer_support}
-Customer support problem domain. History?
-\section{Chat Revolution}
-\section{Automation with Virtual Agents}
-\section{Existing Systems}
+\chapter{Deep Learning}
+\label{ch:deep_learning}
+
+\section{Recurrent Neural Networks}
+\label{se:recurrent_neural_networks}
+\begin{itemize}
+\item Bi-directional RNN is composed of two RNN of which the first reads the sequence in forward direction and the second reads the sequence in reverse direction, hidden states are concatenated. \cite{Chung2016}
+\end{itemize}
+
+\section{Encoder-Decoder}
+\begin{itemize}
+\item Used in machine translation \cite{Chung2016}
+\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}
+\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}
+\item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
+\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state and previous generated sample. \cite{Cho2014}
+\item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
+\item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{Cho2014}
+\item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
+\item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system
+\item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales
+\item Character level decoder relaxes the problem with computational complexity (of softmax function) with large target vocabulary.
+\item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
+\item All inflectional forms of word result in very large vocabulary, more efficient encoding can achieved with lexeme (lemma) and morphemes, but requires a lemmatizer and morphological analyser. \cite{Chung2016}
+\item Furthermore model may not perform well with common words if the morphological form is rare. \cite{Chung2016}
+\end{itemize}
 
 
 \chapter{Our System}
@@ -676,20 +683,12 @@ Customer support problem domain. History?
 \item Cosine similarity of 0.3680 conveys some meaning and might function as a alternative to using unknown token representation.
 \end{itemize}
 
-\subsection{Translating Colloquial Speech}
-\label{ss:translating_colloquial_speech}
-Mä -> Minä
-
 \section{Evaluation}
 \label{se:evaluation}
 \begin{itemize}
 \item Recently end-to-end dialogue system have adopted metrics from amchine translation and text summarization. These don't work so well. \cite{Liu2016}
 \item \cite{Liu2016} considers unsupervised utterance systems where response is generated or selected from a set of possible responses. This is irrelevant since we are building a problem solving dialogue system instead of chattering system.
 \end{itemize}
-
-
-\chapter{Customer Business Value and Satisfaction}
-\label{ch:customer_business_value_and_satisfaction}
 
 
 \chapter{Conclusions and Future Work}
