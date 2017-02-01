@@ -445,6 +445,7 @@ Testing citation \cite{Andor2016}
 \item \cite{Chen2014} also use embeddings for POS tags and dependecy arcs. Only embedding POS tags has clear benefit, \cite{Chen2014} suspect that embedding arc labels have no effect since POS tags already contain the relational information.
 \item Word embeddings with lookup table generalize poorly with morpohlogically rich languages such as Finnish. \cite{Takala2016}
 \item Morphologically rich languages benefit from breaking the word into sub-parts, RNN based character level model is not compared with Stem+ending. \cite{Takala2016}
+\item Word embeddings obtained through neural language models exhibit the property whereby semantically close words are close in the embedding vector space. \cite{Kim2016}
 \end{itemize}
 
 \subsection{Word2vec}
@@ -550,8 +551,16 @@ Testing citation \cite{Andor2016}
 \item State-of-the-Art
 \end{itemize}
 
-\section{Co-Reference Parsing}
-\label{se:co-reference_parsing}
+\section{Language Modeling}
+\label{se:language_modeling}
+\begin{itemize}
+\item A language model is a probability distribution over a sequence of words, traditionally performed with n-th order Markov assumption or n-gram counting and smoothing (Chen and Goodman, 1998) \textit{see \cite{Kim2016} Introduction for citation.}
+\item \cite{Kim2016} have character level encoding and word-level predicting model for language modeling.
+\item \cite{Kim2016} noticed that character inputs are sufficient for language modeling.
+\item Character level model of \cite{Kim2016} outperfom word-level and morpheme-level models on morphologically rich languages Arabic, Czech, French, German, Spanish and Russian.
+\item Neural Language Models NLM are blind to sub-word level information (e.g. morphemes). \cite{Kim2016}
+\item 
+\end{itemize}
 
 \section{Machine Translation}
 \label{se:machine_translation}
@@ -595,7 +604,6 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item Approaching multi-intent recognition by selecting top-K hypotheses from a single intent classifier yields poor results. \cite{Xu2013}
 \item Multi-label learning works better. Splitting into a K binary classifiers, or combining multiple labels into a single label classification problem. \cite{Xu2013}
 \item Usually K is a system design choice. \cite{Xu2013}
-
 \end{itemize}
 
 \chapter{Deep Learning}
@@ -604,6 +612,11 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \section{Recurrent Neural Networks}
 \label{se:recurrent_neural_networks}
 \begin{itemize}
+\item RNN is suted for medling sequential phenomena. \cite{Kim2016}
+\item In theory RNN can summarize all historical information, but in practice vanilla RNN performs poorly with long sequences due to vanishing/exploding gradients. (Bengio, Simard and Frasconi 1994), \textit{see Model chapter of \cite{Kim2016}}
+\item Long short-term memory (LSTM) networks address the problem of vanishing gradients with long sequences by adding a memory cell. (Hochreiter and Schmidhuber 1997), \textit{see Model chapter of \cite{Kim2016}}
+\item Gradient exploding remains a problem, but is easily addressable in practice by simple strategies such as gradient clipping. \cite{Kim2016}
+\item Adding more layers such that input of a layer is the hidden state of previous layer is often crucial for significant performance increase. (Pascanu et al. 2013), \textit{see Model chapter of \cite{Kim2016}}
 \item Bi-directional RNN is composed of two RNN of which the first reads the sequence in forward direction and the second reads the sequence in reverse direction, hidden states are concatenated. \cite{Chung2016}
 \end{itemize}
 
@@ -617,7 +630,7 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
 \item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{Cho2014}
 \item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
-\item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system
+\item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system. Using sub-word level symbols in source side, full character level only in decoder.
 \item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales
 \item Character level decoder relaxes the problem with computational complexity (of softmax function) with large target vocabulary.
 \item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
