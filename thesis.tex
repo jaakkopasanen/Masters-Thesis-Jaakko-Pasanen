@@ -623,19 +623,29 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \section{Encoder-Decoder}
 \begin{itemize}
 \item Used in machine translation \cite{Chung2016}
-\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}
-\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}
+\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}, \cite{Bahdanau2014}
+\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}, \cite{Bahdanau2014}
 \item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
-\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state and previous generated sample. \cite{Cho2014}
+\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state(s) and/or previously generated sample(s). \cite{Cho2014}, \cite{Bahdanau2014}
 \item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
 \item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{Cho2014}
 \item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
+\item Encoder-decoder needs to compress all the relevant information of the sentece in a single fixed length vector. This becomes a problem when sentence length increases, larger model is required. \cite{Bahdanau2016}.
 \item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system. Using sub-word level symbols in source side, full character level only in decoder.
 \item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales
 \item Character level decoder relaxes the problem with computational complexity (of softmax function) with large target vocabulary.
 \item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
 \item All inflectional forms of word result in very large vocabulary, more efficient encoding can achieved with lexeme (lemma) and morphemes, but requires a lemmatizer and morphological analyser. \cite{Chung2016}
 \item Furthermore model may not perform well with common words if the morphological form is rare. \cite{Chung2016}
+\end{itemize}
+
+\section{Attention Mechanism}
+\begin{itemize}
+\item Solution to deteriorating performance with long input sentences. \cite{Bahdanau2014}
+\item System of \cite{Bahdanau2014} soft searches words in source sentence for each word in target sentence.
+\item System of \cite{Bahdanau2014} does not try to encode the whole sentence as a fixed size vector, but instead input sentence is encoded as sequence of vectors which are weighted at the decoding time.
+\item See section 3.1 of \cite{Bahdanau2014} for description of decoder with attention.
+\item \cite{Bahdanau2014} use beam search to approximate maximum conditional probability on the trained model.
 \end{itemize}
 
 
