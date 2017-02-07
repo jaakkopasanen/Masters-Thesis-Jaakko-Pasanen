@@ -606,24 +606,38 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item Usually K is a system design choice. \cite{Xu2013}
 \end{itemize}
 
+
 \chapter{Deep Learning}
 \label{ch:deep_learning}
+
+\section{Activation Functions}
+\begin{itemize}
+\item Sigmoid has a problem with vanishing gradients when using multiple hidden layers
+\item ReLU fixes this problem (still has exploding gradients problem)
+\item ReLU6 solves expoloding gradients also, but introduce vanishing gradients when x > 6?
+\item Softplus is the smooth version of ReLU but computationally more expensive.
+\item ELU is like ReLU but doesn't die off to zero. \cite{Clevert2015}
+\end{itemize}
 
 \section{Recurrent Neural Networks}
 \label{se:recurrent_neural_networks}
 \begin{itemize}
+\item DNNs (Deep Neural Networks) cannot be used to map sequences to sequences since they require the dimensionality of inputs and outputs to be fixed. \cite{Sutskever2014}
 \item RNN is suted for medling sequential phenomena. \cite{Kim2016}
 \item In theory RNN can summarize all historical information, but in practice vanilla RNN performs poorly with long sequences due to vanishing/exploding gradients. (Bengio, Simard and Frasconi 1994), \textit{see Model chapter of \cite{Kim2016}}
 \item Long short-term memory (LSTM) networks address the problem of vanishing gradients with long sequences by adding a memory cell. (Hochreiter and Schmidhuber 1997), \textit{see Model chapter of \cite{Kim2016}}
 \item Gradient exploding remains a problem, but is easily addressable in practice by simple strategies such as gradient clipping. \cite{Kim2016}
 \item Adding more layers such that input of a layer is the hidden state of previous layer is often crucial for significant performance increase. (Pascanu et al. 2013), \textit{see Model chapter of \cite{Kim2016}}
+\item Deep LSTM of \cite{Sutskever2014} significantly outperformed their shallow LSTM, each layer decreasing the perplexity by nearly 10\%.
+\item Encoder-decoder used in translation from English to French gains significant performance increase when reversing the source sentence word order. \cite{Sutskever2014}
+\item \cite{Sutskever2014} speculate that reversing the source sentence helps by making backpropagation work better with shorter dependencies of the sentences' first words. Reversing the source sentence did not deteriorate the translation performance of later parts of the sentence, as was initially believed by \cite{Sutskever2014}
 \item Bi-directional RNN is composed of two RNN of which the first reads the sequence in forward direction and the second reads the sequence in reverse direction, hidden states are concatenated. \cite{Chung2016}
 \end{itemize}
 
 \section{Encoder-Decoder}
 \begin{itemize}
 \item Used in machine translation \cite{Chung2016}
-\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}, \cite{Bahdanau2014}
+\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}, \cite{Bahdanau2014}, \cite{Sutskever2014}
 \item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}, \cite{Bahdanau2014}
 \item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
 \item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state(s) and/or previously generated sample(s). \cite{Cho2014}, \cite{Bahdanau2014}
@@ -641,7 +655,7 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 
 \section{Attention Mechanism}
 \begin{itemize}
-\item Solution to deteriorating performance with long input sentences. \cite{Bahdanau2014}
+\item \cite{Bahdanau2014} introduced attention mechanism in neural machine translation as a solution to deteriorating performance with long input sentences. \cite{Sutskever2014} speculate that similar improvement could have been gained with simply reversing the source sentence word order.
 \item System of \cite{Bahdanau2014} soft searches words in source sentence for each word in target sentence.
 \item System of \cite{Bahdanau2014} does not try to encode the whole sentence as a fixed size vector, but instead input sentence is encoded as sequence of vectors which are weighted at the decoding time.
 \item See section 3.1 of \cite{Bahdanau2014} for description of decoder with attention.
