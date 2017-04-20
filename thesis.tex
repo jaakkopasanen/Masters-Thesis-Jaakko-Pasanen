@@ -384,6 +384,39 @@ HEAD & DEPREL & DEPS & MISC \\
 \item[X] Other
 \end{termlist}
 
+\section{Machine Translation}
+\label{se:machine_translation}
+\begin{itemize}
+\item See section 2 of \cite{Kestemont2016} for sources on Internet to standard language translitteration
+\item NLP tools suffer with texts with a lot of ortographical variation, one solution is to translate them. \cite{Kestemont2016}
+\end{itemize}
+
+
+\section{Language Modeling}
+\label{se:language_modeling}
+\begin{itemize}
+\item A language model is a probability distribution over a sequence of words, traditionally performed with n-th order Markov assumption or n-gram counting and smoothing (Chen and Goodman, 1998) \textit{see \cite{Kim2016} Introduction for citation.}
+\item \cite{Kim2016} have character level encoding and word-level predicting model for language modeling.
+\item \cite{Kim2016} noticed that character inputs are sufficient for language modeling.
+\item Character level model of \cite{Kim2016} outperfom word-level and morpheme-level models on morphologically rich languages Arabic, Czech, French, German, Spanish and Russian.
+\item Neural Language Models NLM are blind to sub-word level information (e.g. morphemes). \cite{Kim2016}
+\item 
+\end{itemize}
+
+\section{Intent Recognition and Slot Detection}
+\label{se:intetn_prediction_and_slot_detection}
+\begin{itemize}
+\item Intent prediction is determining user's intents from their utterances (messages). Intents can be seen as functions to call in traditional programming.
+\item Slot detection is identifying relevant actionable pieces of utterance \cite{Bhargava2013}. Slots can be seen as function parameters.
+\item \cite{Bhargava2013} reduce error rates of intent prediction by 6,7\% and 8.7\% for transcribed data and automatically recognized data respectively when using intents from previous messages.
+\item \cite{Bhargava2013} find no significant difference for slot detection by using context information.
+\item Performance of \cite{Bhargava2013} for intent prediction is increased from 97,1\% to 97.3\% on transcribed data. However they use Viterbi algorithm with full access to future of the dialog, not realistic in production.
+\item Most systems assume a single intent per utterance leading to unnatural dialogue experience. \cite{Xu2013}
+\item Approaching multi-intent recognition by selecting top-K hypotheses from a single intent classifier yields poor results. \cite{Xu2013}
+\item Multi-label learning works better. Splitting into a K binary classifiers, or combining multiple labels into a single label classification problem. \cite{Xu2013}
+\item Usually K is a system design choice. \cite{Xu2013}
+\end{itemize}
+
 \newpage
 
 % The actual text begins here and page numbering changes to 1,2...
@@ -418,9 +451,6 @@ Testing citation \cite{Andor2016}
 \item This thesis focuses on task specific systems because general language understanding systems are still lacking a good support for production systems and depend on vast amounts of good data \cite{Zhang2015} unobtainable within our time frame and resources.
 \item See Chapter 2.1 for Finnish Language quirks in \cite{Korenius2004}
 \end{itemize}
-
-\section{Pre-processing}
-\label{ch:pre-processing}
 
 \section{Feature Engingeering in NLP}
 \label{ch:feature_engineering_in_nlp}
@@ -511,17 +541,13 @@ Testing citation \cite{Andor2016}
 \item FTB is 97\% grammar examples, meant for rule based POS tagger development
 \end{itemize}
 
-\section{Syntactic Parsing}
-\label{se:syntactic_parsing}
+\section{Tokenization}
 \begin{itemize}
-\item Commonly divided to constituency parsing and dependency parsing.
-\item Constituency parser creates a parse tree of constituencies.
-\item Dependency parser creates a parse tree of word token dependencies.
-\item Constituency parsers are slower but more informal than dependency parsers. \cite{Fernandez-Gonzalez2015}
-\item \cite{Fernandez-Gonzalez2015} show that it is possible to build constituency parser with dependency parser by reducing constituents to dependency parsing.
+\item Can be done with seq2seq which inserts linefeeds.
+\item Can be done with character classification where each character is classified to be first character of a word.
 \end{itemize}
 
-\subsection{POS-tagging}
+\section{POS-tagging}
 \begin{itemize}
 \item Started from rule based taggers
 \item Tagger by \cite{Brill1992} (known as Brill tagger) learns the rules and as such can be considered as a hybrid approach
@@ -533,38 +559,6 @@ Testing citation \cite{Andor2016}
 \item \cite{Andor2016} and \cite{Weiss2015} built their solutions based on \cite{Chen2014}
 \item \cite{Nivre2004} introduced system for transition based taggers known as arc-starndard system. \cite{Chen2014}
 \end{itemize}
-
-\subsection{Transition Based Parsers}
-\begin{itemize}
-\item Good balance between efficiency and accuracy \cite{Weiss2015}
-\item Parsed left to right; at each position the parses chooses action from a set of possible actions.
-\item Greedy models are fast but error prone and need hand engineered features \cite{Weiss2015}
-\item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
-\end{itemize}
-
-\subsection{Syntaxnet}
-\begin{itemize}
-\item \cite{Andor2016}
-\item Transition based
-\item Locally and globally normalized
-\item Backpropagation through entire net
-\item State-of-the-Art
-\end{itemize}
-
-\section{Language Modeling}
-\label{se:language_modeling}
-\begin{itemize}
-\item A language model is a probability distribution over a sequence of words, traditionally performed with n-th order Markov assumption or n-gram counting and smoothing (Chen and Goodman, 1998) \textit{see \cite{Kim2016} Introduction for citation.}
-\item \cite{Kim2016} have character level encoding and word-level predicting model for language modeling.
-\item \cite{Kim2016} noticed that character inputs are sufficient for language modeling.
-\item Character level model of \cite{Kim2016} outperfom word-level and morpheme-level models on morphologically rich languages Arabic, Czech, French, German, Spanish and Russian.
-\item Neural Language Models NLM are blind to sub-word level information (e.g. morphemes). \cite{Kim2016}
-\item 
-\end{itemize}
-
-\section{Machine Translation}
-\label{se:machine_translation}
-See section \ref{ss:translating_colloquial_speech} for more info on our implementation.
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
@@ -585,25 +579,31 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
 \end{itemize}
 
-\section{Machine Translation}
-\label{se:machine_translation}
+\section{Syntactic Parsing}
+\label{se:syntactic_parsing}
 \begin{itemize}
-\item See section 2 of \cite{Kestemont2016} for sources on Internet to standard language translitteration
-\item NLP tools suffer with texts with a lot of ortographical variation, one solution is to translate them. \cite{Kestemont2016}
+\item Commonly divided to constituency parsing and dependency parsing.
+\item Constituency parser creates a parse tree of constituencies.
+\item Dependency parser creates a parse tree of word token dependencies.
+\item Constituency parsers are slower but more informal than dependency parsers. \cite{Fernandez-Gonzalez2015}
+\item \cite{Fernandez-Gonzalez2015} show that it is possible to build constituency parser with dependency parser by reducing constituents to dependency parsing.
 \end{itemize}
 
-\section{Intent Recognition and Slot Detection}
-\label{se:intetn_prediction_and_slot_detection}
+\subsection{Transition Based Parsers}
 \begin{itemize}
-\item Intent prediction is determining user's intents from their utterances (messages). Intents can be seen as functions to call in traditional programming.
-\item Slot detection is identifying relevant actionable pieces of utterance \cite{Bhargava2013}. Slots can be seen as function parameters.
-\item \cite{Bhargava2013} reduce error rates of intent prediction by 6,7\% and 8.7\% for transcribed data and automatically recognized data respectively when using intents from previous messages.
-\item \cite{Bhargava2013} find no significant difference for slot detection by using context information.
-\item Performance of \cite{Bhargava2013} for intent prediction is increased from 97,1\% to 97.3\% on transcribed data. However they use Viterbi algorithm with full access to future of the dialog, not realistic in production.
-\item Most systems assume a single intent per utterance leading to unnatural dialogue experience. \cite{Xu2013}
-\item Approaching multi-intent recognition by selecting top-K hypotheses from a single intent classifier yields poor results. \cite{Xu2013}
-\item Multi-label learning works better. Splitting into a K binary classifiers, or combining multiple labels into a single label classification problem. \cite{Xu2013}
-\item Usually K is a system design choice. \cite{Xu2013}
+\item Good balance between efficiency and accuracy \cite{Weiss2015}
+\item Parsed left to right; at each position the parses chooses action from a set of possible actions.
+\item Greedy models are fast but error prone and need hand engineered features \cite{Weiss2015}
+\item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
+\end{itemize}
+
+\subsection{Syntaxnet}
+\begin{itemize}
+\item \cite{Andor2016}
+\item Transition based
+\item Locally and globally normalized
+\item Backpropagation through entire net
+\item State-of-the-Art
 \end{itemize}
 
 
@@ -666,40 +666,26 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item Attention allows encoder-decoder to learn soft alignment of input and output sequences. \cite{Liu2016a}
 \end{itemize}
 
-
-\chapter{Our System}
-\label{ch:our_system}
+\section{Hyperparameter Optimization}
+\label{se:hyperparameter_optimization}
 \begin{itemize}
-\item This thesis only considers customer message understanding.
-\item Greetings, Chatting, information retrieval and response generation are important part of a dialogue system but have been left out of scope of this thesis.
-\item Large portion of the research on the conversational models focus on chatter systems where utterance responses are retrieved or generated from response corpus. These systems do not aim to solve customer problem by incorporating relevant information retrieved from a specific knowledge base.
-\item Utterance systems are not suitable for customer support out side of simple frequently asked questions.
-\item Furthermore large portion of responses generated by neural conversation models are safe responses e.g. \textit{I don't know} \cite{Li2015}.
-\item Conversational models trained on customer support history incorporate data from long time period and as such data may contain outdated information which cannot be corrected unless sentences containing outdated information are replaced. Finding and replacing such information from customer support dialogues requires reading much of the dialogues by humans and rewriting conversation history; task both time consuming, error prone and expensive.
-\item Also incorporating new information into such dataset requires manual conversation synthesis where humans write new simulated conversations into a dialogue history used for training the system.
-\item Other ways for updating old and adding new information are required for real world customer support. Our system draws it's information from a knowledge base with traditional user interface for updating and adding new knowledge.
+\item Random search often works well
 \end{itemize}
 
-\section{Pipeline}
-\label{se:pipeline}
-\begin{enumerate}
-\item Spell checking and correction (Omorfi)
-\item Machine translation from colloquial speech to standard dialect
-\item Co-Reference replacement
-\item Named Entity Recognition and replacement
-\item POS-tagging (Syntaxnet)
-\item Dependency parsing (Syntaxnet)
-\item Lemmatization (Omorfi)
-\item Character to word with \cite{Ling2015} for word lemmas and POS-tags
-\item 1-of-V coding for features
-\item Dependencies?
-\item Query generation
-\item Querying knowledge base with generated query
-\item Response rendering with templates (sprintf?)
-\end{enumerate}
 
-\section{C2W}
-\label{se:c2w}
+\chapter{Experiements on Joint Model for POS-tagging and Lemmatization}
+\label{ch:experiements_on_joint_model_for_pos_tagging_and_lemmatization}
+
+\section{Why Joint model?}
+\begin{itemize}
+\item Somebody did joint model for intents and slots
+\end{itemize}
+
+\section{Architechture}
+\label{se:architecture}
+
+\subsection{Word Embedding}
+\label{ss:word_embedding}
 \begin{itemize}
 \item Character vocabulary needs to fixed for character embedding layer.
 \item We selected \verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ£ \verb£[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÖäåö€£ as our character vocabulary.
@@ -708,33 +694,36 @@ See section \ref{ss:translating_colloquial_speech} for more info on our implemen
 \item ASCII end-of-text (ETX) and substition (SUB) characters were added to character vocabulary to handle sequence length padding and out of vocabulary characters respectively.
 \end{itemize}
 
-\section{C2W2V}
+\subsection{Context Encoding}
+\label{ss:context_encoding}
 \begin{itemize}
-\item Learning word2vec embeddings from character level sequences by mapping character embeddings sequentially with RNN to pre-trained word2vec vector representations.
-\item Training with word2vec vocabulary of 2208293 words
-\item Word2vec embeddings trained by \cite{Ginter2014} from 5-gram data.
-\item character level sequences are embedded with C2W architecture of \cite{Ling2015}.
-\item Using additive inverse of cosine similarity of word2vec embedding and predicted C2W embedding as loss function.
-\item Using mean squared error as loss function yielded even worse results when validating with cosine similarities of different words and comparing to cosine similarities of the same words calculated from word2vec embeddings.
-\item Optimizing with Adam gradient descent optimizer.
-\item Training converged to cosine similarity of 0.3680 and would not get past that with varying hyperparameters and increasing model size.
-\item Fail to learn word2vec representations from character level sequences is probably due to word2vec representations capturing distributional sematics which don't seem to be captured in character level sequences.
-\item In other words lemma, stem, morphology and inflections convey only a part of word's semantic meaning.
-\item Purpose is to use C2W2V to create vector embeddings for words not found in word2vec vocabulary.
-\item Cosine similarity of 0.3680 conveys some meaning and might function as a alternative to using unknown token representation.
+\item Bi-directional RNN
 \end{itemize}
 
-\section{Evaluation}
-\label{se:evaluation}
+\subsection{Classification}
+\label{ss:classification}
 \begin{itemize}
-\item Recently end-to-end dialogue system have adopted metrics from amchine translation and text summarization. These don't work so well. \cite{Liu2016}
-\item \cite{Liu2016} considers unsupervised utterance systems where response is generated or selected from a set of possible responses. This is irrelevant since we are building a problem solving dialogue system instead of chattering system.
+\item Concatenate word embedding and contexts
+\item Add fully connected layers and output layer
+\end{itemize}
+
+\section{Experiements}
+\label{se:experiements}
+\begin{itemize}
+\item Syntaxnet and UDPipe
+\item Separate POS-tagging and Lemmatization
+\item Lemmatization with classified POS-tags
+\item Lemmatization with gold standard POS-tags
+\item Joint model
 \end{itemize}
 
 
 \chapter{Conclusions and Future Work}
 \label{ch:conclusions_and_future_work}
-
+\begin{itemize}
+\item Need to be tested with more languages
+\item Multiple languages in the same model
+\end{itemize}
 
 %
 % The bibliography, i.e the list of references (3 options available)
