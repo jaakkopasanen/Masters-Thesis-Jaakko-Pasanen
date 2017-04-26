@@ -15,7 +15,7 @@ If there's a compatibility issue on Ubuntu 16.04, see this thread http://askubun
 
 Optionally install Texmaker
 ```
-sudo apt-get install texmaker
+sudo apt-get install texmaker -y
 ```
 
 ## Windows

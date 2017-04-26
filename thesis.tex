@@ -28,8 +28,8 @@
 % Define your basic information
 %
 \author{Jaakko Pasanen}
-\title{Natural Language Understanding for Information Retrieval in Chat Based Customer Support} % primary title (for front page)
-\titleB{Luonnollisen kielen ymmärrys tiedon hakua varten chat-pohjaisessa asiakaspalvelussa}     % translated title for abstract
+\title{Natural Language Syntactic Parsing with Deep Learning} % primary title (for front page)
+\titleB{Luonnollisen kielen syntaksin parsiminen syväoppimisella}     % translated title for abstract
 \thesistype{Master of Science thesis} % or Bachelor of Science, Laboratory Report... 
 \examiner{Ari Visa} % without title Prof., Dr., MSc or such
 
@@ -417,6 +417,13 @@ HEAD & DEPREL & DEPS & MISC \\
 \item Usually K is a system design choice. \cite{Xu2013}
 \end{itemize}
 
+\section{GloVe}
+\begin{itemize}
+\item GloVe by \cite{Pennington2014} capture global corpus statistics with log-bilinear co-occurence count model.
+\item Memory requirements for GloVe are substantial since global co-occurence matrix for entire vocabulary is required, even though GloVe eliminates the need for zero occurence elements. Problem becomes worse for inflectional languages such as Finnish were vocabulary requires word type for each infliction for each word.
+\item GloVe outperforms other methods on almost all tested tasks. All tasks are English only. \cite{Pennington2014}
+\end{itemize}
+
 \newpage
 
 % The actual text begins here and page numbering changes to 1,2...
@@ -464,7 +471,7 @@ Testing citation \cite{Andor2016}
 \item See LSA and LDA for previous systems. Neural networks significantly outperform LSA in preserving linearities. LDA doesn't scale for large datasets. \cite{Mikolov2013}
 \end{itemize}
 
-\subsection{Word Embeddings}
+\section{Word Embeddings}
 \begin{itemize}
 \item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
 \item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
@@ -489,13 +496,6 @@ Testing citation \cite{Andor2016}
 \item CBOW is better for syntax, Skip-gram is better for semantics.
 \item Can be used to find semantic relationships like vector('biggest') - vector('big') + vector('small') => vector('smallest') 
 \item State of the art (as of 2013)
-\end{itemize}
-
-\subsection{GloVe}
-\begin{itemize}
-\item GloVe by \cite{Pennington2014} capture global corpus statistics with log-bilinear co-occurence count model.
-\item Memory requirements for GloVe are substantial since global co-occurence matrix for entire vocabulary is required, even though GloVe eliminates the need for zero occurence elements. Problem becomes worse for inflectional languages such as Finnish were vocabulary requires word type for each infliction for each word.
-\item GloVe outperforms other methods on almost all tested tasks. All tasks are English only. \cite{Pennington2014}
 \end{itemize}
 
 \subsection{Charater to Word}
@@ -545,6 +545,7 @@ Testing citation \cite{Andor2016}
 \begin{itemize}
 \item Can be done with seq2seq which inserts linefeeds.
 \item Can be done with character classification where each character is classified to be first character of a word.
+\item This thesis uses gold standard tokenization of the data files and therefore tokenization is not included in the experiments. 
 \end{itemize}
 
 \section{POS-tagging}
@@ -579,14 +580,16 @@ Testing citation \cite{Andor2016}
 \item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
 \end{itemize}
 
-\section{Syntactic Parsing}
-\label{se:syntactic_parsing}
+\section{Structural Parsing}
+\label{se:structural_parsing}
 \begin{itemize}
+\item Aims to find structure of a sentence.
 \item Commonly divided to constituency parsing and dependency parsing.
 \item Constituency parser creates a parse tree of constituencies.
 \item Dependency parser creates a parse tree of word token dependencies.
 \item Constituency parsers are slower but more informal than dependency parsers. \cite{Fernandez-Gonzalez2015}
 \item \cite{Fernandez-Gonzalez2015} show that it is possible to build constituency parser with dependency parser by reducing constituents to dependency parsing.
+\item CoNLL uses dependency parse trees.
 \end{itemize}
 
 \subsection{Transition Based Parsers}
@@ -597,7 +600,7 @@ Testing citation \cite{Andor2016}
 \item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
 \end{itemize}
 
-\subsection{Syntaxnet}
+\subsubsection{Syntaxnet}
 \begin{itemize}
 \item \cite{Andor2016}
 \item Transition based
@@ -609,6 +612,13 @@ Testing citation \cite{Andor2016}
 
 \chapter{Deep Learning}
 \label{ch:deep_learning}
+
+\section{Vanishing Gradients}
+\label{se:vanishing_gradients}
+\begin{itemize}
+\item Activation function with plateu will introduce gradients vanishing to zero
+\item RNNs have vanishing gradients problem when sequences are long.
+\end{itemize}
 
 \section{Activation Functions}
 \begin{itemize}
@@ -623,7 +633,7 @@ Testing citation \cite{Andor2016}
 \label{se:recurrent_neural_networks}
 \begin{itemize}
 \item DNNs (Deep Neural Networks) cannot be used to map sequences to sequences since they require the dimensionality of inputs and outputs to be fixed. \cite{Sutskever2014}
-\item RNN is suted for medling sequential phenomena. \cite{Kim2016}
+\item RNN is suited for medling sequential phenomena. \cite{Kim2016}
 \item In theory RNN can summarize all historical information, but in practice vanilla RNN performs poorly with long sequences due to vanishing/exploding gradients. (Bengio, Simard and Frasconi 1994), \textit{see Model chapter of \cite{Kim2016}}
 \item Long short-term memory (LSTM) networks address the problem of vanishing gradients with long sequences by adding a memory cell. (Hochreiter and Schmidhuber 1997), \textit{see Model chapter of \cite{Kim2016}}
 \item Gradient exploding remains a problem, but is easily addressable in practice by simple strategies such as gradient clipping. \cite{Kim2016}
@@ -710,6 +720,12 @@ Testing citation \cite{Andor2016}
 \section{Experiements}
 \label{se:experiements}
 \begin{itemize}
+\item Testing with Universal Dependencies data
+\end{itemize}
+
+\section{Results}
+\label{se:results}
+\begin{itemize}
 \item Syntaxnet and UDPipe
 \item Separate POS-tagging and Lemmatization
 \item Lemmatization with classified POS-tags
@@ -718,8 +734,8 @@ Testing citation \cite{Andor2016}
 \end{itemize}
 
 
-\chapter{Conclusions and Future Work}
-\label{ch:conclusions_and_future_work}
+\chapter{Conclusions}
+\label{ch:conclusions}
 \begin{itemize}
 \item Need to be tested with more languages
 \item Multiple languages in the same model
