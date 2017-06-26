@@ -455,7 +455,6 @@ Testing citation \cite{Andor2016}
 \item Cross-linguistic annotation and parsing has been a reality only after introduction of The Universal Dependencies project and SyntaxNet.
 \item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
 \item Traditionally NLP systems are tailored to the single problem at hand with hand engineered features suited for the problem. Recently general approach has received interest where feature engineering and task specific architectures are not needed. \cite{Collobert2011}, \cite{Zhang2015}
-\item This thesis focuses on task specific systems because general language understanding systems are still lacking a good support for production systems and depend on vast amounts of good data \cite{Zhang2015} unobtainable within our time frame and resources.
 \item See Chapter 2.1 for Finnish Language quirks in \cite{Korenius2004}
 \end{itemize}
 
@@ -483,6 +482,8 @@ Testing citation \cite{Andor2016}
 \item Word embeddings with lookup table generalize poorly with morpohlogically rich languages such as Finnish. \cite{Takala2016}
 \item Morphologically rich languages benefit from breaking the word into sub-parts, RNN based character level model is not compared with Stem+ending. \cite{Takala2016}
 \item Word embeddings obtained through neural language models exhibit the property whereby semantically close words are close in the embedding vector space. \cite{Kim2016}
+\item Most of the word embedding libraries work on principle of fixed vocabulary where embeddings are computed for all words in vocabulary. It's difficult to handle out-of-vocabulary words since word spelling contains only a small part of the word's semantic meaning.
+\item Problem for morphologically rich languages can be relaxed by lemmatizing all words because lemmas don't suffer as much from the vocabulary explosion.
 \end{itemize}
 
 \subsection{Word2vec}
@@ -495,7 +496,7 @@ Testing citation \cite{Andor2016}
 \item Continuous Bag-of-Words is better for small datasets, continuous skip-gram is better for large datasets.
 \item CBOW is better for syntax, Skip-gram is better for semantics.
 \item Can be used to find semantic relationships like vector('biggest') - vector('big') + vector('small') => vector('smallest') 
-\item State of the art (as of 2013)
+\item State of the art (as of 2013). Since several new architectures have proposed improvements such as FastText by Facebook and GloVE by \cite{Pennington2014}.
 \end{itemize}
 
 \subsection{Charater to Word}
@@ -543,8 +544,11 @@ Testing citation \cite{Andor2016}
 
 \section{Tokenization}
 \begin{itemize}
-\item Can be done with seq2seq which inserts linefeeds.
-\item Can be done with character classification where each character is classified to be first character of a word.
+\item Rule based approach to tokenization would mostly split sentence into words from spaces and separate punctuation from the words.
+\item Symbols and codes are more challenging for rule based tokenizers.
+\item Neural net based approach to tokenization can be done with seq2seq model which inserts linefeeds.
+\item Another neural net approach to tokenization is to do character classification where each character is classified to be first character of a word.
+\item Good tokenization is very important for good downstream processing results; very small errors in tokenization can lead to extremely large errors in subsequent tasks (ask sitation from Honain). 
 \item This thesis uses gold standard tokenization of the data files and therefore tokenization is not included in the experiments. 
 \end{itemize}
 
@@ -552,7 +556,7 @@ Testing citation \cite{Andor2016}
 \begin{itemize}
 \item Started from rule based taggers
 \item Tagger by \cite{Brill1992} (known as Brill tagger) learns the rules and as such can be considered as a hybrid approach
-\item Contemporary research is focused on statistical and ANN based taggers
+\item Contemporary research is focused on statistical and NN based taggers
 \item Rest of this section focuses on statistical parsers
 \item \cite{Ling2015} introduced S-LSTM based State-of-the-art tagger
 \item \cite{Andor2016} Improved accuracy with transition based tagger
@@ -574,9 +578,9 @@ Testing citation \cite{Andor2016}
 \item Omorfi produces multiple lemmas which need to be disambiguated
 \item Disambiguation can be done with selecting most probable word, given the context, by language model
 \item \cite{Kestemont2016} try to solve lemmatization as a neural net classification problem, where lemmas are the class labels
-\item Method of \cite{Kestemont2016} cannot produce lemmas not seen on training time. This restriction also applies to Word2vec by \cite{Mikolov2013}
-\item Lemmatization has received a lot of research attention for highly inflectional languages, see \cite{Kestermont2016}
-\item Unknown token can be taken as a variation of known token, search with e.g. Levenshtein edit distance
+\item Method of \cite{Kestemont2016} cannot produce lemmas not seen on training time.
+\item Lemmatization has received a lot of research attention for highly inflectional languages, see \cite{Kestemont2016}
+\item Lemmatization of english is considered a solved problem, rule based or hybrid approaches can do practically flawless job.
 \item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
 \end{itemize}
 
@@ -584,7 +588,7 @@ Testing citation \cite{Andor2016}
 \label{se:structural_parsing}
 \begin{itemize}
 \item Aims to find structure of a sentence.
-\item Commonly divided to constituency parsing and dependency parsing.
+\item Commonly divided to two different tasks: constituency parsing and dependency parsing.
 \item Constituency parser creates a parse tree of constituencies.
 \item Dependency parser creates a parse tree of word token dependencies.
 \item Constituency parsers are slower but more informal than dependency parsers. \cite{Fernandez-Gonzalez2015}
@@ -623,8 +627,8 @@ Testing citation \cite{Andor2016}
 \section{Activation Functions}
 \begin{itemize}
 \item Sigmoid has a problem with vanishing gradients when using multiple hidden layers
+\item Add sigmoid derivative plot for visual evidence.
 \item ReLU fixes this problem (still has exploding gradients problem)
-\item ReLU6 solves expoloding gradients also, but introduce vanishing gradients when x > 6?
 \item Softplus is the smooth version of ReLU but computationally more expensive.
 \item ELU is like ReLU but doesn't die off to zero. \cite{Clevert2015}
 \end{itemize}
@@ -632,15 +636,16 @@ Testing citation \cite{Andor2016}
 \section{Recurrent Neural Networks}
 \label{se:recurrent_neural_networks}
 \begin{itemize}
-\item DNNs (Deep Neural Networks) cannot be used to map sequences to sequences since they require the dimensionality of inputs and outputs to be fixed. \cite{Sutskever2014}
+\item Multi-layer perceptrons cannot be used to map sequences to sequences since they require the dimensionality of inputs and outputs to be fixed. \cite{Sutskever2014}
 \item RNN is suited for medling sequential phenomena. \cite{Kim2016}
+\item RNN is a neural network architechture to which input sequence is fed one timestep at a time. RNN predicts output after each timestep and also feeds the output of previous timestep as an input in current iteration.
 \item In theory RNN can summarize all historical information, but in practice vanilla RNN performs poorly with long sequences due to vanishing/exploding gradients. (Bengio, Simard and Frasconi 1994), \textit{see Model chapter of \cite{Kim2016}}
 \item Long short-term memory (LSTM) networks address the problem of vanishing gradients with long sequences by adding a memory cell. (Hochreiter and Schmidhuber 1997), \textit{see Model chapter of \cite{Kim2016}}
+\item LSTM architecture addresses the vanishing gradients problem by introducing internal memory to RNN cell which is updated on every timestep via forget and update gates.
+\item On each timestep the LSTM forgets things from the sequence which it deems unnecessary and adds new relevant things from current example.
 \item Gradient exploding remains a problem, but is easily addressable in practice by simple strategies such as gradient clipping. \cite{Kim2016}
 \item Adding more layers such that input of a layer is the hidden state of previous layer is often crucial for significant performance increase. (Pascanu et al. 2013), \textit{see Model chapter of \cite{Kim2016}}
 \item Deep LSTM of \cite{Sutskever2014} significantly outperformed their shallow LSTM, each layer decreasing the perplexity by nearly 10\%.
-\item Encoder-decoder used in translation from English to French gains significant performance increase when reversing the source sentence word order. \cite{Sutskever2014}
-\item \cite{Sutskever2014} speculate that reversing the source sentence helps by making backpropagation work better with shorter dependencies of the sentences' first words. Reversing the source sentence did not deteriorate the translation performance of later parts of the sentence, as was initially believed by \cite{Sutskever2014}
 \item Bi-directional RNN is composed of two RNN of which the first reads the sequence in forward direction and the second reads the sequence in reverse direction, hidden states are concatenated. \cite{Chung2016}
 \end{itemize}
 
@@ -664,6 +669,8 @@ Testing citation \cite{Andor2016}
 \item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
 \item All inflectional forms of word result in very large vocabulary, more efficient encoding can achieved with lexeme (lemma) and morphemes, but requires a lemmatizer and morphological analyser. \cite{Chung2016}
 \item Furthermore model may not perform well with common words if the morphological form is rare. \cite{Chung2016}
+\item Encoder-decoder used in translation from English to French gains significant performance increase when reversing the source sentence word order. \cite{Sutskever2014}
+\item \cite{Sutskever2014} speculate that reversing the source sentence helps by making backpropagation work better with shorter dependencies of the sentences' first words. Reversing the source sentence did not deteriorate the translation performance of later parts of the sentence, as was initially believed by \cite{Sutskever2014}
 \end{itemize}
 
 \section{Attention Mechanism}
@@ -689,6 +696,7 @@ Testing citation \cite{Andor2016}
 \section{Why Joint model?}
 \begin{itemize}
 \item Somebody did joint model for intents and slots
+\item Ask Honain for ref for joint POS-tagging and lemmatization paper.
 \end{itemize}
 
 \section{Architechture}
@@ -697,6 +705,7 @@ Testing citation \cite{Andor2016}
 \subsection{Word Embedding}
 \label{ss:word_embedding}
 \begin{itemize}
+\item C2W
 \item Character vocabulary needs to fixed for character embedding layer.
 \item We selected \verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ£ \verb£[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÖäåö€£ as our character vocabulary.
 \item This contains ASCII characters from 32 to 127, scandic characters in lower and upper case and € sign.
@@ -727,6 +736,8 @@ Testing citation \cite{Andor2016}
 \label{se:training_and_hyperparameter_optimization}
 \begin{itemize}
 \item Optunity
+\item Joint learning have proven to be challenging, lemma classification seem to hinder POS-tagging accuracy.
+\item Results vary vastly on different hyperparameter combinations, finding suitable combination is crucial for good performance.
 \end{itemize}
 
 \section{Experiements}
@@ -744,19 +755,29 @@ Testing citation \cite{Andor2016}
 \section{Results}
 \label{se:results}
 \begin{itemize}
-\item Syntaxnet and UDPipe
-\item Separate POS-tagging and Lemmatization
+\item UDPipe as baseline
+\item POS-tagging without lemmatization
+\item Lemmatization without POS-tagging
 \item Lemmatization with classified POS-tags
 \item Lemmatization with gold standard POS-tags
 \item Joint model
 \end{itemize}
 
 
+\chapter{Discussion}
+\label{ch:discussion}
+\begin{itemize}
+\item How well results generalize?
+\item What was assumed?
+\item What was simplified?
+\end{itemize}
+
+
 \chapter{Conclusions}
 \label{ch:conclusions}
 \begin{itemize}
-\item Need to be tested with more languages
-\item Multiple languages in the same model
+\item Was hypothesis proved / disproved
+\item What was learned
 \end{itemize}
 
 %
