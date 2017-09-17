@@ -471,7 +471,7 @@ HEAD & DEPREL & DEPS & MISC \\
 \item Encoder-decoder have no explicit alignment. \cite{Liu2016a}
 \item Input and output sequences can be of different length. \textbf{\textcolor{red}{Citation?}}
 \item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system. Using sub-word level symbols in source side, full character level only in decoder.
-\item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales
+\item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales++++++
 \item Character level decoder relaxes the problem with computational complexity (of softmax function) with large target vocabulary. \cite{Chung2016}
 \item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
 \item All inflectional forms of word result in very large vocabulary, more efficient encoding can achieved with lexeme (lemma) and morphemes, but requires a lemmatizer and morphological analyser. \cite{Chung2016}
@@ -693,12 +693,27 @@ Testing citation \cite{Andor2016}
 
 \section{Why Joint model?}
 \begin{itemize}
-\item Somebody did joint model for intents and slots
+\item \cite{Liu2016a} did joint model for intents and slots on ATIS dataset achieving 22\% decrease on intent error on their Attention based encoder-decorder network.
 \item Ask Honain for ref for joint POS-tagging and lemmatization paper.
+\item Lemmas and POS-tags have strictly linked relationship
+\item Lemma identifies a single unique word which has single POS
+\item Lemmas as written form may reference multiple words (eg. nail), this thesis simply omits the possible problems associated with written forms with multiple meanings.
+\item Hypothesis of this thesis is that doing joint learning for lemmas and POS-tags will improve the classification performance of either or both.
 \end{itemize}
 
 \section{Architechture}
 \label{se:architecture}
+\begin{itemize}
+\item Architecture used for experiements is a multi-layer deep neural network consisting not only from multiple stacked layers but multiple architectural layers.
+\item Architectural layers form an end-to-end pipeline for representing characters, words and contexes as well as doing the actual classification
+\item POS-tags are limited set of 31 lables and are therefore easily quantified for classification task
+\item It is not possible to classify all possible lemmas because of extremely flexible system of forming compound words in certain languages such as Finnish
+\item Out-of-vocabulary lemmas are classified as \verb£ <UNK>£ as token representing unknown words
+\item One approach for lemmatizing all possible lemmas would be to have encoder-decoder model generating the lemmas one character at a time.
+\item For the sake of simplicity and focus this thesis considers lemmatization only as a classification problem.
+\item Decoder adds a lot of complexity to network and fuzzies the metrics; as a character level model, the decoder is not very natural for word level accuracy evaluation.
+\item Observing effect of joint model training on classification only should satisfy the hypothesis on mutual information without doing generation with decoder.
+\end{itemize}
 
 \subsection{Word Embedding}
 \label{ss:word_embedding}
@@ -709,72 +724,115 @@ Testing citation \cite{Andor2016}
 \item This contains ASCII characters from 32 to 127, scandic characters in lower and upper case and € sign.
 \item Selected character vocabulary covers 99,933\% of character usages in Finnish internet parsebank n-gram dataset.
 \item ASCII end-of-text (ETX) and substition (SUB) characters were added to character vocabulary to handle sequence length padding and out of vocabulary characters respectively.
+\item Characters were represented as character embedding vectors obtained during the training and implemented as simple trainable Tensor in tensorflow.
+\item C2W RNN takes a mini-batch of words represented as character tensors (one character per row) as an input
+\item Output of C2W is word embedding vectors for all words in the mini-batch.
 \end{itemize}
 
 \subsection{Context Encoding}
 \label{ss:context_encoding}
 \begin{itemize}
 \item Bi-directional RNN
+\item Word vectors obtained from word embedding layer used as input
+\item Input for each word also contains it's right and left side contexes.
+\item Each word has effectively only uni-directional RNN for each side context because sentence is fed once through bi-directional RNN. Forward pass encodes left side contexes and backward pass encodes right side contexes.
+\item Uni-directional RNN encoding for contexes should not be a problem; sentence lengths are usually very limited (averaging 13 words) and most important words in the context are the words closest to current word for whom context is being encoded.
+\item Output is word embedding vector which also contains information about the word's context.
 \end{itemize}
 
 \subsection{Classification}
 \label{ss:classification}
 \begin{itemize}
-\item Concatenate word embedding and contexts
-\item Add fully connected layers and output layer
+\item Add fully connected layers and output layer (MLP)
+\item Decision to add fully connected layers was made with brief experiments comparing results with and without the fully connected layers. Fully connected layers added almost no computational complexity while improving learning.
+\item All experiments were done with fully connected layers and further experimenting how they affect different tasks was left for future research.
+\item Lemma vocabulary consists of most frequent lemmas in Universal Dependencies dataset covering at least 90\% of use cases in the dataset.
+\item Output layers are a simple fully connected layers with linear activation functions. Size of output lemma classification and POS classification layers are the size of lemma vocabulary and size of POS-tag vocabulary respectively.
 \end{itemize}
 
 \section{Implementation}
 \label{se:implementation}
 \begin{itemize}
-\item Tensorflow
-\end{itemize}
-
-\section{Training and Hyperparameter Optimization}
-\label{se:training_and_hyperparameter_optimization}
-\begin{itemize}
-\item Optunity
-\item Joint learning have proven to be challenging, lemma classification seem to hinder POS-tagging accuracy.
-\item Results vary vastly on different hyperparameter combinations, finding suitable combination is crucial for good performance.
+\item Tensorflow on Python
 \end{itemize}
 
 \section{Experiements}
 \label{se:experiements}
 \begin{itemize}
 \item Testing with Universal Dependencies data
-\end{itemize}
-
-\subsection{Test Methods}
-\label{ss:test_methods}
-\begin{itemize}
-\item F1 or accuracy?
-\end{itemize}
-
-\section{Results}
-\label{se:results}
-\begin{itemize}
-\item UDPipe as baseline
 \item POS-tagging without lemmatization
 \item Lemmatization without POS-tagging
 \item Lemmatization with classified POS-tags
 \item Lemmatization with gold standard POS-tags
 \item Joint model
+\item POS-tagging with lemmas as input features in not very meaningful task because POS can be read from a dictionary if lemma is known.
+\end{itemize}
+
+\subsection{Test Methods}
+\label{ss:test_methods}
+\begin{itemize}
+\item Using accuracy. Percentage of correct classification labels.
+\item Academia does not seem to agree what F1 score is
+\item Accuracy is simpler and easier for readers to understand
+\item Reporting accuracies and losses for training, validation and test datasets separately
+\item Each experiement was executed by training the network on the training dataset with early stopping based on observations of validation dataset loss.
+\item Architecture was modified as little as possible between the experiements, only disabling or enabling either lemma classification or POS-tag classification layers.
+\item Same hyperparameters were used for all experiements, tuned with Optunity implemented particle swarm algorithm for joint model.
+\end{itemize}
+
+\section{Results}
+\label{se:results}
+\begin{itemize}
+\item UDPipe achieves 94,5\% on POS-tagging on Finnish Universal Dependencies 1.4 and 86,5\% on lemmatization.
+\item UDPipe lemmatizer seems to be some sort of generative model so comparison is not fair or even meaningful.
+\item POS-tagging without lemmatization = 94,30\%. Extremely close to UDPipe results with only 0,2\%-points advantage to UDPipe.
+\item Lemmatization without POS-tagging = 94,25\%
+\item Lemmatization with classified POS-tags = 94,40\%
+\item Lemmatization with gold standard POS-tags = 96,22\%
+\item Joint model. Lemmas = 95,24\%, POS = 94,14\%
+\item Joint model achieves best practical results for lemmatization, with 0,99\%-points increase, since gold-standard POS-tags are not available at production.
+\item Joint model POS-tags are slightly inferior (0,16\%-points) to baseline
+\item Lemmatization results with classified POS-tags are slightly better (0,1\%-points) than the baseline
+\item Lemmatization with gold-standard POS-tags achieves clearly the best results with 1,97\%-points increase over baseline.
 \end{itemize}
 
 
 \chapter{Discussion}
 \label{ch:discussion}
+\section{How well results generalize?}
 \begin{itemize}
-\item How well results generalize?
+\item Do these results generalize to other languages needs to be verified with additional experiments.
+\item Universal Dependencies datasets are created to provide as uniform language modeling as possible across all languages and therefore it is probable that the same mutual information between lemmas and POS-tags in other languages would prove beneficial in joint learning of lemma and POS-tag classification.
+\item Speculating how well these results generalize to other tasks in natural language processing is more complicated because other tasks may not share as strong mutual information as lemmas and POS-tags do.
+\item \cite{Liang2016a} proved that neural networks benefit from jointly learning two tasks different from lemmatization and POS-tagging. \cite{Liu2016a} even had tasks on different architectural level, slot filling being word level task and intent classification being sentence or message level task.
+\item With results provided in this work and results from \cite{Liu2016a} it's failry safe to say that neural networks can obtain better results when learning jointly two tasks that share mutual information.
+\item Another benefit of joint learning is of course smaller computational complexity since both tasks can share same character and word level encoders requiring only one pass through the encoders in live inferencing.
+\end{itemize}
+
+\section{What was assumed?}
+\begin{itemize}
 \item What was assumed?
-\item What was simplified?
+\item It was assumed that training, validation and test datasets would represent Finnish language well.
+\item It was also assumed that different datasets would have fairly similar data distribution and training done on training dataset would generalize to test dataset.
+\item It was noticed that selecting lemma vocabulary which covers 100\% of uses in training set only covers about 75\% of uses in validation and test datasets.
+\item Lemma classifier learned remarkably well to classifiy lemmas not seen during training time as unknown tokens. Maybe priori bias explains this?
+\end{itemize}
+
+\section{What was simplified?}
+\begin{itemize}
+\item Slightly different results would be optained by optimizing hyperparameters separately for every different experiement. Hyperparameter optimization requires about 100 to 200 training runs and as such takes significant time budget. Using time required for hyperparameter optimization before every experiement proved inconvenient for this work.
+\item Lemmatization as word level classification task only is also a pretty significant simplification. Decoder model for lemma generation is able to always produce some kind of answer without ever producing unknown tokens.
+\item Whether having unknown tokens is fatal flaw depends on the problem at hand and on the down stream processing which uses lemmas obtained with lemmatization. For some tasks not having generated lemmas with high probability of typographical errors produced might be significantly better option.
 \end{itemize}
 
 
 \chapter{Conclusions}
 \label{ch:conclusions}
 \begin{itemize}
-\item Was hypothesis proved / disproved
+\item Hypothesis proved to be true
+\item Interestingly we couldn't obtain increase in POS-tagging performance.
+\item Maybe lemmatization as a more information rich task dominates the learning
+\item POS-tagging on joint model could be improved by giving more weight to POS-tagging task but that quickly deteriorates the lemmatization perfomance drastically.
 \item What was learned
 \end{itemize}
 
