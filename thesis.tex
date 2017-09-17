@@ -89,7 +89,7 @@
       \textsf{Examiner and topic approved by the}\\ 
       \textsf{Faculty Council of the Faculty of}\\
       \textsf{Engineering Sciences}\\
-      \textsf{on 31st December 2016}\\
+      \textsf{on 31st December 2017}\\
     \end{spacing}
   \end{minipage}
 \end{flushright}
@@ -424,6 +424,80 @@ HEAD & DEPREL & DEPS & MISC \\
 \item GloVe outperforms other methods on almost all tested tasks. All tasks are English only. \cite{Pennington2014}
 \end{itemize}
 
+\section{Deep Learning}
+
+\section{Vanishing Gradients}
+\begin{itemize}
+\item Activation function with plateu will introduce gradients vanishing to zero
+\item RNNs have vanishing gradients problem when sequences are long.
+\end{itemize}
+
+\section{Activation Functions}
+\begin{itemize}
+\item Sigmoid has a problem with vanishing gradients when using multiple hidden layers
+\item Add sigmoid derivative plot for visual evidence.
+\item ReLU fixes this problem (still has exploding gradients problem)
+\item Softplus is the smooth version of ReLU but computationally more expensive.
+\item ELU is like ReLU but doesn't die off to zero. \cite{Clevert2015}
+\end{itemize}
+
+\section{Recurrent Neural Networks}
+\begin{itemize}
+\item Multi-layer perceptrons cannot be used to map sequences to sequences since they require the dimensionality of inputs and outputs to be fixed. \cite{Sutskever2014}
+\item RNN is suited for medling sequential phenomena. \cite{Kim2016}
+\item RNN is a neural network architechture to which input sequence is fed one timestep at a time. RNN predicts output after each timestep and also feeds the output of previous timestep as an input in current iteration.
+\item In theory RNN can summarize all historical information, but in practice vanilla RNN performs poorly with long sequences due to vanishing/exploding gradients. (Bengio, Simard and Frasconi 1994), \textit{see Model chapter of \cite{Kim2016}}
+\item Long short-term memory (LSTM) networks address the problem of vanishing gradients with long sequences by adding a memory cell. (Hochreiter and Schmidhuber 1997), \textit{see Model chapter of \cite{Kim2016}}
+\item LSTM architecture addresses the vanishing gradients problem by introducing internal memory to RNN cell which is updated on every timestep via forget and update gates.
+\item On each timestep the LSTM forgets things from the sequence which it deems unnecessary and adds new relevant things from current example.
+\item Gradient exploding remains a problem, but is easily addressable in practice by simple strategies such as gradient clipping. \cite{Kim2016}
+\item Adding more layers such that input of a layer is the hidden state of previous layer is often crucial for significant performance increase. (Pascanu et al. 2013), \textit{see Model chapter of \cite{Kim2016}}
+\item Deep LSTM of \cite{Sutskever2014} significantly outperformed their shallow LSTM, each layer decreasing the perplexity by nearly 10\%.
+\item Bi-directional RNN is composed of two RNN of which the first reads the sequence in forward direction and the second reads the sequence in reverse direction, hidden states are concatenated. \cite{Chung2016}
+\end{itemize}
+
+\section{Encoder-Decoder}
+\begin{itemize}
+\item Introduced by \cite{Sutskever2014} and \cite{Cho2014}
+\item Used in machine translation \cite{Chung2016}
+\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}, \cite{Bahdanau2014}, \cite{Sutskever2014}
+\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}, \cite{Bahdanau2014}
+\item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
+\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state(s) and/or previously generated sample(s). \cite{Cho2014}, \cite{Bahdanau2014}
+\item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
+\item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{Cho2014}
+\item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
+\item Encoder-decoder needs to compress all the relevant information of the sentece in a single fixed length vector. This becomes a problem when sentence length increases, larger model is required. \cite{Bahdanau2014}.
+\item Encoder-decoder have no explicit alignment. \cite{Liu2016a}
+\item Input and output sequences can be of different length. \textbf{\textcolor{red}{Citation?}}
+\item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system. Using sub-word level symbols in source side, full character level only in decoder.
+\item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales
+\item Character level decoder relaxes the problem with computational complexity (of softmax function) with large target vocabulary. \cite{Chung2016}
+\item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
+\item All inflectional forms of word result in very large vocabulary, more efficient encoding can achieved with lexeme (lemma) and morphemes, but requires a lemmatizer and morphological analyser. \cite{Chung2016}
+\item Furthermore model may not perform well with common words if the morphological form is rare. \cite{Chung2016}
+\item Encoder-decoder used in translation from English to French gains significant performance increase when reversing the source sentence word order. \cite{Sutskever2014}
+\item \cite{Sutskever2014} speculate that reversing the source sentence helps by making backpropagation work better with shorter dependencies of the sentences' first words. Reversing the source sentence did not deteriorate the translation performance of later parts of the sentence, as was initially believed by \cite{Sutskever2014}
+\end{itemize}
+
+\section{Attention Mechanism}
+\begin{itemize}
+\item \cite{Bahdanau2014} introduced attention mechanism in neural machine translation as a solution to deteriorating performance with long input sentences. \cite{Sutskever2014} speculate that similar improvement could have been gained with simply reversing the source sentence word order.
+\item System of \cite{Bahdanau2014} soft searches words in source sentence for each word in target sentence.
+\item System of \cite{Bahdanau2014} does not try to encode the whole sentence as a fixed size vector, but instead input sentence is encoded as sequence of vectors which are weighted at the decoding time.
+\item See section 3.1 of \cite{Bahdanau2014} for description of decoder with attention.
+\item \cite{Bahdanau2014} use beam search to approximate maximum conditional probability on the trained model.
+\item Attention allows encoder-decoder to learn soft alignment of input and output sequences. \cite{Liu2016a}
+\end{itemize}
+
+\section{Hyperparameter Optimization}
+\label{se:hyperparameter_optimization}
+\begin{itemize}
+\item Random search often works well
+\end{itemize}
+
+
+
 \newpage
 
 % The actual text begins here and page numbering changes to 1,2...
@@ -611,82 +685,6 @@ Testing citation \cite{Andor2016}
 \item Locally and globally normalized
 \item Backpropagation through entire net
 \item State-of-the-Art
-\end{itemize}
-
-
-\chapter{Deep Learning}
-\label{ch:deep_learning}
-
-\section{Vanishing Gradients}
-\label{se:vanishing_gradients}
-\begin{itemize}
-\item Activation function with plateu will introduce gradients vanishing to zero
-\item RNNs have vanishing gradients problem when sequences are long.
-\end{itemize}
-
-\section{Activation Functions}
-\begin{itemize}
-\item Sigmoid has a problem with vanishing gradients when using multiple hidden layers
-\item Add sigmoid derivative plot for visual evidence.
-\item ReLU fixes this problem (still has exploding gradients problem)
-\item Softplus is the smooth version of ReLU but computationally more expensive.
-\item ELU is like ReLU but doesn't die off to zero. \cite{Clevert2015}
-\end{itemize}
-
-\section{Recurrent Neural Networks}
-\label{se:recurrent_neural_networks}
-\begin{itemize}
-\item Multi-layer perceptrons cannot be used to map sequences to sequences since they require the dimensionality of inputs and outputs to be fixed. \cite{Sutskever2014}
-\item RNN is suited for medling sequential phenomena. \cite{Kim2016}
-\item RNN is a neural network architechture to which input sequence is fed one timestep at a time. RNN predicts output after each timestep and also feeds the output of previous timestep as an input in current iteration.
-\item In theory RNN can summarize all historical information, but in practice vanilla RNN performs poorly with long sequences due to vanishing/exploding gradients. (Bengio, Simard and Frasconi 1994), \textit{see Model chapter of \cite{Kim2016}}
-\item Long short-term memory (LSTM) networks address the problem of vanishing gradients with long sequences by adding a memory cell. (Hochreiter and Schmidhuber 1997), \textit{see Model chapter of \cite{Kim2016}}
-\item LSTM architecture addresses the vanishing gradients problem by introducing internal memory to RNN cell which is updated on every timestep via forget and update gates.
-\item On each timestep the LSTM forgets things from the sequence which it deems unnecessary and adds new relevant things from current example.
-\item Gradient exploding remains a problem, but is easily addressable in practice by simple strategies such as gradient clipping. \cite{Kim2016}
-\item Adding more layers such that input of a layer is the hidden state of previous layer is often crucial for significant performance increase. (Pascanu et al. 2013), \textit{see Model chapter of \cite{Kim2016}}
-\item Deep LSTM of \cite{Sutskever2014} significantly outperformed their shallow LSTM, each layer decreasing the perplexity by nearly 10\%.
-\item Bi-directional RNN is composed of two RNN of which the first reads the sequence in forward direction and the second reads the sequence in reverse direction, hidden states are concatenated. \cite{Chung2016}
-\end{itemize}
-
-\section{Encoder-Decoder}
-\begin{itemize}
-\item Introduced by \cite{Sutskever2014} and \cite{Cho2014}
-\item Used in machine translation \cite{Chung2016}
-\item Dual RNN architechture where 1st RNN encodes a sequence of tokens to fixed length vector and 2nd RNN decodeds that vector representation to a target sequence of tokens. \cite{Cho2014}, \cite{Bahdanau2014}, \cite{Sutskever2014}
-\item Both RNNs are jointly trained to maximize conditional probability of a target sequence given a source sequence. \cite{Cho2014}, \cite{Bahdanau2014}
-\item Encoder creates a summary of the entire input sequence. \cite{Cho2014}
-\item Decoder samples a token at a time using input sequence summary, it's own RNN hidden state(s) and/or previously generated sample(s). \cite{Cho2014}, \cite{Bahdanau2014}
-\item See figure 1 on page 2 of \cite{Cho2014} for architecture depiction.
-\item Can be used to generate a target sequence based on input sequence. Can also be used to score a given pair of input-output sequences. \cite{Cho2014}
-\item RNN Encoder-decoder captures semantic and syntactic structures of phrases. \cite{Cho2014}
-\item Encoder-decoder needs to compress all the relevant information of the sentece in a single fixed length vector. This becomes a problem when sentence length increases, larger model is required. \cite{Bahdanau2014}.
-\item Encoder-decoder have no explicit alignment. \cite{Liu2016a}
-\item Input and output sequences can be of different length. \textbf{\textcolor{red}{Citation?}}
-\item \cite{Chung2016} have character level encoder-decoder sequence-to-sequence machine translation system. Using sub-word level symbols in source side, full character level only in decoder.
-\item \cite{Chung2016} use novel RNN (bi-scale RNN) on the target side for better handling of multiple timescales
-\item Character level decoder relaxes the problem with computational complexity (of softmax function) with large target vocabulary. \cite{Chung2016}
-\item Using character level only encoding and decoding removes the need to know how to do segmentation of characters into words, which is a problem in models which use character level word encodings such as C2W. \cite{Chung2016}
-\item All inflectional forms of word result in very large vocabulary, more efficient encoding can achieved with lexeme (lemma) and morphemes, but requires a lemmatizer and morphological analyser. \cite{Chung2016}
-\item Furthermore model may not perform well with common words if the morphological form is rare. \cite{Chung2016}
-\item Encoder-decoder used in translation from English to French gains significant performance increase when reversing the source sentence word order. \cite{Sutskever2014}
-\item \cite{Sutskever2014} speculate that reversing the source sentence helps by making backpropagation work better with shorter dependencies of the sentences' first words. Reversing the source sentence did not deteriorate the translation performance of later parts of the sentence, as was initially believed by \cite{Sutskever2014}
-\end{itemize}
-
-\section{Attention Mechanism}
-\begin{itemize}
-\item \cite{Bahdanau2014} introduced attention mechanism in neural machine translation as a solution to deteriorating performance with long input sentences. \cite{Sutskever2014} speculate that similar improvement could have been gained with simply reversing the source sentence word order.
-\item System of \cite{Bahdanau2014} soft searches words in source sentence for each word in target sentence.
-\item System of \cite{Bahdanau2014} does not try to encode the whole sentence as a fixed size vector, but instead input sentence is encoded as sequence of vectors which are weighted at the decoding time.
-\item See section 3.1 of \cite{Bahdanau2014} for description of decoder with attention.
-\item \cite{Bahdanau2014} use beam search to approximate maximum conditional probability on the trained model.
-\item Attention allows encoder-decoder to learn soft alignment of input and output sequences. \cite{Liu2016a}
-\end{itemize}
-
-\section{Hyperparameter Optimization}
-\label{se:hyperparameter_optimization}
-\begin{itemize}
-\item Random search often works well
 \end{itemize}
 
 
