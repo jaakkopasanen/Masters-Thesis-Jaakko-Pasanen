@@ -491,9 +491,17 @@ HEAD & DEPREL & DEPS & MISC \\
 \end{itemize}
 
 \section{Hyperparameter Optimization}
-\label{se:hyperparameter_optimization}
 \begin{itemize}
 \item Random search often works well
+\end{itemize}
+
+\section{Syntaxnet}
+\begin{itemize}
+\item \cite{Andor2016}
+\item Transition based
+\item Locally and globally normalized
+\item Backpropagation through entire net
+\item State-of-the-Art
 \end{itemize}
 
 
@@ -678,15 +686,6 @@ Testing citation \cite{Andor2016}
 \item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
 \end{itemize}
 
-\subsubsection{Syntaxnet}
-\begin{itemize}
-\item \cite{Andor2016}
-\item Transition based
-\item Locally and globally normalized
-\item Backpropagation through entire net
-\item State-of-the-Art
-\end{itemize}
-
 
 \chapter{Experiements on Joint Model for POS-tagging and Lemmatization}
 \label{ch:experiements_on_joint_model_for_pos_tagging_and_lemmatization}
@@ -698,12 +697,17 @@ Testing citation \cite{Andor2016}
 \item Lemmas and POS-tags have strictly linked relationship
 \item Lemma identifies a single unique word which has single POS
 \item Lemmas as written form may reference multiple words (eg. nail), this thesis simply omits the possible problems associated with written forms with multiple meanings.
+\item Computational complexity decreases significantly when encoding only once for both with two linear output layers. Cost is the softmax. If POS-tagging is the auxiliary task then softmax is cheap.
+\item Joint model is architecturally simple because both tasks share majority of the neural network. Also simple to implement.
+\item Two flies and so forth...
+\item If joint model is better then it's worth using even for a single task.
 \item Hypothesis of this thesis is that doing joint learning for lemmas and POS-tags will improve the classification performance of either or both.
 \end{itemize}
 
 \section{Architechture}
 \label{se:architecture}
 \begin{itemize}
+\item Implemented in Python, Tensorflow and Numpy
 \item Architecture used for experiements is a multi-layer deep neural network consisting not only from multiple stacked layers but multiple architectural layers.
 \item Architectural layers form an end-to-end pipeline for representing characters, words and contexes as well as doing the actual classification
 \item POS-tags are limited set of 31 lables and are therefore easily quantified for classification task
@@ -750,12 +754,6 @@ Testing citation \cite{Andor2016}
 \item Output layers are a simple fully connected layers with linear activation functions. Size of output lemma classification and POS classification layers are the size of lemma vocabulary and size of POS-tag vocabulary respectively.
 \end{itemize}
 
-\section{Implementation}
-\label{se:implementation}
-\begin{itemize}
-\item Tensorflow on Python
-\end{itemize}
-
 \section{Experiements}
 \label{se:experiements}
 \begin{itemize}
@@ -765,7 +763,7 @@ Testing citation \cite{Andor2016}
 \item Lemmatization with classified POS-tags
 \item Lemmatization with gold standard POS-tags
 \item Joint model
-\item POS-tagging with lemmas as input features in not very meaningful task because POS can be read from a dictionary if lemma is known.
+\item POS-tagging with lemmas as input features is not very meaningful task because POS-tag can be read from a dictionary if lemma is known.
 \end{itemize}
 
 \subsection{Test Methods}
@@ -778,21 +776,22 @@ Testing citation \cite{Andor2016}
 \item Each experiement was executed by training the network on the training dataset with early stopping based on observations of validation dataset loss.
 \item Architecture was modified as little as possible between the experiements, only disabling or enabling either lemma classification or POS-tag classification layers.
 \item Same hyperparameters were used for all experiements, tuned with Optunity implemented particle swarm algorithm for joint model.
+\item All results reported are tested with test dataset.
 \end{itemize}
 
 \section{Results}
 \label{se:results}
 \begin{itemize}
-\item UDPipe achieves 94,5\% on POS-tagging on Finnish Universal Dependencies 1.4 and 86,5\% on lemmatization.
-\item UDPipe lemmatizer seems to be some sort of generative model so comparison is not fair or even meaningful.
-\item POS-tagging without lemmatization = 94,30\%. Extremely close to UDPipe results with only 0,2\%-points advantage to UDPipe.
+\item UDPipe 1.2 achieves 94,9\% on POS-tagging on Finnish Universal Dependencies 2.0 and 86,8\% on lemmatization. Both results with gold tokenization. \cite{udpipe-manual}
+\item UDPipe lemmatizer is a generative model (\cite{Straka2017}), so comparison is not fair or even meaningful.
+\item POS-tagging without lemmatization = 94,30\%. Remarkably close to UDPipe results with only 0,6\%-points advantage to UDPipe. Limited mainly by data?
 \item Lemmatization without POS-tagging = 94,25\%
-\item Lemmatization with classified POS-tags = 94,40\%
-\item Lemmatization with gold standard POS-tags = 96,22\%
+\item Lemmatization with classified POS-tags as input features = 94,40\%
+\item Lemmatization with gold standard POS-tags as input features = 96,22\%
 \item Joint model. Lemmas = 95,24\%, POS = 94,14\%
-\item Joint model achieves best practical results for lemmatization, with 0,99\%-points increase, since gold-standard POS-tags are not available at production.
+\item Joint model achieves best practical results for lemmatization, with 0,99\%-points increase, since gold-standard POS-tags are not available for live inferencing.
 \item Joint model POS-tags are slightly inferior (0,16\%-points) to baseline
-\item Lemmatization results with classified POS-tags are slightly better (0,1\%-points) than the baseline
+\item Lemmatization results with classified POS-tags are slightly better (0,15\%-points) than the baseline.
 \item Lemmatization with gold-standard POS-tags achieves clearly the best results with 1,97\%-points increase over baseline.
 \end{itemize}
 
@@ -806,13 +805,11 @@ Testing citation \cite{Andor2016}
 \item Speculating how well these results generalize to other tasks in natural language processing is more complicated because other tasks may not share as strong mutual information as lemmas and POS-tags do.
 \item \cite{Liang2016a} proved that neural networks benefit from jointly learning two tasks different from lemmatization and POS-tagging. \cite{Liu2016a} even had tasks on different architectural level, slot filling being word level task and intent classification being sentence or message level task.
 \item With results provided in this work and results from \cite{Liu2016a} it's failry safe to say that neural networks can obtain better results when learning jointly two tasks that share mutual information.
-\item Another benefit of joint learning is of course smaller computational complexity since both tasks can share same character and word level encoders requiring only one pass through the encoders in live inferencing.
 \end{itemize}
 
 \section{What was assumed?}
 \begin{itemize}
-\item What was assumed?
-\item It was assumed that training, validation and test datasets would represent Finnish language well.
+\item It was assumed that training dataset would represent Finnish language well. May not hold true since all sources of the dataset are from internet.
 \item It was also assumed that different datasets would have fairly similar data distribution and training done on training dataset would generalize to test dataset.
 \item It was noticed that selecting lemma vocabulary which covers 100\% of uses in training set only covers about 75\% of uses in validation and test datasets.
 \item Lemma classifier learned remarkably well to classifiy lemmas not seen during training time as unknown tokens. Maybe priori bias explains this?
@@ -821,19 +818,32 @@ Testing citation \cite{Andor2016}
 \section{What was simplified?}
 \begin{itemize}
 \item Slightly different results would be optained by optimizing hyperparameters separately for every different experiement. Hyperparameter optimization requires about 100 to 200 training runs and as such takes significant time budget. Using time required for hyperparameter optimization before every experiement proved inconvenient for this work.
+\item Hyperparamenter optimization do not have variation with loss weights for the two tasks. Loss weight sets the target if optimizing based on validation loss and therefore cannot be optimized.
+\item Hyperparameter optimization was using time budget for each run
+\item Hyperparameter optimization had limited number of runs available
+\item Selecting a different optimization target for hyperparameters could have allowed loss weight optimization.
+\item Character vocabualry for C2W does not contain all characters in datasets. Even still embedding vectors for some characters are probably not well learned because of their unfrequency. 
 \item Lemmatization as word level classification task only is also a pretty significant simplification. Decoder model for lemma generation is able to always produce some kind of answer without ever producing unknown tokens.
+\item Selected lemma vocabulary covers 90\% of the training set -> unknowns are 10\%, second most frequent is less than 5\%. It was not tested if unknown prediction accuracy would break if unknowns weren't the most frequent.
 \item Whether having unknown tokens is fatal flaw depends on the problem at hand and on the down stream processing which uses lemmas obtained with lemmatization. For some tasks not having generated lemmas with high probability of typographical errors produced might be significantly better option.
+\item Experiements done with golds standard tokenization of Universal Dependencies datasets. In live production such tokenization is not available. Imperfect tokenization may completely ruin the classification if tokens are not created correctly.
+\item Same applies for sentence segmentation.
 \end{itemize}
 
 
 \chapter{Conclusions}
 \label{ch:conclusions}
 \begin{itemize}
-\item Hypothesis proved to be true
+\item Hypothesis proved to be true, at least partly
+\item Neural networks are very suitable for joint learning tasks.
+\item Uncorrelated tasks are not tested yet but those don't have any obvious theoretical foundation why they should benefit.
 \item Interestingly we couldn't obtain increase in POS-tagging performance.
 \item Maybe lemmatization as a more information rich task dominates the learning
 \item POS-tagging on joint model could be improved by giving more weight to POS-tagging task but that quickly deteriorates the lemmatization perfomance drastically.
-\item What was learned
+\item Doing neural net based lemmatization benefits from jointly learning also to POS-tag. Added architectural, implementational and computational complexities are minor.
+\item Author recommends always to do POS-tagging when doing lemmatization.
+\item If main task is POS-tagging, adding lemmatization is probably not beneficial enough for the added computational cost.
+\item If both tasks need to be done and POS-tagging performance is a priority it might prove to be difficult to achieve best possible results with joint model.
 \end{itemize}
 
 %
