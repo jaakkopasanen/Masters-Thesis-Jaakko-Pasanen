@@ -51,7 +51,7 @@
 
 
 % You can also add your own commands
-\newcommand\todo[1]{{\color{red}!!!TODO: #1}} % Remark text in braces appears in red
+\newcommand\todo[1]{{\color{red}TODO: #1}} % Remark text in braces appears in red
 \newcommand{\angs}{\textsl{\AA}}              % , e.g. slanted symbol for Ångstöm
 
 % Preparatory content ends here
@@ -608,6 +608,7 @@ Testing citation \cite{Andor2016}
 \end{itemize}
 
 \subsection{Turku Dependecy Treebank}
+\label{ss:turku_dependency_treebank}
 \begin{itemize}
 \item \cite{Haverinen2014}
 \item Treebanks are needed in computational linguistics.
@@ -666,8 +667,12 @@ Testing citation \cite{Andor2016}
 \item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
 \end{itemize}
 
+\section{Morphological Parsing}
+\todo{Should this be included at all?}
+
 \section{Structural Parsing}
 \label{se:structural_parsing}
+\todo{Should this be included at all?}
 \begin{itemize}
 \item Aims to find structure of a sentence.
 \item Commonly divided to two different tasks: constituency parsing and dependency parsing.
@@ -689,8 +694,27 @@ Testing citation \cite{Andor2016}
 
 \chapter{Experiements on Joint Model for POS-tagging and Lemmatization}
 \label{ch:experiements_on_joint_model_for_pos_tagging_and_lemmatization}
+Hypothesis of this thesis is that doing joint learning for lemmas and POS-tags will improve the classification performance of either or both.
 
-\section{Why Joint model?}
+\section{Reasoning for Choises}
+\subsection{Lemmatization and POS-tagging}
+\begin{itemize}
+\item Lemmatization not solved for morphologically rich languages such as Finnish
+\item Finnish was selected for it's difficulty and a practical reason that its author's native language
+\item Very beneficial as input features for several downstream processing tasks
+\end{itemize}
+
+\subsection{Neural Networks}
+\begin{itemize}
+\item Old methods have reached their performance cap
+\item Lots of promising results with neural networks during last couple of years
+\item Don't require architectural tuning for each language (except hyperparameters)
+\item Easy to implement additional tasks or features
+\item RNNs are natural architecture for time series (text)
+\item Character level models are tricky to implement with other methods
+\end{itemize}
+
+\subsection{Why Joint model?}
 \begin{itemize}
 \item \cite{Liu2016a} did joint model for intents and slots on ATIS dataset achieving 22\% decrease on intent error on their Attention based encoder-decorder network.
 \item Ask Honain for ref for joint POS-tagging and lemmatization paper.
@@ -701,13 +725,14 @@ Testing citation \cite{Andor2016}
 \item Joint model is architecturally simple because both tasks share majority of the neural network. Also simple to implement.
 \item Two flies and so forth...
 \item If joint model is better then it's worth using even for a single task.
-\item Hypothesis of this thesis is that doing joint learning for lemmas and POS-tags will improve the classification performance of either or both.
 \end{itemize}
 
-\section{Architechture}
+\section{Neural Network Architechture}
 \label{se:architecture}
 \begin{itemize}
 \item Implemented in Python, Tensorflow and Numpy
+\item Tensorflow makes it easy to implement complex neural networks as computational graphs without having to worry about implementing the back-propagation
+\item Tensorflow allows to use NVIDIA GPUs, CPU-only would not have been feasible with the resources available for this thesis. Or at leas results would have been significantly worse.
 \item Architecture used for experiements is a multi-layer deep neural network consisting not only from multiple stacked layers but multiple architectural layers.
 \item Architectural layers form an end-to-end pipeline for representing characters, words and contexes as well as doing the actual classification
 \item POS-tags are limited set of 31 lables and are therefore easily quantified for classification task
@@ -754,29 +779,54 @@ Testing citation \cite{Andor2016}
 \item Output layers are a simple fully connected layers with linear activation functions. Size of output lemma classification and POS classification layers are the size of lemma vocabulary and size of POS-tag vocabulary respectively.
 \end{itemize}
 
-\section{Experiements}
-\label{se:experiements}
+\subsection{Training and Optimization}
 \begin{itemize}
-\item Testing with Universal Dependencies data
+\item Back-propagation by Tensorflow's innate graph functionality
+\item Weights optimized with AdamOptimizer (gradient descent)
+\item Hyperparameters optimized with Optunity
+\item Hyperparameter optimization algorithm: Particle Swarm
+\item Time budget of one hour per hyperparameter optimization run
+\item Early stopping on each optimization run based on validation loss
+\item Fixed number of optimization runs
+\item Trained on NVIDIA GeForce TitanX (Pascal)
+\end{itemize}
+
+\section{Experiments}
+\label{se:experiments}
+\begin{itemize}
 \item POS-tagging without lemmatization
 \item Lemmatization without POS-tagging
 \item Lemmatization with classified POS-tags
 \item Lemmatization with gold standard POS-tags
 \item Joint model
+\item Comparing these results should be enough to (dis)prove the hypothesis
+\item Not testing on other languages
+\item Not testing how tokenization affects results
+\item UDPipe tokenization accuracy is 99,7\% \cite{Straka2017}
+\item POS-taggin with lemmas not tested
 \item POS-tagging with lemmas as input features is not very meaningful task because POS-tag can be read from a dictionary if lemma is known.
+\item Not testing with other vocabulary coverages
+\item Not testing with XPOSTAGS
+\item Not testing morphology
 \end{itemize}
 
 \subsection{Test Methods}
 \label{ss:test_methods}
 \begin{itemize}
+\item Testing with Universal Dependencies data
+\item Finnish UD data is tagged with Omorfi and manually corrected, see \ref{ss:turku_dependency_treebank} \todo{Check manual correction}
+\item UD has pre-existing results from third parties such as Syntaxnet and UDPipe for baseline comparisons
+\item Other annotated corpuses exist for Finnish but UD is the only multi-lingual corpus collection where all datasets are in uniform format making future research and comparison easier. \todo{citations!}
 \item Using accuracy. Percentage of correct classification labels.
 \item Academia does not seem to agree what F1 score is
-\item Accuracy is simpler and easier for readers to understand
-\item Reporting accuracies and losses for training, validation and test datasets separately
+\item Accuracy is simple and easier for the readers to understand
+\item Accuracy may not be suitable if neural network prediction confidences are important. Neural net may learn to be very confident about wrong predictions if only accuracy is observed.
+\item Accuracy is suitable to distinguish between results on different configurations. Confidences are not needed for this work.
+\item Cross-entropy based loss is good for weight optimization and does not suffer from confidence issues but tells very little to a reader without deep understanding about the task at hand.
 \item Each experiement was executed by training the network on the training dataset with early stopping based on observations of validation dataset loss.
-\item Architecture was modified as little as possible between the experiements, only disabling or enabling either lemma classification or POS-tag classification layers.
 \item Same hyperparameters were used for all experiements, tuned with Optunity implemented particle swarm algorithm for joint model.
 \item All results reported are tested with test dataset.
+\item Tokenized data (forms) is fed to neural network as input and neural network predictions are compared to correct values.
 \end{itemize}
 
 \section{Results}
