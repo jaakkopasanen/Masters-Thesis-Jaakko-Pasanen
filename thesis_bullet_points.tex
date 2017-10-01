@@ -694,25 +694,37 @@ Testing citation \cite{Andor2016}
 
 \chapter{Experiements on Joint Model for POS-tagging and Lemmatization}
 \label{ch:experiements_on_joint_model_for_pos_tagging_and_lemmatization}
-Focus of this thesis is to prove or disprove the hypothesis that joint learning of lemmatization and POS-tagging with neural networks can obtain better performing network for one of both tasks than learning the said tasks separately. Joint learning in the context of this thesis means learning and predicting both outputs with single neural network architecture and single forward pass. Joint learning model is compared to separate tasks baseline.
 
-Lemmatization and POS-tagging were selected as tasks for this thesis because they are well studied and results from other research projects exist making baseline validation possible. Both tasks are also popular choises as input features for downstream processing. Although lemmatization is considered by some to be solved for morphologically poor languages, it is not for morphologically rich languages such as Finnish. Lemmatization is especially interesting for Finnish because properly done lemmatization would allow usage of word level features such as pre-computed word2vec vectors as input features in downstream tasks. All experiments of this thesis are performed with Finnish language.
+\section{Reasoning for Choises}
+\subsection{Lemmatization and POS-tagging}
+\begin{itemize}
+\item Lemmatization not solved for morphologically rich languages such as Finnish
+\item Finnish was selected for it's difficulty and a practical reason that its author's native language
+\item Very beneficial as input features for several downstream processing tasks
+\end{itemize}
 
-Neural networks were selected as implementational approach for the problem mainly because of their flexible and architecturally general nature. Neural networks don't require architectural changes, other than maybe a hyper-parameter optimization, when adapting the network for new languages. Essentially same neural network can handle the natural language processing task at hand for any language. Possible exceptions are languages which are written on different level than european languages. Chinese has symbols only for words, has no letters at all, and as such might demand architectural changes.
+\subsection{Neural Networks}
+\begin{itemize}
+\item Old methods have reached their performance cap
+\item Lots of promising results with neural networks during last couple of years
+\item Don't require architectural tuning for each language (except hyperparameters)
+\item Easy to implement additional tasks or features
+\item RNNs are natural architecture for time series (text)
+\item Character level models are tricky to implement with other methods
+\end{itemize}
 
-Another convenient property of neural networks is their flexibility to adapt different tasks with sometimes very small architectural changes. Neural networks developed for this thesis share vast majority of components among lemma classifier and POS classifier, only the output layer is separate and has different number of nodes for said tasks. But even then both outputlayers are similar fully connected linear projection layers.
-
-Lastly neural networks were selected because NLP has been researched for several decades and it appears that older, often statistical, methods have been already tuned close to their maximum. Neural networks on the other hand have shown very promising progress during the last couple of years, mainly due to ever decreasing price of computational resources and introduction or re-introduction of a few mathematical advancements which have made deep neural networks easier to train. 
-
-Statistical methods such as bag-of-words might be trickier to implement as character-level models than neural networks. Counting words in a sentence of in a context of a word has for a years been the simplest baseline model for mulitude of NLP tasks. Bag-of-words works because words are essentially the basic sematic unit of a language. Character on the other hand convey very little meaning when not associated with other characters in order of appearance. Simply counting characters is therefore not going to reveal the underlying phenomena. Same explanation applies to some extent to other traditional models also.
-
-\section{Joint Model}
-Joint model approach was taken into inspection because joint learning models have not yet been studied very widly but results from the few studies have shown that joint models can achieve better results than separate models. Lemma and a part of speech of a word a tighly linked to each other. Lemma is the basic (almost) unique identifier of a word and each word has always a single fixed part-of-speech. This tight coupling of lemmas and part of speeches serve as a good foundation for building a joint learning model. 
-
-Unfortunately lemmas do not identify a word in a completely unique way; multiple words may have same written base form. Nail is a written form for at least two different meaning one being a accessory for attaching pieces of wood together with a hammer and the other being a keratin made envelope covering the tips of fingers and toes. Fortunately words with multiple meanings are more rare than not. This thesis simply omits the problems and implications which could and do arise from having shared tokens for multiple words. Such decision to omit the problems may not be as harmful as one might think; predicting correct lemma whether the nail is meant to be hit with a hammer or not does still produce a correct lemma, this becomes and issue only with the downstream tasks which might need the two to be separated.
-
-Part of speech tagging can also still be done without too much hinderance. Separating "nails" as plural form of a noun "nail" from "nails" as colloquial active form of a term for love making can be done with the information provided by the context of the word.
-
+\subsection{Why Joint model?}
+\begin{itemize}
+\item \cite{Liu2016a} did joint model for intents and slots on ATIS dataset achieving 22\% decrease on intent error on their Attention based encoder-decorder network.
+\item Ask Honain for ref for joint POS-tagging and lemmatization paper.
+\item Lemmas and POS-tags have strictly linked relationship
+\item Lemma identifies a single unique word which has single POS
+\item Lemmas as written form may reference multiple words (eg. nail), this thesis simply omits the possible problems associated with written forms with multiple meanings.
+\item Computational complexity decreases significantly when encoding only once for both with two linear output layers. Cost is the softmax. If POS-tagging is the auxiliary task then softmax is cheap.
+\item Joint model is architecturally simple because both tasks share majority of the neural network. Also simple to implement.
+\item Two flies and so forth...
+\item If joint model is better then it's worth using even for a single task.
+\end{itemize}
 
 
 \section{Neural Network Architechture}
@@ -952,4 +964,5 @@ and so on.
 
 
 \end{document}
+
 
