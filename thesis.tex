@@ -553,6 +553,7 @@ Testing citation \cite{Andor2016}
 \end{itemize}
 
 \section{Word Embeddings}
+\label{se:word_embeddings}
 \begin{itemize}
 \item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
 \item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
@@ -736,22 +737,58 @@ Generative model does solve the problem with lemma vocabulary but introduces a m
 
 Because of the forementioned problems, the encoder-decoder model was not a part of the implementation used for this thesis and lemmatization is treated as a classification only task. Also it's worth noting that observing lemma classification with POS-tagging should prove to be sufficient for proving or disproving the hypothesis. 
 
-\subsection{Word Embedding}
-\label{ss:word_embedding}
-\begin{itemize}
-\item C2W
-\item Character vocabulary needs to fixed for character embedding layer.
-\item We selected \verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ£ \verb£[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÖäåö€£ as our character vocabulary.
-\item This contains ASCII characters from 32 to 127, scandic characters in lower and upper case and € sign.
-\item Selected character vocabulary covers 99,933\% of character usages in Finnish internet parsebank n-gram dataset.
-\item ASCII end-of-text (ETX) and substition (SUB) characters were added to character vocabulary to handle sequence length padding and out of vocabulary characters respectively.
-\item Characters were represented as character embedding vectors obtained during the training and implemented as simple trainable Tensor in tensorflow.
-\item C2W RNN takes a mini-batch of words represented as character tensors (one character per row) as an input
-\item Output of C2W is word embedding vectors for all words in the mini-batch.
-\end{itemize}
+\subsection{Word Embedding Component}
+\label{ss:word_embedding_component}
+Representing words with multi-dimensional real number vectors is required to encode semantic and syntactic meaning of the words in a way a neural network can understand them as is discussed in section \ref{se:word_embeddings}. Vector representations are created in this work at the same time as neural network is trained to classify lemmas and part of speeches. In other words no external word embeddings are used such as word2vec. Word embedding in this architecture is managed with character to word encoder similar to \cite{Ling2015}.
 
-\subsection{Context Encoding}
-\label{ss:context_encoding}
+Word embedding process starts with representing characters as multi-dimensional real number vectors, called character embedding for the rest of this work. Character embeddings as a part of character to word encoder are also trained at the same time with rest of the network. Character embeddings are implemented as a single trainable Tensorflow variable, a two dimensional array where each row contains embedding vector for a single character in the character vocabulary. Character vocabulary is a fixed set of characters selected to represent majority of use cases in currently processed language, Finnish in this case.
+
+\todo{Format this}
+\verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ£ 
+\verb£[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÖäåö€£
+
+was selected as character vocabulary to be used. This contains ASCII characters from index 32 to index 127 ie. all but ASCII control characters as well as lower and upper case scandic letters used in Finnish and an euro sign €. This character vocabulary covers 99,933\% of character usages in Finnish internet parsebank. A fairly good representation for Finnish language with very reasonable vocabulary size of 103 characters. Characters not included in the selected character vocabulary were substituted with ASCII control character SUB which was added to character vocabulary. Character vocabulary also contained another ASCII control character ETX, which was used for padding all other words to length of longest word in the current mini-batch (Tensors are essentially arrays and as such do not tolerate variable lengths within a single dimension).
+
+Words as input to word vector encoder are represented as Tensors of character embeddings, each row of a single input word contains character embedding for a single character in the word. Input words for the word vector encoder contain character embeddings for all characters in all words in all sentences selected for the mini-batch. If mini-batch size is selected to be 25, then word vector encoder input contains all characters and words for the selected 25 sentences.
+
+\begin{table}[htbp]
+\caption{Example input for Word vector encoder}
+\label{table:word_vector_encoder_input}
+\centering
+\begin{tabular}{|r|c|c|c|c|l|}
+  \hline
+  & $d_0$ & $d_1$ & ... & $d_{300}$ & \\
+  \hline
+  K & 0.43 & 0.05 & & 0.37 & $t_0$ \\
+  i & 0.32 & 0.62 & & 0.80 & $t_1$ \\
+  r & 0.45 & 0.69 & & 0.62 & $t_2$ \\
+  a & 0.75 & 0.64 & ... & 0.01 & $t_3$ \\
+  h & 0.24 & 0.93 & & 0.53 & $t_4$ \\
+  v & 0.23 & 0.24 & & 0.15 & $t_5$ \\
+  i & 0.32 & 0.62 & & 0.80 & $t_1$ \\
+  \hline
+\end{tabular}
+\end{table}
+Table \ref{table:word_vector_encoder_input} shows an example input to word vector encoder RNN with values rounded to two decimals. $d_0$ to $d_{300}$ are the dimensionalities of character embedding vectors and $t_0$ to $t_6$ are RNN input timesteps ie. characters of the word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the input data contains multiple words all stacked into a single Tensor.
+
+Word vector encoder itself is a bi-directional recurrent neural network which takes the words represented by character embeddings as input and produces word embedding Tensor as output. Characters of the input words are the timesteps data for the RNN. Bi-directional RNN goes through the input timesteps in both directions. Each direction has a single RNN cell and outputs of both cells are concatenated as one double sized Tensor. Word embedding Tensor ie. output Tensor contains a single word embedding on each row. These word embeddings produced by the word vector encoder contain the semantic and syntactic meanings that were obtained from reading the words as separate units without any context.
+
+\begin{table}[htbp]
+\caption{Example output of Word vector encoder}
+\label{table:word_vector_encoder_output}
+\centering
+\begin{tabular}{|c|c|c|c|}
+  \hline
+  $d_0$ & $d_1$ & ... & $d_{300}$ \\
+  \hline
+  0.96 & 0.12 & ... & 0.87 \\
+  \hline
+\end{tabular}
+\end{table}
+Table \ref{table:word_vector_encoder_output} shows an example output of word vector encoder RNN with values rounded to 2 decimals. $d_0$ to $d_{300}$ are the dimensionalities of word embedding vector for a word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the output data would have several words in a single Tensor, one per row.
+
+\subsection{Context Encoding Component}
+\label{ss:context_encoding_component}
 \begin{itemize}
 \item Bi-directional RNN
 \item Word vectors obtained from word embedding layer used as input
