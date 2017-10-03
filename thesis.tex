@@ -716,9 +716,14 @@ Part of speech tagging can also still be done without too much hinderance. Often
 
 \section{Neural Network Architechture}
 \label{se:architecture}
-\todo{Architecture diagram}
+Architecture used for experiments in this thesis is a multi-layer deep neural network composing an end to end pipeline handling everything needed from character representations to output classifications. Multiple layers in the architecture are not only layers of interconnected nodes as usually depicted by term layers in the context of neural networks. The architecture also contains multiple architectural layers such as character embedding layer, word embedding layer, context encoding layer and classification layer. To distinguish architectural layers from neural layers the former is going to be called components for the rest of this thesis. All the components, all layers which make the individual components and weights are learned at the same time. Learning all network parameters in a single training run makes training simpler and removes, or at least obfuscates, the possible compatibility issues and non-optimalities between the components and layers. Figure \ref{figure:architecture} shows high level architecture and data processing pipeline used in this work.
 
-Architecture used for experiments in this thesis is a multi-layer deep neural network composing an end to end pipeline handling everything needed from character representations to output classifications. Multiple layers in the architecture are not only layers of interconnected nodes as usually depicted by term layers in the context of neural networks. The architecture also contains multiple architectural layers such as character embedding layer, word embedding layer, context encoding layer and classification layer. To distinguish architectural layers from neural layers the former is going to be called components for the rest of this thesis. All the components, all layers which make the individual components and weights are learned at the same time. Learning all network parameters in a single training run makes training simpler and removes, or at least obfuscates, the possible compatibility issues and non-optimalities between the components and layers.
+\begin{figure}[htbp]
+\caption{High level architecture for neural network used}
+\label{figure:architecture}
+\centering
+\includegraphics[width=15cm]{architecture.png}
+\end{figure}
 
 Neural network code was implemented with Python using popular computation libraries Tensorflow and Numpy. Tensorflow provides scripting APIs for other programming languages too but Python was selected because of it is fast to write and computational performance does not suffer compared to eg. C++ since all the expensive computations are made in the C++ based backend. Numpy is used in the data pre-processing phase where data is processed to be suitable for feeding as input to the actual neural network. Tensorflow was used for implementing the neural network as a computational graph. Tensorflow makes it fairly easy to implement compled multi-componen end to end architectures while abstracting the actual optimization work away from the developer.
 
@@ -757,7 +762,7 @@ Words as input to word vector encoder are represented as Tensors of character em
 \centering
 \begin{tabular}{|r|c|c|c|c|l|}
   \hline
-  & $d_0$ & $d_1$ & ... & $d_{300}$ & \\
+  & $d_0$ & $d_1$ & ... & $d_{299}$ & \\
   \hline
   K & 0.43 & 0.05 & & 0.37 & $t_0$ \\
   i & 0.32 & 0.62 & & 0.80 & $t_1$ \\
@@ -769,7 +774,7 @@ Words as input to word vector encoder are represented as Tensors of character em
   \hline
 \end{tabular}
 \end{table}
-Table \ref{table:word_vector_encoder_input} shows an example input to word vector encoder RNN with values rounded to two decimals. $d_0$ to $d_{300}$ are the dimensionalities of character embedding vectors and $t_0$ to $t_6$ are RNN input timesteps ie. characters of the word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the input data contains multiple words all stacked into a single Tensor.
+Table \ref{table:word_vector_encoder_input} shows an example input to word vector encoder RNN with values rounded to two decimals. $d_0$ to $d_{299}$ are the dimensionalities of character embedding vectors and $t_0$ to $t_6$ are RNN input timesteps ie. characters of the word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the input data contains multiple words all stacked into a single Tensor.
 
 Word vector encoder itself is a bi-directional recurrent neural network which takes the words represented by character embeddings as input and produces word embedding Tensor as output. Characters of the input words are the timesteps data for the RNN. Bi-directional RNN goes through the input timesteps in both directions. Each direction has a single RNN cell and outputs of both cells are concatenated as one double sized Tensor. Word embedding Tensor ie. output Tensor contains a single word embedding on each row. These word embeddings produced by the word vector encoder contain the semantic and syntactic meanings that were obtained from reading the words as separate units without any context.
 
@@ -779,24 +784,67 @@ Word vector encoder itself is a bi-directional recurrent neural network which ta
 \centering
 \begin{tabular}{|c|c|c|c|}
   \hline
-  $d_0$ & $d_1$ & ... & $d_{300}$ \\
+  $d_0$ & $d_1$ & ... & $d_{299}$ \\
   \hline
   0.96 & 0.12 & ... & 0.87 \\
   \hline
 \end{tabular}
 \end{table}
-Table \ref{table:word_vector_encoder_output} shows an example output of word vector encoder RNN with values rounded to 2 decimals. $d_0$ to $d_{300}$ are the dimensionalities of word embedding vector for a word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the output data would have several words in a single Tensor, one per row.
+Table \ref{table:word_vector_encoder_output} shows an example output of word vector encoder RNN with values rounded to 2 decimals. $d_0$ to $d_{299}$ are the dimensionalities of word embedding vector for a word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the output data would have several words in a single Tensor, one per row.
+
 
 \subsection{Context Encoding Component}
 \label{ss:context_encoding_component}
-\begin{itemize}
-\item Bi-directional RNN
-\item Word vectors obtained from word embedding layer used as input
-\item Input for each word also contains it's right and left side contexes.
-\item Each word has effectively only uni-directional RNN for each side context because sentence is fed once through bi-directional RNN. Forward pass encodes left side contexes and backward pass encodes right side contexes.
-\item Uni-directional RNN encoding for contexes should not be a problem; sentence lengths are usually very limited (averaging 13 words) and most important words in the context are the words closest to current word for whom context is being encoded.
-\item Output is word embedding vector which also contains information about the word's context.
-\end{itemize}
+Word embedding vectors created with the word embedding components are the foundation for doing word level predictions. Using encoded information about semantic and syntactic information of the words for which predictions are to be made is far superior to simply using eg. one hot encoding as is discussed in section \ref{se:word_embeddings}. However word embeddings are not nearly perfect representation of all the information that is associated with the words because words represented this way are still only separate units without context in which they appear.
+
+More information about words for doing predictions can be gained by encoding the context of the word into a vector representation to be used along with word embedding. Words are read from left to right in most languages forming a sequence, a sentence, in similar way as character sequences form words. Since words in a sentence are sequence, the context of a word is also a sequence. Sequence of a word in this work means word's preceeding succeeding words ie. words on the left and right side of the current word. Because context is a sequence, once again recurrent neural networks are a natural way to process the sequences.
+
+Word's context can be divided into two parts: left side context, the preceeding words, and right side context, succeeding words. To encode both contexts the architecture uses bi-directional RNN. First cell is used process the left side context and second cell is used to process right side context. One could argue that using two bi-directional RNNs, one for each side, would yield better results. However since importance of word in a context is higher closer the contextual word is to current word and since RNNs "remember" the last timesteps the best, it was hypothesised that using only a single direction for each side would yield almost similar results. Sequence direction of a context is always towards the current word, from left to right for left side context and from right to left for right side context making the closest words always last in the context sequences.
+
+Using only a single uni-directional cell for each side also has significant benefits in terms of implementational simplicity and computational complexity. If one were to use bi-directional RNN for each side, one would be forced to run contexts for each word in a sentence separately because in this scenario the backward passes start from different location, from the current word. When using only an uni-directional RNN for each side there are no backward passes and forward passes always start from the same location: first word of a sentence for left side context and last word of a sentence for right side context. Figure \ref{figure:uni_vs_bi} illustrates this difference between uni-directional and bi-directional context encoders. Using uni-directional context encoders makes it possible to do a single forward pass and a single backward pass for entire sentence. Contexts of different words are simply different timestep outputs of these passes.
+
+\begin{figure}[htbp]
+\caption{Uni-directional vs bi-directional RNNs for context encoding}
+\label{figure:uni_vs_bi}
+\centering
+\includegraphics[width=15cm]{uni_vs_bi.png}
+\end{figure}
+
+Sharing context encoder passes among all the words in the sentence simplifies input data format of context encoder. Instead of having separate Tensor for each word as input data as is the case with bi-directional RNN, uni-directional can use a single Tensor which has all the words stacked, one word embedding vector per row. Having one simple input Tensor entails a single data pass through the RNN decreasing computational complexity drastically. For a 13 word sentence one would have to make 14 passes for left side (1 forward, 13 backward) and another 14 passes for right side if one were using bi-directional RNN. With uni-directional RNN this comes down to one pass per side, 14 fold decrease. Actual computation time decrease might smaller because it could be possible to parallelize this operation with GPU. Measuring actual prediction performance benefits and added computational costs associated with using bi-directional RNN for context encoder is out of scope for this thesis. Table \ref{table:context_encoder_input} shows an example of input data Tensor for context encoder when using batch size of one sentence. $d_0$ to $d_{299}$ are dimensionalities of word embedding vectors.
+\begin{table}[htbp]
+\caption{Example input of context encoder}
+\label{table:context_encoder_input}
+\centering
+\begin{tabular}{|r|c|c|c|c|l|}
+  \hline
+  & $d_0$ & $d_1$ & ... & $d_{299}$ & \\
+  \hline
+  Kirahvi & 0.96 & 0.12 & & 0.87 & $t_0$ \\
+  yltää & 0.16 & 0.26 & & 0.65 & $t_1$ \\
+  syömään & 0.24 & 0.51 & & 0.80 & $t_2$ \\
+  lehtiä & 0.05 & 0.55 & ... & 0.96 & $t_3$ \\
+  korkealta & 0.82 & 0.06 & & 0.39 & $t_4$ \\
+  . & 0.03 & 0.14 & & 0.46 & $t_5$ \\
+  \hline
+\end{tabular}
+\end{table}
+
+Context encoder RNN produces embedding vectors of a similar form as is it's input ie. output of word embedding component. These vectors encode semantic, and some syntactic, meaning of the words' contexts. When used with word embedding vectors these two encodings express all the information that is available for the words when looking only at the sentence. Output of the context encoding component is vector formed by concatenating word embedding vectors and context embedding vectors for respective words. Table \ref{table:context_encoding_component_output} shows an example output for a single word from context encoding component. $d_0$ to $d_{299}$ are dimensionalities of word embedding vectors and $d{300}$ to $d_{599}$ are dimensionalities of context encoding RNN.
+\begin{table}[htbp]
+\caption{Example output of context encoding component}
+\label{table:context_encoding_component_output}
+\centering
+\begin{tabular}{|r|c|c|c|c|c|c|c|c|l|}
+  \hline
+  & $d_0$ & $d_1$ & ... & $d_{299}$ & $d_{300}$ & $d_{301}$ & ... & $d_{599}$ & \\
+  \hline
+  Kirahvi & 0.96 & 0.12 & & 0.87 & 0.69 & 0.88 & ... & 0.74 & $t_0$ \\
+  \hline
+\end{tabular}
+\end{table}
+
+Higher level contructs for information encoding, such as looking at preceeding and succeeding sentences in the corpus, are not used in this architecture. Adding contextual information for sentences would add yet another layer of complexity to the architecture increasing actual implementational difficulty significantly. Reshaping Tensors in Tensorflow can be very tricky at times, especially when splicing and stacking for batching has to be done on multiple architectural levels. Also using sentences' contexts could prove problematic when using the neural network for actual live production work because it is often the case that user wants lemmatization and POS-tagging done for a single sentence without having context at hand.
+
 
 \subsection{Classification}
 \label{ss:classification}
