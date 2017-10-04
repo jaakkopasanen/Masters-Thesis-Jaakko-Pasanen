@@ -846,15 +846,26 @@ Context encoder RNN produces embedding vectors of a similar form as is it's inpu
 Higher level contructs for information encoding, such as looking at preceeding and succeeding sentences in the corpus, are not used in this architecture. Adding contextual information for sentences would add yet another layer of complexity to the architecture increasing actual implementational difficulty significantly. Reshaping Tensors in Tensorflow can be very tricky at times, especially when splicing and stacking for batching has to be done on multiple architectural levels. Also using sentences' contexts could prove problematic when using the neural network for actual live production work because it is often the case that user wants lemmatization and POS-tagging done for a single sentence without having context at hand.
 
 
-\subsection{Classification}
-\label{ss:classification}
-\begin{itemize}
-\item Add fully connected layers and output layer (MLP)
-\item Decision to add fully connected layers was made with brief experiments comparing results with and without the fully connected layers. Fully connected layers added almost no computational complexity while improving learning.
-\item All experiments were done with fully connected layers and further experimenting how they affect different tasks was left for future research.
-\item Lemma vocabulary consists of most frequent lemmas in Universal Dependencies dataset covering at least 90\% of use cases in the dataset.
-\item Output layers are a simple fully connected layers with linear activation functions. Size of output lemma classification and POS classification layers are the size of lemma vocabulary and size of POS-tag vocabulary respectively.
-\end{itemize}
+\subsection{Classification Component}
+\label{ss:classification_component}
+Output of context encoding component could very well be used for doing predictions given that output is projected to a suitable size, namely the number of classes to classify. However architecture used in this work has additional fully connected layers between the output projection layer and context encoding component. In this configuration the architecture can be divided into two logical sections: encoder and classifier. Figure \ref{figure:encoder_classifier} shows the two logical high level components of the architecture.
+
+\begin{figure}[htbp]
+\caption{High level logical components of the architecture}
+\label{figure:encoder_classifier}
+\centering
+\includegraphics[width=15cm]{encoder_classifier.png}
+\end{figure}
+
+Encoder composes of all the layers and components up to the classification component and the classifier is a simple fully connected feed-forward network, also called multi-layer perceptron (MLP). When conseptualized in this way, the responsibility of the encoder is to, as name suggest, encode all available input information in a format which is easily understood by the classifier. Classifier is responsible to produce the actual predictions. Input of the classifier is the output of the encoder as is, without any projections or scaling. When the architecture is build by separating the encoder and the classifier, it is easier in the future works to reuse the encoder and create a new classifier suitable for the task at hand. On the other hand the classification component can be thought to be just a few fully connected layers on top of context encoding component for added expression power.
+
+Regardless of how one wishes to approach the logical components of the architecture, the fact remains that the fully connected layers were added based on early experiments on the architecture's learning capabilities. With few training runs on different configurations it became clear that neural net converges to a better performing model when using the fully connected layers than without them. Without the fully connected layers the network seemed to converge faster, with less epochs, but couldn't obtain quite as high classification performance. It is also worth mentioning that adding even several fully connected layers added almost no extra computational cost. Multiple layers of RNNs seem to be a lot more expensive than even far greater number of fully connected layers.
+
+The last two layers of the classification component are output projection layer and softmax layer. The output projection layer is fully connected layer with linear activation function and has one node for each class. The softmax layer takes the output of projection layer can computes a softmax function for it, this is done to scale the output values in such a way that all output values sum up to one. When outputs are scaled to sum up to one, the output can be treated as probability distribution even though it might not strictly be one. Scaled outputs are also easier for humans to understand, often a nice to have feature but certainly not critical. The main reason to add a softmax layer after the output prediction really lies with the softmaxes innate properties which make it suitable for optimization with cross entropy loss.
+
+As a matter of fact the softmax layer only exists in the training pipeline. Softmax scaling is not necessary for doing the predictions because the prediction of a classifier is the output node with highest activation value. Softmax is a monotonic function ie. higher input values will always give higher output values and since the classification is only about selecting the highest value, the softmax is not required. In addition the softmax can be computationally relatively expensive especially when the output size is large, as is the case with large lemma vocabulary.
+
+To produce the actual lemmas and part of speeches, the indices of the highest values in the output layer need to be used for indexing the label vocabularies. If the third node on the lemma output layer has highest value, one must select third item in the lemma vocabulary as the final prediction. Vocabularies are not needed for testing and validating because the ground truth lemmas and part of speeches have also been turned into indices and comparison can be done with the indices.
 
 \subsection{Training and Optimization}
 \begin{itemize}
@@ -888,8 +899,8 @@ Higher level contructs for information encoding, such as looking at preceeding a
 \item Not testing morphology
 \end{itemize}
 
-\subsection{Test Methods}
-\label{ss:test_methods}
+\section{Test Methods}
+\label{se:test_methods}
 \todo{Excerpt from Finnish UD data}
 \begin{itemize}
 \item Testing with Universal Dependencies data
