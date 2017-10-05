@@ -217,10 +217,12 @@ On behalf of the working group, Erno Salminen
 % .tex file more readable
 \begin{termlist}
 \item[ANN] Artificial Neural Network
+\item[GPU] Graphics Processing Unit
 \item[LAS] Labelled Attachment Score (\% of tokens with correct dependency head and relation)
 \item[LDA] Latent Dirilecht Allocation
 \item[LSA] Latent Semantic Analysis
 \item[LSTM] Long short term memory; type of RNN with short term memory.
+\item[MLP] Multi-layer perceptron
 \item[NER] Named entity recognition
 \item[NLP] Natural Language Processing
 \item[PMI] Pointwise mutual information
@@ -595,16 +597,28 @@ As a matter of fact the softmax layer only exists in the training pipeline. Soft
 To produce the actual lemmas and part of speeches, the indices of the highest values in the output layer need to be used for indexing the label vocabularies. If the third node on the lemma output layer has highest value, one must select third item in the lemma vocabulary as the final prediction. Vocabularies are not needed for testing and validating because the ground truth lemmas and part of speeches have also been turned into indices and comparison can be done with the indices.
 
 \subsection{Training and Optimization}
-\begin{itemize}
-\item Back-propagation by Tensorflow's innate graph functionality
-\item Weights optimized with AdamOptimizer (gradient descent)
-\item Hyperparameters optimized with Optunity
-\item Hyperparameter optimization algorithm: Particle Swarm
-\item Time budget of one hour per hyperparameter optimization run
-\item Early stopping on each optimization run based on validation loss
-\item Fixed number of optimization runs
-\item Trained on NVIDIA GeForce TitanX (Pascal)
-\end{itemize}
+All neural network trainings in this work were done with stochastic gradient descent back-propagation algorigthm. The optmizer algorithm and back-propagation through the computation graphs are handled by Tensorflow's built in features. First the input data is fed to neural network and propagated in forward direction through the whole network. When the last network layer, the softmax layer, has been computed, the softmax values are used to compute cross entropy loss with one-hot coded ground truth vector. Error gradient is then propagated through the entire network in backward direction, calculating error gradient for each layer. Error gradient in each layer is used to update the layer weights and biases.
+
+Gradient descent update was done with mini-batches of 25 sentences. This means that entire mini-batch is back-propagated through the network before adjusting the network weights and biases. Alternative is to update the network after each example but that has serious drawbacks for computational efficiency. Mini-batch training can be done in a pleasantly parallel manner, meaning that the exapmles of the mini-batch have no cross-dependencies and thus can be all trained at the same time, parallel. Parallel computations are very suitable for GPU workloads and as a matter of fact mini-batch training is critical component for enabling the significant, often an order of magnitude or more, increases in computation speed on GPU. Figure \ref{figure:single_vs_batch} illustrates the difference between the propagation sequences in single example training and mini-batch training.
+
+\begin{figure}[htbp]
+\caption{Propagation sequences in single exmaple and mini-batch training}
+\label{figure:single_vs_batch}
+\centering
+\includegraphics[width=12cm]{single_vs_batch.png}
+\end{figure}
+
+Also a true single example training is not even possible, at minimum a mini-batch contains all the words of a single sentence. The reasons for this are the facts that the single example of input-output value pair is a single word and it's lemma of POS-tag and a word depends on it's context ie. other words in the sentence. Therefore it's mandatory to use at least a single sentence mini-batching. If architecture didn't contain the context encoding component, all words of the sentence could be managed as separate units and could be trained independently.
+
+Mini-batches of 25 sentences used for network optimization are formed by dividing the entire training dataset randomly into the said mini-batches. Training procedure goes through all the mini-batches in an epoch. In the end of the epoch after all of the training data has been used, the network classification performance is evaluated on the validation dataset by calculating loss. Loss is the compared to the best obtained loss value from all the previous epochs, if the validation loss has decreased training procedure continues onto the next epoch. If validation loss doesn't decrease training can be stopped to avoid over-fitting. However classification performance on validation dataset does not typically improve on every epoch, especially after the network is starting to converge. Therefore it's wise to allow the training to continue for a fixed number of epochs even if there is no improvement. When the maximum number of epochs without improvement has been reached, the training is stopped and classification performance is tested on the testing dataset.
+
+The network training procedure described above is only a single training run. Single training run allows the optimization of network parameters (weights and biases) but not hyperparameters. Hyperparameters are all the parameters that determine the network architecture, such as number of layers on each component, number of nodes on each layer, activation functions used, dropout etc. Traditionally hyperparameters have been optimized by manual process of training with certain cofiguration, inspecting the results, adjusting hyperparameters and training again. While manual hyperparameter optimization can provide good enough results, it is still very tedious work and often requires deep understanding of neural networks and of the task at hand. Recently automatic hyperparameter optimization has gained popularity, mainly because computation resources have increased and thus it's more feasible to run a lot of training runs while tuning the hyperparameters. Automatic hyperparameter tuning is particularly beneficial when the number of hyperparameters to optmize gets large, humans are typically poor at processing more than 3 dimensional data.
+
+Hyperparameter optimization in this work was done automatically using a optimization library called Optunity \todo{citation}. Optunity provides a convenient way to abstract the optimization work for basically any given task. There are many different optimization algorithms for hyperparameter tuning and not one has gained similar de facto status as gradient descent has for the neural net optimization. Algorithm used in this work for hyperparameter tuning is particle swarm which is a meta heuristic optimization algorithm. Particle swarm is said by the Optunity authors to be most versatile of all the algorithms available in Optunity. Hyperparameter optimization algorithm comparisons were not done since particle swarm provided reasonable results with the time results of this project. Besides hyperparameter optimization algorithm selection is not in the scope of this work and has very little relevance with proving the hypothesis.
+
+Hyperparameter optimization was done by running a fixed number of training runs and tuning the hyperparameters with particle swarm between each training run. Since automatic hyperparameter selection may ramp up all the hyperparameters to their maximum allowed values, can training times scale up to unsustainable durations. To avoid dealing with single training runs that take tens of hours, maximum time budget was forced for the training runs. If training run reached the maximum allowed time, best model obtained with that training run was selected for final comparison and hyperparameter tuning. Training runs in the hyperparameter optimization also used early stopping based on validation loss, this helps to cut the training with some hyperparameter configurations to just few training epochs, speeding up the hyperparameter optimization drastically.
+
+After all of the training runs for hyperparameter optimization were finished, hyperparameter configuration which provided the best model was saved for using in experiments.
 
 \section{Experiments}
 \label{se:experiments}
