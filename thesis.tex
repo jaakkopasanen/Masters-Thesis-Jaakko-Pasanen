@@ -622,23 +622,39 @@ After all of the training runs for hyperparameter optimization were finished, hy
 
 \section{Experiments}
 \label{se:experiments}
-\begin{itemize}
-\item Minimal set for testing the hypothesis
-\item POS-tagging without lemmatization
-\item Lemmatization without POS-tagging
-\item Lemmatization with classified POS-tags
-\item Lemmatization with gold standard POS-tags
-\item Joint model
-\item Comparing these results should be enough to (dis)prove the hypothesis
-\item Not testing on other languages
-\item Not testing how tokenization affects results
-\item UDPipe tokenization accuracy is 99,7\% \cite{Straka2017}
-\item POS-taggin with lemmas not tested
-\item POS-tagging with lemmas as input features is not very meaningful task because POS-tag can be read from a dictionary if lemma is known.
-\item Not testing with other vocabulary coverages
-\item Not testing with XPOSTAGS
-\item Not testing morphology
-\end{itemize}
+Experiments done for this thesis consist of minimal set of tests that can prove or disprove the tested hypothesis. To test whether jointly learning lemmatization and POS-tagging in a single neural network architecture the following experiments were done. Firstly a baseline was established by training and testing the neural net with lemmatization and POS-tagging as separate tasks. Having a well established baseline allows the comparison of different style shared information tasks and their benefits and drawbacks. Figure \ref{figure:baseline_experiment} shows the setup for separate tasks.
+
+\begin{figure}[htbp]
+\caption{Separate lemmatization and POS-tagging as a baseline}
+\label{figure:baseline_experiment}
+\centering
+\includegraphics[width=15cm]{baseline_experiment.png}
+\end{figure}
+
+First shared information experiment was done to determine if more traditional approach of using one as input features in classification of other. This experiment was done only by using parts of speech as one-hot coded input features when doing lemma classification. Expecting to gain benefit from using parts of speech as input feature to lemmatization is reasonably well founded because knowing the part of speech for a given word limits the number of possible lemmas significantly. The big question in this hypothesis is whether the POS-tagging was done well enough to reveal the possible benefits. It's very well possible that errors done in POS-tagging cascade to lemmatization task so badly that lemmatization performance actually decreases from the baseline. To study the effects of POS-tagging performance to lemmatization performance, a second experiment was deviced: to train and test the network using gold-standard parts of speech available in the dataset. Figure \ref{figure:pos_tag_input_experiment} shows the setup for using parts of speech as input feature for lemmatization.
+
+\begin{figure}[htbp]
+\caption{Using parts of speech as input feature for lemmatization}
+\label{figure:pos_tag_input_experiment}
+\centering
+\includegraphics[width=15cm]{pos_tag_input_experiment.png}
+\end{figure}
+
+Last experiment was the training and testing of the joint learning neural network architecture for lemmatization and POS-tagging. Figure \ref{figure:joint_model_experiment} illustrates the test setup for joint model.
+
+\begin{figure}[htbp]
+\caption{Joint model for lemmatization and POS-tagging}
+\label{figure:joint_model_experiment}
+\centering
+\includegraphics[width=15cm]{joint_model_experiment.png}
+\end{figure}
+
+Comparing results from the baseline, POS-tags as input features for lemmatization and joint model should be enough to test the hypothesis. Experiments don't include other languages than Finnish or other datasets than Finnish Universal Dependencies. Experiments in this thesis with POS-tagging all use the universal POS-tags, effect of using language specific POS-tags with or without universal POS-tags was not tested. Similarly effect of tokenization performance was not tested but all experiments used gold standard tokenization available in the Finnish universal dependencies dataset.
+
+The effect of morphological information such as word inflections and forms were not tested for this thesis even though there is a well founded arguments for improving results by using the morphology also. Since morphological features describe how the word was inflected they should assist the lemmatization because lemmatization can though as a reverse process of inflecting the word. However scope of the thesis was kept as narrow as possible, but wide enough for testing the hypothesis, and therefore morphology was left out. For that same reason also use of language specific POS-tags available in Universal Dependecies datasets was left out of scope of this thesis. 
+
+Attentive reader might have noticed that experiments included in this thesis have parts of speech as input features for lemmatization but not lemmas as input features for POS-tagging. Reason for excluding experiment of lemmas as input features for POS-tagging is that the described task is not very interesting or even meaningful: if a lemma of a word is known, part of speech for that word can be looked up from a dictionary with the exceptions of words with multiple meanings.
+
 
 \section{Test Methods}
 \label{se:test_methods}
