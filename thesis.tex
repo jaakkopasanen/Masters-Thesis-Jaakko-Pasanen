@@ -658,23 +658,22 @@ Attentive reader might have noticed that experiments included in this thesis hav
 
 \section{Test Methods}
 \label{se:test_methods}
-\todo{Excerpt from Finnish UD data}
-\begin{itemize}
-\item Testing with Universal Dependencies data
-\item Finnish UD data is tagged with Omorfi and manually corrected, see \ref{ss:turku_dependency_treebank} \todo{Check manual correction}
-\item UD has pre-existing results from third parties such as Syntaxnet and UDPipe for baseline comparisons
-\item Other annotated corpuses exist for Finnish but UD is the only multi-lingual corpus collection where all datasets are in uniform format making future research and comparison easier. \todo{citations!}
-\item Using accuracy. Percentage of correct classification labels.
-\item Academia does not seem to agree what F1 score is
-\item Accuracy is simple and easier for the readers to understand
-\item Accuracy may not be suitable if neural network prediction confidences are important. Neural net may learn to be very confident about wrong predictions if only accuracy is observed.
-\item Accuracy is suitable to distinguish between results on different configurations. Confidences are not needed for this work.
-\item Cross-entropy based loss is good for weight optimization and does not suffer from confidence issues but tells very little to a reader without deep understanding about the task at hand.
-\item Each experiement was executed by training the network on the training dataset with early stopping based on observations of validation dataset loss.
-\item Same hyperparameters were used for all experiements, tuned with Optunity implemented particle swarm algorithm for joint model.
-\item All results reported are tested with test dataset.
-\item Tokenized data (forms) is fed to neural network as input and neural network predictions are compared to correct values.
-\end{itemize}
+The dataset use for experiments in this thesis is Finnish Universal Dependencies as mentioned in earlier sections. The Finnish Universal Dependencies dataset is divided into three sections: training dataset, development dataset (also called validation dataset in this thesis) and testing dataset. Each experiment outlined in section \ref{se:experiments} was done using all three datasets. Neural network weight and bias optimization was done using only training dataset, model performance was observed during training by validating the network with development dataset and all final results are obtained by doing predictions with test dataset and comparing with correct labels. Training and testing procedure for each experiment is illustrated in figure \ref{figure:test_setup}.
+
+\begin{figure}[htbp]
+\caption{Test setup for doing the experiments}
+\label{figure:test_setup}
+\centering
+\includegraphics[width=15cm]{test_setup.png}
+\end{figure}
+
+Other corpuses exist for Finnish but format and annotation schema varies in those corpuses and are only available for Finnish. Univesal Dependencies is very suitable this work because it has over 40 different languages available all with same form and annotation scheme making possible future expansions of this study easier and results comparable. Another reason for selecting Universal Dependencies is that pre-existing results are avaialble for POS-tagging and lemmatization, most notably from UDPipe (\cite{Straka2017}).
+
+Several options exist for the metric with which experiment results can be compared when testing the hypothesis. This work settled for simple accuracy number ie. percentage of correct prediction over all examples in the testing dataset. F1 score is another widly used metric which takes precision and recall into account and therefore reveals the performance of the model better. However F1 score may not be intuitive and easy to understand for a reader without prior experience or education in statistical analysis. Accuracy should also provide enough information to test the hypothesis.
+
+Another drawback of accuracy is that it tells nothing about the confidence of the network; even if model's accuracy is high, the model might give very high probabilities for the few incorrect predictions it produces. If output probabilities are required for the task, for example for using a probability threshold for determining if an answer should be given at all, this kind of model is not very suitable for the task. In this work however the training is done based on the softmax cross-entropy loss which optimizes the form of prediction probability distribution. Also the early stopping used in the model training is based on the cross-entropy loss so training is stopped before network starts to be overconfident about it's incorrect predictions. Softmax cross-entropy is a good metric for optimzing the network, but using cross-entropy loss for evaluating performance of different results suffers from the same problem as F1 score and provides even less insight for the reader about how well the model performs.
+
+Given all of these considerations for different benefits and drawbacks of the discussed metrics, it is still most probable that any of them would suffice to reveal the classification performance differences between the experiments. Some of the metrics might emphasis the difference more than the others, but the bottom line is to test the hypothesis and provide results for the reader that are understood by the reader.
 
 \section{Results}
 \label{se:results}
