@@ -28,8 +28,8 @@
 % Define your basic information
 %
 \author{Jaakko Pasanen}
-\title{Natural Language Syntactic Parsing with Deep Learning} % primary title (for front page)
-\titleB{Luonnollisen kielen syntaksin parsiminen syväoppimisella}     % translated title for abstract
+\title{Natural Language Syntactic Parsing with Neural Networks} % primary title (for front page)
+\titleB{Luonnollisen kielen syntaksin parsiminen neuroverkoilla}     % translated title for abstract
 \thesistype{Master of Science thesis} % or Bachelor of Science, Laboratory Report... 
 \examiner{Ari Visa} % without title Prof., Dr., MSc or such
 
@@ -519,6 +519,7 @@ Word vector encoder itself is a bi-directional recurrent neural network which ta
   \hline
 \end{tabular}
 \end{table}
+
 Table \ref{table:word_vector_encoder_output} shows an example output of word vector encoder RNN with values rounded to 2 decimals. $d_0$ to $d_{299}$ are the dimensionalities of word embedding vector for a word \textbf{\textit{Kirahvi}}. Example provided shows only a single word, in practice the output data would have several words in a single Tensor, one per row.
 
 
@@ -540,6 +541,7 @@ Using only a single uni-directional cell for each side also has significant bene
 \end{figure}
 
 Sharing context encoder passes among all the words in the sentence simplifies input data format of context encoder. Instead of having separate Tensor for each word as input data as is the case with bi-directional RNN, uni-directional can use a single Tensor which has all the words stacked, one word embedding vector per row. Having one simple input Tensor entails a single data pass through the RNN decreasing computational complexity drastically. For a 13 word sentence one would have to make 14 passes for left side (1 forward, 13 backward) and another 14 passes for right side if one were using bi-directional RNN. With uni-directional RNN this comes down to one pass per side, 14 fold decrease. Actual computation time decrease might smaller because it could be possible to parallelize this operation with GPU. Measuring actual prediction performance benefits and added computational costs associated with using bi-directional RNN for context encoder is out of scope for this thesis. Table \ref{table:context_encoder_input} shows an example of input data Tensor for context encoder when using batch size of one sentence. $d_0$ to $d_{299}$ are dimensionalities of word embedding vectors.
+
 \begin{table}[htbp]
 \caption{Example input of context encoder}
 \label{table:context_encoder_input}
@@ -559,6 +561,7 @@ Sharing context encoder passes among all the words in the sentence simplifies in
 \end{table}
 
 Context encoder RNN produces embedding vectors of a similar form as is it's input ie. output of word embedding component. These vectors encode semantic, and some syntactic, meaning of the words' contexts. When used with word embedding vectors these two encodings express all the information that is available for the words when looking only at the sentence. Output of the context encoding component is vector formed by concatenating word embedding vectors and context embedding vectors for respective words. Table \ref{table:context_encoding_component_output} shows an example output for a single word from context encoding component. $d_0$ to $d_{299}$ are dimensionalities of word embedding vectors and $d{300}$ to $d_{599}$ are dimensionalities of context encoding RNN.
+
 \begin{table}[htbp]
 \caption{Example output of context encoding component}
 \label{table:context_encoding_component_output}
@@ -591,6 +594,8 @@ Encoder composes of all the layers and components up to the classification compo
 Regardless of how one wishes to approach the logical components of the architecture, the fact remains that the fully connected layers were added based on early experiments on the architecture's learning capabilities. With few training runs on different configurations it became clear that neural net converges to a better performing model when using the fully connected layers than without them. Without the fully connected layers the network seemed to converge faster, with less epochs, but couldn't obtain quite as high classification performance. It is also worth mentioning that adding even several fully connected layers added almost no extra computational cost. Multiple layers of RNNs seem to be a lot more expensive than even far greater number of fully connected layers.
 
 The last two layers of the classification component are output projection layer and softmax layer. The output projection layer is fully connected layer with linear activation function and has one node for each class. The softmax layer takes the output of projection layer can computes a softmax function for it, this is done to scale the output values in such a way that all output values sum up to one. When outputs are scaled to sum up to one, the output can be treated as probability distribution even though it might not strictly be one. Scaled outputs are also easier for humans to understand, often a nice to have feature but certainly not critical. The main reason to add a softmax layer after the output prediction really lies with the softmaxes innate properties which make it suitable for optimization with cross entropy loss.
+
+\todo{joint loss}
 
 As a matter of fact the softmax layer only exists in the training pipeline. Softmax scaling is not necessary for doing the predictions because the prediction of a classifier is the output node with highest activation value. Softmax is a monotonic function ie. higher input values will always give higher output values and since the classification is only about selecting the highest value, the softmax is not required. In addition the softmax can be computationally relatively expensive especially when the output size is large, as is the case with large lemma vocabulary.
 
@@ -658,7 +663,7 @@ Attentive reader might have noticed that experiments included in this thesis hav
 
 \section{Test Methods}
 \label{se:test_methods}
-The dataset use for experiments in this thesis is Finnish Universal Dependencies as mentioned in earlier sections. The Finnish Universal Dependencies dataset is divided into three sections: training dataset, development dataset (also called validation dataset in this thesis) and testing dataset. Each experiment outlined in section \ref{se:experiments} was done using all three datasets. Neural network weight and bias optimization was done using only training dataset, model performance was observed during training by validating the network with development dataset and all final results are obtained by doing predictions with test dataset and comparing with correct labels. Training and testing procedure for each experiment is illustrated in figure \ref{figure:test_setup}.
+The dataset use for experiments in this thesis is Finnish Universal Dependencies 1.4 as mentioned in earlier sections. The Finnish Universal Dependencies dataset is divided into three sections: training dataset, development dataset (also called validation dataset in this thesis) and testing dataset. Each experiment outlined in section \ref{se:experiments} was done using all three datasets. Neural network weight and bias optimization was done using only training dataset, model performance was observed during training by validating the network with development dataset and all final results are obtained by doing predictions with test dataset and comparing with correct labels. Training and testing procedure for each experiment is illustrated in figure \ref{figure:test_setup}.
 
 \begin{figure}[htbp]
 \caption{Test setup for doing the experiments}
@@ -677,19 +682,38 @@ Given all of these considerations for different benefits and drawbacks of the di
 
 \section{Results}
 \label{se:results}
-\begin{itemize}
-\item UDPipe 1.2 achieves 94,9\% on POS-tagging on Finnish Universal Dependencies 2.0 and 86,8\% on lemmatization. Both results with gold tokenization. \cite{udpipe-manual}
-\item UDPipe lemmatizer is a generative model (\cite{Straka2017}), so comparison is not fair or even meaningful.
-\item POS-tagging without lemmatization = 94,30\%. Remarkably close to UDPipe results with only 0,6\%-points advantage to UDPipe. Limited mainly by data?
-\item Lemmatization without POS-tagging = 94,25\%
-\item Lemmatization with classified POS-tags as input features = 94,40\%
-\item Lemmatization with gold standard POS-tags as input features = 96,22\%
-\item Joint model. Lemmas = 95,24\%, POS = 94,14\%
-\item Joint model achieves best practical results for lemmatization, with 0,99\%-points increase, since gold-standard POS-tags are not available for live inferencing.
-\item Joint model POS-tags are slightly inferior (0,16\%-points) to baseline
-\item Lemmatization results with classified POS-tags are slightly better (0,15\%-points) than the baseline.
-\item Lemmatization with gold-standard POS-tags achieves clearly the best results with 1,97\%-points increase over baseline.
-\end{itemize}
+Results as accuracies for experiments described in section \ref{se:experiments} are shown in table \ref{table:results}. UDPipe is used as a baseline for comparing absolute results achieved in this work. UDPipe achieves accuracies of 94,9\% for POS-tagging and 86,8\% for lemmatization on Finnish Universal Dependencies 2.0 dataset \cite{udpipe-manual}. POS-tagging result comparison between UDPipe and this work are not perfectly fair since UDPipe results reported on UDPipe User's Manual page are obtained with Universal Dependecies 2.0 Finnish dataset whereas this work uses 1.4. Lemmatization results are not comparable at all because UDPipe lemmatizer is a generative model which forms the lemma from the stem of the word \cite{Straka2017}. As a generative model the UDPipe lemmatizer does not suffer from vocabulary related issues, but also can produce typographical errors and other mistakes common for generative models.
+
+\begin{table}[htbp]
+\caption{Results as accuracies for the experiments.}
+\label{table:results}
+\centering
+\begin{tabular}{|l|c|c|l|}
+  \hline
+  Experiment & POS-taging & Lemmatization \\
+  \hline
+  \hline
+  Separate POS-tagger & \textbf{94,30\%} & - \\
+  Separate lemmatizer & - & 94,25\% \\
+  Lemmatization with classified POS-tags & - & 94,40\% \\
+  Lemmatization with gold POS-tags & - & \textbf{96,22\%} \\
+  Joint learning model & 94,14\% & \textbf{95,24\%} \\
+  \hline
+\end{tabular}
+\end{table}
+
+From the results we can see that the best POS-tagging accuracy is obtained by the baseline, doing POS-tagging without lemmatization, with 94,30\%. Baseline lemmatizer achieves very similar results of 94,25\%. Baseline POS-tagging accuracy is remarkably close to the UDPipe accuracy even though the learning approaches are different. The small difference of only 0,6\%-points between POS-tagging accuracies in UDPipe and the baseline of this work could possibly be explained by the limitations of dataset; perhaps larger (or smaller) dataset could turn the POS-tagging accuracy into a favor of one or the other.
+
+It's worth noting that the similarity of results betwee baseline POS-tagging and lemmatization don't mean that both tasks are similarly difficult; lemma vocabulary coverage has significant effect on lemmatization performance. Higher lemma vocabulary coverage will lead to having a lot more lemmas, almost doubling the number of unique lemmas in the vocabulary. These new lemmas also have significantly less examples in the dataset making them much harder to classify correctly. Similarity of results between the baseline tasks is more of a coincidence than feature of the tasks.
+
+The more traditional approach to shared information learning, using parts of speech as input features for lemmatization, yields a small improvement over the baseline lemmatization. Difference between the results is mere 0,15\%-points. There are two possible explanations for this difference: using parts of speech for lemmatization does not in fact improve results and the difference is within of margin of error or errors in part of speech classification used to produce input features for lemmatization are so significant that they undermine any possible benefits.
+
+Result accuracy for lemmatization using gold standard POS-tags, ie. POS-tags available in the Finnish Universal Dependencies corpus, provides clear insight that the latter of the proposed explanations is the correct one. Lemmatization using correct parts of speech can achieve accuracy of 96,22\% which is significantly higher than the baseline and lemmatization using classified parts of speech. Improvement gained using gold standard parts of speech is 1,97\%-points. This clearly shows that there is benefit from using parts of speech as input features for lemmatization and that the shared information between the two features is useful for the tasks at hand.
+
+Joint learning model, which is the main focus of this work, can achieve 94,14\% for POS-tagging and 95,25\% for lemmatization. Lemmatization performance gain from the joint model is 0,99\%-points, which is high enough that results cannot be explained with numerical instability. Joint model lemmatization result is also the best practical result among the experiments. Lemmatization with gold standard parts of speech did obtain better accuracy than lemmatization of joint model, but in real life predictions cannot be done with gold standard parts of speech since they are created by a team of liguists and as such are not available at that time.
+
+Maybe the more interesting result of the joint model accuracies is the POS-tagging accuracy. POS-tagging accuracy in the joint model went down 0.16\%-points when compared to the baseline separate POS-tagger. What could explain this accuracy decrease is not clear at this time. Perhaps lemmatization as more information rich task dominates the POS-tagging in the joint model not allowing the gradient descent to have enough power to adjust network weights and biases favorably for the POS-tagging task. On the other hand the difference is small enough to be at least partly explained by the numerical instability. It is also possible that doing several additional experiments with different weights for the joint loss function would have resulted into better accuracy for the POS-tagging task without much deterioration of lemmatization accuracy.
+
 
 
 \chapter{Discussion}
@@ -740,6 +764,7 @@ Given all of these considerations for different benefits and drawbacks of the di
 \item Author recommends always to do POS-tagging when doing lemmatization.
 \item If main task is POS-tagging, adding lemmatization is probably not beneficial enough for the added computational cost.
 \item If both tasks need to be done and POS-tagging performance is a priority it might prove to be difficult to achieve best possible results with joint model.
+\item Two joint models, one tuned for POS-tagging and one tuned for lemmatization could achieve best possible results.
 \end{itemize}
 
 %
