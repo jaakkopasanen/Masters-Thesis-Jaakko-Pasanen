@@ -740,16 +740,15 @@ Maybe the more interesting result of the joint model accuracies is the POS-taggi
 
 \chapter{Discussion}
 \label{ch:discussion}
-\section{How well results generalize?}
-\begin{itemize}
-\item Do these results generalize to other languages needs to be verified with additional experiments.
-\item Universal Dependencies datasets are created to provide as uniform language modeling as possible across all languages and therefore it is probable that the same mutual information between lemmas and POS-tags in other languages would prove beneficial in joint learning of lemma and POS-tag classification.
-\item Speculating how well these results generalize to other tasks in natural language processing is more complicated because other tasks may not share as strong mutual information as lemmas and POS-tags do.
-\item \cite{Liang2016a} proved that neural networks benefit from jointly learning two tasks different from lemmatization and POS-tagging. \cite{Liu2016a} even had tasks on different architectural level, slot filling being word level task and intent classification being sentence or message level task.
-\item With results provided in this work and results from \cite{Liu2016a} it's failry safe to say that neural networks can obtain better results when learning jointly two tasks that share mutual information.
-\end{itemize}
+Results obtained in this work show that shared information in POS-tagging and lemmatization can be used to improve model performance when jointly learned. Strictly speaking the results are valid only for the specific configurations and test setup used in the experimens. Whether these results generalize for other languages, and what languages is still up for debate. Finnish is very different from other languages spoken in Europe and therefore it could be that POS-tagging doesn't benefit lemmatization in joint model when testing on for example Swedish, German, English, French or Spanish. However part of speech and lemma are very similar concepts in basically all languages of the world with strong shared information between the features, therefore it is not far fetched to hypothesis that one can obtain similar results with other languages too.
 
-\section{What was assumed?}
+Speculating how the results generalize to other tasks in natural language processing is another question entirely. If results obtained in this work are indeed mainly due to the strong shared information between the part of speech and the lemma of the word, then other similar task pairs that share mutual information are good candidates for joint learning models. \cite{Liu2016a} showed in their study "Attention-Based Recurrent Neural Network Models for Joint Intent Detection and Slot Filling" that there exists at least one other task pair which benefits from joint learning with neural networks. With the results of \cite{Liu2016a} and of this work it is safe to say that neural networks are indeed suitable for jointly learning natural language processing tasks with shared information.
+
+Even further speculation about how well these results generalize can be done for tasks in other machine learning domains than natural language processing and to task pairs that don't share any direct mutual information but are still strongly correlated. It is possible that the two tasks don't actually need to share mutual information for gaining benefit from joint learning as long as correlation in the data between the two tasks exists. If this is the case then probably even the results obtained in this thesis could be explained by that correlation. Finding such a discovery of very general nature of joint task benefits would be extremely helpful in designing future machine learning systems and could be applied across several problem domains. For example a neural network could be developed for predicting difficult to measure phenomena in industrial setting (eg. a factory or bioreactor) which uses multitude of correlated measurements as input, lowering the cost structure for measurements.
+
+All in all there seems to be enough evidence to justify further research into joint learning models with neural networks. Especially interesting evidence are the results of \cite{Liu2016a} because the two jointly learned tasks are classified at different hierarchical levels. Slots can be considered keywords of the sentence relative to spoken language understanding and intent is a single label of semantic meaning for the sentence. This means that there exists now evidence for benefits from two word level tasks as well as word level and sentence level tasks. It should be fairly safe to assume that the task pairs can be selected from other hierarchical levels also, for example two document level tasks or document level task and a sentence level task or a word level task such as POS-tagging and a character level task such as lemma generation. The new problem which must be addressed when using two tasks of different hierarchical level is the choice of validation metrics: should for example the generative lemmatization be evaluated at word level or at character level.
+
+\section{Assumptions}
 \begin{itemize}
 \item It was assumed that training dataset would represent Finnish language well. May not hold true since all sources of the dataset are from internet.
 \item It was also assumed that different datasets would have fairly similar data distribution and training done on training dataset would generalize to test dataset.
@@ -757,7 +756,10 @@ Maybe the more interesting result of the joint model accuracies is the POS-taggi
 \item Lemma classifier learned remarkably well to classifiy lemmas not seen during training time as unknown tokens. Maybe priori bias explains this?
 \end{itemize}
 
-\section{What was simplified?}
+
+
+
+\section{Simplifications}
 \begin{itemize}
 \item Slightly different results would be optained by optimizing hyperparameters separately for every different experiement. Hyperparameter optimization requires about 100 to 200 training runs and as such takes significant time budget. Using time required for hyperparameter optimization before every experiement proved inconvenient for this work.
 \item Hyperparamenter optimization do not have variation with loss weights for the two tasks. Loss weight sets the target if optimizing based on validation loss and therefore cannot be optimized.
@@ -773,12 +775,11 @@ Maybe the more interesting result of the joint model accuracies is the POS-taggi
 \end{itemize}
 
 
-\chapter{Conclusions}
+\chapter{Conclusions and Proposals for Future Research}
 \label{ch:conclusions}
 \begin{itemize}
 \item Hypothesis proved to be true, at least partly
 \item Neural networks are very suitable for joint learning tasks.
-\item Uncorrelated tasks are not tested yet but those don't have any obvious theoretical foundation why they should benefit.
 \item Interestingly we couldn't obtain increase in POS-tagging performance.
 \item Maybe lemmatization as a more information rich task dominates the learning
 \item POS-tagging on joint model could be improved by giving more weight to POS-tagging task but that quickly deteriorates the lemmatization perfomance drastically.
@@ -787,6 +788,23 @@ Maybe the more interesting result of the joint model accuracies is the POS-taggi
 \item If main task is POS-tagging, adding lemmatization is probably not beneficial enough for the added computational cost.
 \item If both tasks need to be done and POS-tagging performance is a priority it might prove to be difficult to achieve best possible results with joint model.
 \item Two joint models, one tuned for POS-tagging and one tuned for lemmatization could achieve best possible results.
+\item All the Universal Dependencies languages
+\item Transfer learning from language to another
+\item Similar languages in joint model
+\item Finnish FTB
+\item One model for all the languages
+\item Morphological features
+\item XPOSTAGS
+\item Not dependencies
+\item Lemmas as input for POS
+\item Other and bigger datasets (UD is small because of dependency annotations)
+\item Testing on other datasets (train on UD Finnish, test on Ylilauta and Finnish FTB)
+\item Tokenization effect
+\item Other tasks with the same architecture (intent detection and slot filling)
+\item Multiple tasks at once
+\item Non-NLP tasks
+\item Tasks that do not share mutual information, correlation only
+\item Uncorrelated tasks are not tested yet but those don't have any obvious theoretical foundation why they should benefit.
 \end{itemize}
 
 %
