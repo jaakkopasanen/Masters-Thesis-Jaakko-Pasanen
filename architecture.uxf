@@ -100,7 +100,8 @@
     <panel_attributes>
 Character
 Embedding
-Layer</panel_attributes>
+Layer
+bg=#99ccff</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -125,7 +126,8 @@ Layer</panel_attributes>
     <panel_attributes>
 Word
 Embedding
-Component</panel_attributes>
+Component
+bg=#99ccff</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -150,7 +152,8 @@ Component</panel_attributes>
     <panel_attributes>
 Context
 Encoding
-Component</panel_attributes>
+Component
+bg=#99ccff</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -175,7 +178,8 @@ Component</panel_attributes>
     <panel_attributes>
 
 Classification
-Component</panel_attributes>
+Component
+bg=#99ccff</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

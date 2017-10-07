@@ -267,6 +267,8 @@ Testing citation \cite{Andor2016}
 \item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
 \item Traditionally NLP systems are tailored to the single problem at hand with hand engineered features suited for the problem. Recently general approach has received interest where feature engineering and task specific architectures are not needed. \cite{Collobert2011}, \cite{Zhang2015}
 \item See Chapter 2.1 for Finnish Language quirks in \cite{Korenius2004}
+\item This chapter focuses on syntactic parsing tasks
+\item There are plenty of other tasks also
 \end{itemize}
 
 \section{Feature Engingeering in NLP}
@@ -398,11 +400,12 @@ Testing citation \cite{Andor2016}
 \end{itemize}
 
 \section{Morphological Parsing}
-\todo{Should this be included at all?}
+\begin{itemize}
+\item Multi-class classification problem
+\end{itemize}
 
 \section{Structural Parsing}
 \label{se:structural_parsing}
-\todo{Should this be included at all?}
 \begin{itemize}
 \item Aims to find structure of a sentence.
 \item Commonly divided to two different tasks: constituency parsing and dependency parsing.
@@ -461,11 +464,11 @@ Tensorflow also provides a layer of abstraction to execute the computational gra
 \subsection{Lemmatizations as Classification Only Task}
 Approach for lemmatization in this thesis is classification only. POS-tags are a limited set of 31 labels as defined in the Universal Dependencies project but such is not the case for lemmas. When classifying lemmas with neural network one needs an indexed vocabulary of all possible output labels. Having fixed and limited set of lemmas proves to be a challenge for lemmatization.
 
-As discussed earlier the Finnish language suffers from vocabulary explosion even when considering only lemmas and omitting the inflections because Finnish language makes it possible to form compound words very freely. The number of possible combinations created by selecting two or more words for a compound word is way too large to be handled with a linear vocabulary. The word2vec vocabulary which is created from Finnish Internet Parse bank \todo{citation} contains over 1,7 million unique lemmas. Learning to classify this number of lemmas with a corpus of 160 and some thousand tokens is obviously impossible task.
+As discussed earlier the Finnish language suffers from vocabulary explosion even when considering only lemmas and omitting the inflections because Finnish language makes it possible to form compound words very freely. The number of possible combinations created by selecting two or more words for a compound word is way too large to be handled with a linear vocabulary. The word2vec vocabulary which is created from Finnish Internet Parse bank (\cite{Kanerva2014}) contains over 1,7 million unique lemmas. Learning to classify this number of lemmas with a corpus of 160 and some thousand tokens is obviously impossible task.
 
 To circumvent the vocabulary explosion problem for output vocabulary fixed and limited set of lemmas were selected from the training set. Selected lemma vocabulary contains 90\% of the use cases in the Finnish Universal Dependencies 1.4 training dataset. The 90\% coverage is formed by selecting the most frequent words only. This lemma vocabulary contains less than nine thousand unique lemmas opposed to over 1,7 million in the word2vec vocabulary. All the lemmas that were left out of the selected vocabulary are treated as unknown tokens meaning that when classifying out of vocabulary lemma the neural network with output an unknown token "<UNK>". Since vocabulary covers 90\% of the uses in training set, 10\% of uses are left out making unknown token a most frequent label.
 
-Having unknown tokens provides it's own set of challenges for downstream processing tasks: information that is supposed to be provided by the lemma is lost with unknown token. One approach for outputting all possible lemmas is to use a generative model such as encoder-decoder model popular in recent studies \todo{citation} for machine translation. Generative model does not classify indices to a fixed vocabulary but generates the lemma one character at a time.
+Having unknown tokens provides it's own set of challenges for downstream processing tasks: information that is supposed to be provided by the lemma is lost with unknown token. One approach for outputting all possible lemmas is to use a generative model such as encoder-decoder model popular in recent studies (\cite{Sutskever2014}, \cite{Cho2014}, \cite{Chung2016}, \cite{Bahdanau2014}, \cite{Liu2016a}, \cite{Chung2016}) for machine translation. Generative model does not classify indices to a fixed vocabulary but generates the lemma one character at a time.
 
 Generative model does solve the problem with lemma vocabulary but introduces a myriad of other problems. Some of the most prominent problems being vastly increased architectural complexity and significantly increased computational complexity and memory requriements. Introducing a encoder-decoder model also introduces problems with observation metrics. POS-tagging and lemma classification are word level prediction tasks and are as such measured with word level metrics eg. accuracy or F1 score. However encoder-decoder model is a character level model which is also observed on character level. Mixing word level classifications and character level classifications fuzzies the meaning of used metrics for evaluation of network performance.
 
@@ -477,11 +480,7 @@ Representing words with multi-dimensional real number vectors is required to enc
 
 Word embedding process starts with representing characters as multi-dimensional real number vectors, called character embedding for the rest of this work. Character embeddings as a part of character to word encoder are also trained at the same time with rest of the network. Character embeddings are implemented as a single trainable Tensorflow variable, a two dimensional array where each row contains embedding vector for a single character in the character vocabulary. Character vocabulary is a fixed set of characters selected to represent majority of use cases in currently processed language, Finnish in this case.
 
-\todo{Format this}
-\verb£ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ£ 
-\verb£[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÅÖäåö€£
-
-was selected as character vocabulary to be used. This contains ASCII characters from index 32 to index 127 ie. all but ASCII control characters as well as lower and upper case scandic letters used in Finnish and an euro sign €. This character vocabulary covers 99,933\% of character usages in Finnish internet parsebank. A fairly good representation for Finnish language with very reasonable vocabulary size of 103 characters. Characters not included in the selected character vocabulary were substituted with ASCII control character SUB which was added to character vocabulary. Character vocabulary also contained another ASCII control character ETX, which was used for padding all other words to length of longest word in the current mini-batch (Tensors are essentially arrays and as such do not tolerate variable lengths within a single dimension).
+Selected character vocabulary contains ASCII characters from index 32 to index 127, ie. all but ASCII control characters, as well as lower and upper case scandic letters used in Finnish and an euro sign €. This character vocabulary covers 99,933\% of character usages in Finnish internet parsebank. A fairly good representation for Finnish language with very reasonable vocabulary size of 103 characters. Characters not included in the selected character vocabulary were substituted with ASCII control character SUB which was added to character vocabulary. Character vocabulary also contained another ASCII control character ETX, which was used for padding all other words to length of longest word in the current mini-batch (Tensors are essentially arrays and as such do not tolerate variable lengths within a single dimension).
 
 Words as input to word vector encoder are represented as Tensors of character embeddings, each row of a single input word contains character embedding for a single character in the word. Input words for the word vector encoder contain character embeddings for all characters in all words in all sentences selected for the mini-batch. If mini-batch size is selected to be 25, then word vector encoder input contains all characters and words for the selected 25 sentences.
 
@@ -492,6 +491,7 @@ Words as input to word vector encoder are represented as Tensors of character em
 \begin{tabular}{|r|c|c|c|c|l|}
   \hline
   & $d_0$ & $d_1$ & ... & $d_{299}$ & \\
+  \hline
   \hline
   K & 0.43 & 0.05 & & 0.37 & $t_0$ \\
   i & 0.32 & 0.62 & & 0.80 & $t_1$ \\
@@ -514,6 +514,7 @@ Word vector encoder itself is a bi-directional recurrent neural network which ta
 \begin{tabular}{|c|c|c|c|}
   \hline
   $d_0$ & $d_1$ & ... & $d_{299}$ \\
+  \hline
   \hline
   0.96 & 0.12 & ... & 0.87 \\
   \hline
@@ -550,6 +551,7 @@ Sharing context encoder passes among all the words in the sentence simplifies in
   \hline
   & $d_0$ & $d_1$ & ... & $d_{299}$ & \\
   \hline
+  \hline
   Kirahvi & 0.96 & 0.12 & & 0.87 & $t_0$ \\
   yltää & 0.16 & 0.26 & & 0.65 & $t_1$ \\
   syömään & 0.24 & 0.51 & & 0.80 & $t_2$ \\
@@ -569,6 +571,7 @@ Context encoder RNN produces embedding vectors of a similar form as is it's inpu
 \begin{tabular}{|r|c|c|c|c|c|c|c|c|l|}
   \hline
   & $d_0$ & $d_1$ & ... & $d_{299}$ & $d_{300}$ & $d_{301}$ & ... & $d_{599}$ & \\
+  \hline
   \hline
   Kirahvi & 0.96 & 0.12 & & 0.87 & 0.69 & 0.88 & ... & 0.74 & $t_0$ \\
   \hline
@@ -595,7 +598,26 @@ Regardless of how one wishes to approach the logical components of the architect
 
 The last two layers of the classification component are output projection layer and softmax layer. The output projection layer is fully connected layer with linear activation function and has one node for each class. The softmax layer takes the output of projection layer can computes a softmax function for it, this is done to scale the output values in such a way that all output values sum up to one. When outputs are scaled to sum up to one, the output can be treated as probability distribution even though it might not strictly be one. Scaled outputs are also easier for humans to understand, often a nice to have feature but certainly not critical. The main reason to add a softmax layer after the output prediction really lies with the softmaxes innate properties which make it suitable for optimization with cross entropy loss.
 
-\todo{joint loss}
+The softmax cross-entropy loss for the separate lemmatization and POS-tagging tasks is a straight forward computation from the single output projection layer values and one-hot encoded vector for correct labels. Softmax for $j$:th node of output layer is defined in equation \ref{equation:softmax}, where $z$ is the vector of output projection layer values and $K$ is the size of output projection layer.
+
+\begin{equation}
+\label{equation:softmax}
+\sigma(z)_j=\frac{e^{z_j}}{\sum_{k=1}^{K}(e^{z_k})}
+\end{equation}
+
+Cross entropy between softmax vector $\sigma$ and one-hot encoded vector of correct lables $Y$ is defined in equation \ref{equation:cross_entropy}, where $K$ is the size of output layer.
+
+\begin{equation}
+\label{equation:cross_entropy}
+H(\sigma, Y) = -\sum_{k=1}^{K}(\sigma_k \log(Y_k)
+\end{equation}
+
+However loss function for the joint model is a bit more complicated since there are two optimization targets to aim for. In order to optimize both tasks at the same time, a single joint loss function has to be defined for the optimization target. Joint loss function for this work was selected to be a weighted sum of separate loss functions for lemmatization $H_l$ and POS-tagging $H_p$
+
+\begin{equation}
+\label{equation:joint_loss}
+H_{joint}=\alpha H_l + H_p
+\end{equation}
 
 As a matter of fact the softmax layer only exists in the training pipeline. Softmax scaling is not necessary for doing the predictions because the prediction of a classifier is the output node with highest activation value. Softmax is a monotonic function ie. higher input values will always give higher output values and since the classification is only about selecting the highest value, the softmax is not required. In addition the softmax can be computationally relatively expensive especially when the output size is large, as is the case with large lemma vocabulary.
 
@@ -619,7 +641,7 @@ Mini-batches of 25 sentences used for network optimization are formed by dividin
 
 The network training procedure described above is only a single training run. Single training run allows the optimization of network parameters (weights and biases) but not hyperparameters. Hyperparameters are all the parameters that determine the network architecture, such as number of layers on each component, number of nodes on each layer, activation functions used, dropout etc. Traditionally hyperparameters have been optimized by manual process of training with certain cofiguration, inspecting the results, adjusting hyperparameters and training again. While manual hyperparameter optimization can provide good enough results, it is still very tedious work and often requires deep understanding of neural networks and of the task at hand. Recently automatic hyperparameter optimization has gained popularity, mainly because computation resources have increased and thus it's more feasible to run a lot of training runs while tuning the hyperparameters. Automatic hyperparameter tuning is particularly beneficial when the number of hyperparameters to optmize gets large, humans are typically poor at processing more than 3 dimensional data.
 
-Hyperparameter optimization in this work was done automatically using a optimization library called Optunity \todo{citation}. Optunity provides a convenient way to abstract the optimization work for basically any given task. There are many different optimization algorithms for hyperparameter tuning and not one has gained similar de facto status as gradient descent has for the neural net optimization. Algorithm used in this work for hyperparameter tuning is particle swarm which is a meta heuristic optimization algorithm. Particle swarm is said by the Optunity authors to be most versatile of all the algorithms available in Optunity. Hyperparameter optimization algorithm comparisons were not done since particle swarm provided reasonable results with the time results of this project. Besides hyperparameter optimization algorithm selection is not in the scope of this work and has very little relevance with proving the hypothesis.
+Hyperparameter optimization in this work was done automatically using a optimization library called Optunity (\cite{optunity}). Optunity provides a convenient way to abstract the optimization work for basically any given task. There are many different optimization algorithms for hyperparameter tuning and not one has gained similar de facto status as gradient descent has for the neural net optimization. Algorithm used in this work for hyperparameter tuning is particle swarm which is a meta heuristic optimization algorithm. Particle swarm is said by the Optunity authors to be most versatile of all the algorithms available in Optunity. Hyperparameter optimization algorithm comparisons were not done since particle swarm provided reasonable results with the time results of this project. Besides hyperparameter optimization algorithm selection is not in the scope of this work and has very little relevance with proving the hypothesis.
 
 Hyperparameter optimization was done by running a fixed number of training runs and tuning the hyperparameters with particle swarm between each training run. Since automatic hyperparameter selection may ramp up all the hyperparameters to their maximum allowed values, can training times scale up to unsustainable durations. To avoid dealing with single training runs that take tens of hours, maximum time budget was forced for the training runs. If training run reached the maximum allowed time, best model obtained with that training run was selected for final comparison and hyperparameter tuning. Training runs in the hyperparameter optimization also used early stopping based on validation loss, this helps to cut the training with some hyperparameter configurations to just few training epochs, speeding up the hyperparameter optimization drastically.
 
