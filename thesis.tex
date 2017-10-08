@@ -273,33 +273,13 @@ Two simplest feature representation schemas that are usually figured out by a ne
 
 \section{Word Embeddings}
 \label{se:word_embeddings}
-\begin{itemize}
-\item \textbf{\textcolor{red}{see section 1.2 of \cite{Mikolov2013} for previous work and history of word embeddings}}
-\item Word embeddings represent words as n-dimensional vectors. \cite{Mikolov2013}
-\item LSA leverages statistical information of a corpus but performs poorly on word analogy task. \cite{Pennington2014}
-\item Skip-gram is good for word analogies but doesn't utilize corpus statistics well since vectors are trained on local context. \cite{Pennington2014}
-\item Word embeddings try to map words with semantic similarities close to each other. Words may have several types of similarities such as \textit{France} and \textit{Italy} are countries but \textit{dogs} and \textit{triangles} are both in plural form. \cite{Mikolov2013a}
-\item \cite{Chen2014} use 50 dimensional word embeddings created with Word2vec.
-\item \cite{Chen2014} also use embeddings for POS tags and dependecy arcs. Only embedding POS tags has clear benefit, \cite{Chen2014} suspect that embedding arc labels have no effect since POS tags already contain the relational information.
-\item Word embeddings with lookup table generalize poorly with morpohlogically rich languages such as Finnish. \cite{Takala2016}
-\item Morphologically rich languages benefit from breaking the word into sub-parts, recurrent neural network (RNN) based character level model is not compared with Stem+ending. \cite{Takala2016}
-\item Word embeddings obtained through neural language models exhibit the property whereby semantically close words are close in the embedding vector space. \cite{Kim2016}
-\item Most of the word embedding libraries work on principle of fixed vocabulary where embeddings are computed for all words in vocabulary. It's difficult to handle out-of-vocabulary words since word spelling contains only a small part of the word's semantic meaning.
-\item Problem for morphologically rich languages can be relaxed by lemmatizing all words because lemmas don't suffer as much from the vocabulary explosion.
-\end{itemize}
+Using words as the engineered features for natural language processing tasks is at the same time intuitive and natural choice because words are the basic units of meaning for human languages. Therefore it's not suprising that a lot of research has been conducted into representing words as numerical vectors for machine learning methods. Numerical representation for words is also called word embedding \cite{Mikolov2013a}, and comes from the idea of embedding additional information about the word into the vector representation.
 
-\subsection{Word2vec}
-\begin{itemize}
-\item \cite{Mikolov2013}
-\item Can be used with datasets of billions of words
-\item Has two models: Continuous bag-of-words and continuous skip-gram
-\item Continuous bag-of-words predicts current word from the context (surrounding words)
-\item Continuous skip-gram predicts context (surrounding words) from current word.
-\item Continuous Bag-of-Words is better for small datasets, continuous skip-gram is better for large datasets.
-\item CBOW is better for syntax, Skip-gram is better for semantics.
-\item Can be used to find semantic relationships like vector('biggest') - vector('big') + vector('small') => vector('smallest') 
-\item State of the art (as of 2013). Since several new architectures have proposed improvements such as FastText by Facebook and GloVE by \cite{Pennington2014}.
-\end{itemize}
+History of word embeddings goes long way back, at least 30 years. Some earlier experiments with word embeddings were done by \cite{Hinton1990}, \cite{Hinton1985} and \cite{Elman1990}. Creating the word representations has since stabilized into two model families, which are global matrix factorization methods and local context window methods. Global matrix factorizers work on global corpus level and are based on co-occurence counts in the corpus and are therefore good at representing the statistical properties of the words \cite{Pennington2014}. Local window methods omit the corpus level statistics since they operate only in the small window of local words and as such are good at word analogy tasks but poor at representing statistical features \cite{Pennington2014}. Local window methods try to create a vector space for the words such that semantically similar words are close to each other \cite{Mikolov2013a}, the semantic representations explain their good performance on word analogy tasks.
+
+All word embedding methods, whether they are global matrix factorization based or local window based, generalize poorly with morphologically rich languages such as Finnish \cite{Takala2016}, this is probably due to vocabulary explosion problem discussed earlier. \cite{Takala2016} propose a word embedding method for morphologically rich language wich is based on breaking the word into sub-parts: the word stem and ending. \cite{Takala2016} discovered that sub-word level word embeddings are simle to implement and can outperform word level embedding methods on several natural langauge processing tasks. How stem and ending compares to charater level recurrent neural network (RNN) based methods was not tested in his work.
+
+One problem rising from using word level word embedding methods for natural language processing tasks in highly morphological languages is that even if the word embedding vocabulary is large there will still be out of vocabulary words. This problem can be relaxed by lemmatizing the words before doing lookup to word embedding vocabulary. Lemmatization done sufficiently accurately may remove the problem for some morphologically rich languages almost entirely, but Finnish still suffers from the rich compound word scheme. Handling these out of vocabulary words in a meaningful manner turns out to be challenging because the word representation cannot be approximated from the written form. Written form of the word contains only a small part of the semantic meaning of the word, that is the reason why local window methods mine the semantic information purely from the context where the word appears in.
 
 \subsection{Charater to Word}
 \begin{itemize}
@@ -311,7 +291,8 @@ Two simplest feature representation schemas that are usually figured out by a ne
 \item C2W can generate embeddings for unseen words.
 \item C2W is computationally more expensive than word lookup tables, but can be eased by saving word embeddings for most frequent words since the words embedding for a character sequence (word) does not change.
 \item During training word embeddings change but not inside a single batch, thus it is computationally cheaper to use large batches for training.
-\item C2W can be replaced with word lookup tables for downstream processing since input and output of both methods are the same.
+\item C2W can be replaced with word lookup tables for inferencing.
+\item Steal pic from original paper!
 \end{itemize}
 
 \section{Annotations}
@@ -387,30 +368,6 @@ Two simplest feature representation schemas that are usually figured out by a ne
 \item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
 \end{itemize}
 
-\section{Morphological Parsing}
-\begin{itemize}
-\item Multi-class classification problem
-\end{itemize}
-
-\section{Structural Parsing}
-\label{se:structural_parsing}
-\begin{itemize}
-\item Aims to find structure of a sentence.
-\item Commonly divided to two different tasks: constituency parsing and dependency parsing.
-\item Constituency parser creates a parse tree of constituencies.
-\item Dependency parser creates a parse tree of word token dependencies.
-\item Constituency parsers are slower but more informal than dependency parsers. \cite{Fernandez-Gonzalez2015}
-\item \cite{Fernandez-Gonzalez2015} show that it is possible to build constituency parser with dependency parser by reducing constituents to dependency parsing.
-\item CoNLL uses dependency parse trees.
-\end{itemize}
-
-\subsection{Transition Based Parsers}
-\begin{itemize}
-\item Good balance between efficiency and accuracy \cite{Weiss2015}
-\item Parsed left to right; at each position the parses chooses action from a set of possible actions.
-\item Greedy models are fast but error prone and need hand engineered features \cite{Weiss2015}
-\item Actions can be chosen by ANN to avoid hand engineering \cite{Chen2014}, \cite{Weiss2015}
-\end{itemize}
 
 
 \chapter{Experiements on Joint Model for POS-tagging and Lemmatization}
