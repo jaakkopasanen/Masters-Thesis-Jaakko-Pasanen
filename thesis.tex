@@ -297,79 +297,22 @@ Additional and very much appreciated feature of C2W is that it is cabable of, un
 
 \cite{Ling2015} show that their character level embedding method outperformed state of the art methods for several different languages. Biggest improvements were gained for morphologically rich languages, but C2W was shown to perform very well even on morphologically poor languages such as english (\cite{Ling2015}). Suitability, in architectural wise as well as performance wise, make C2W a good candidate for  neural networks which are meant to be used in multi-lingual setting.
 
-\section{Annotations}
-\label{se:annotations}
-\begin{itemize}
-\item Stanford Dependencies by \cite{DeMarneffe2006}
-\item Stanford Dependencies emerged as de facto annotation scheme for english, but has been adapted to several other languages including Finnish. \cite{Nivre2016}, \cite{Haverinen2014}.
-\item Turku Dependency Treebank has been tranformed into universal dependencies. \cite{Pyysalo2015}
-\item Unified annotation scheme reduces need for cross-language adaptations in downstream development. \cite{Petrov2012}
-\item Universal Dependencies project started from the requirement for cross-linguistically consistent treebank annotations even for morphological languages. \cite{Nivre2016}.
-\item Universal Dependencies project was born from merging several previous attempts to form a cross-linguistically sound dependency annotation schemes. \cite{Nivre2016}
-\item UD data has been encoded in the CoNLL-U format, a revision of the popular CoNLL-X format. \cite{Nivre2016}
-\item UD treebanks released in November 2015. \cite{Nivre2016}
-\end{itemize}
-
-\subsection{Turku Dependecy Treebank}
-\label{ss:turku_dependency_treebank}
-\begin{itemize}
-\item \cite{Haverinen2014}
-\item Treebanks are needed in computational linguistics.
-\item First Finnish treebank.
-\item Open licence, including for text annotated
-\item 204339 tokens, 15126 sentences
-\item Based on Stanford Dependency scheme with minor modifications to exclude phenomena not present in Finnish and to include new annotations not present in English.
-\item Transposed to CoNNL-U scheme by universal dependencies project
-\item Connexor Machinese Syntax is the only currenty available Finnish full dependency parser.
-\item Texts from 10 different categories ranging from news and legal text to blog entries and fiction.
-\item Dependency parsing is done manually with full double annotation process.
-\item Uses Omorfi for morphological analysis. Ambiguous tokens are handled partly manually, partly rule based and partly with machine learning.
-\item FTB uses 3 different taggers for morphology, check them out!
-\item FTB is 97\% grammar examples, meant for rule based POS tagger development
-\end{itemize}
-
-\section{Tokenization}
-\begin{itemize}
-\item Rule based approach to tokenization would mostly split sentence into words from spaces and separate punctuation from the words.
-\item Symbols and codes are more challenging for rule based tokenizers.
-\item Neural net based approach to tokenization can be done with seq2seq model which inserts linefeeds.
-\item Another neural net approach to tokenization is to do character classification where each character is classified to be first character of a word.
-\item Good tokenization is very important for good downstream processing results; very small errors in tokenization can lead to extremely large errors in subsequent tasks (ask sitation from Honain). 
-\item This thesis uses gold standard tokenization of the data files and therefore tokenization is not included in the experiments. 
-\end{itemize}
-
 \section{POS-tagging}
-\begin{itemize}
-\item Started from rule based taggers
-\item Tagger by \cite{Brill1992} (known as Brill tagger) learns the rules and as such can be considered as a hybrid approach
-\item Contemporary research is focused on statistical and NN based taggers
-\item Rest of this section focuses on statistical parsers
-\item \cite{Ling2015} introduced S-LSTM based State-of-the-art tagger
-\item \cite{Andor2016} Improved accuracy with transition based tagger
-\item \cite{Chen2014} were first to represent POS-tag and arc labels as embeddings
-\item \cite{Andor2016} and \cite{Weiss2015} built their solutions based on \cite{Chen2014}
-\item \cite{Nivre2004} introduced system for transition based taggers known as arc-starndard system. \cite{Chen2014}
-\end{itemize}
+POS-tagging is the procedure of detencting parts of speeches for the words in the input text. First POS-tagging tools were rule based systems where researcher or engineer manually created set of rules which are used to determine which of the POS-tags is the correct one for the current word. The problem with rule based POS-taggers, as with any natural language processing task, is the vast complexity of human language. It is very difficult to develop and update large enough rule set that can respond to all different cases that appear in natural language. This is the reason why POS-tagging was from very early on treated as machine learning task.
+
+One of the earliest and best known machine learning POS-taggers is a tagger introduced by \cite{Brill1992} and simply known as Brill tagger. Brill tagger can be considered a hybrid approach between rule based tagger and machine learning tagger because the Brill tagger uses annotated corpus in a machine learning manner to create the rule set for the language. Since then the research has been mainly focusing on statistical and neural network based methods for POS-tagging.
+
+POS-tagging as natural language processing task is fairly simple. It is a very traditional word level classification task where the label vocabulary size is limited. Multiple approaches can be take into the classification problem. \cite{Toutanova2003} tackle the POS-tagging task with cyclic dependency network. Approach taken by the UDPipe author \cite{Straka2016} in his work is a supervised, rich feature averaged perceptron with Viterbi decoder. \cite{Ling2015} use recurrent neural networks for learning word embeddings which are then used for part of speech classification.
 
 \section{Lemmatisation}
 \label{se:lemmatisation}
-\begin{itemize}
-\item Lemmatization is the process of finding a base form for a word.
-\item Lemmatization is a normalization technique. \cite{Korenius2004}
-\item Homographic and inflectional word forms cause ambiquity. \cite{Korenius2004}
-\item Compound words cause problems. \cite{Korenius2004}
-\item Lemmatization is better than stemming for clustering of documents written in Finnish because of it's highly inflectional nature. \cite{Korenius2004}
-\item Lemmatization catches better the semantic meaning of a word, as can be deducted from a better clustering performance.
-\item Omorfi does lemmatization based on morphological analysis
-\item Omorfi produces multiple lemmas which need to be disambiguated
-\item Disambiguation can be done with selecting most probable word, given the context, by language model
-\item \cite{Kestemont2016} try to solve lemmatization as a neural net classification problem, where lemmas are the class labels
-\item Method of \cite{Kestemont2016} cannot produce lemmas not seen on training time.
-\item Lemmatization has received a lot of research attention for highly inflectional languages, see \cite{Kestemont2016}
-\item Lemmatization of english is considered a solved problem, rule based or hybrid approaches can do practically flawless job.
-\item There has been almost none previous work using deep learning for lemmatization before \cite{Kestemont2016}
-\end{itemize}
+Lemmatization is the process of finding a base form for a word appearing in the text in inflected form. As such lemmatization can be seen as normalization technique where multitude of inflectional words are normalized to their basic expression \cite{Korenius2004}.
 
+Another normalization technique often compared to lemmatization is stemming. Where lemmatization tries to find the base form of the word, stemming tries to find the stem of the word. \cite{Korenius2004} compare both methods for task of clustering documents written in Finnish language and find that lemmatization is better than stemming in Finnish because of it's highly inflectional nature. Stemming also suffers more from ambiguity problems since multiple different words can have same stem. The same problem also exists for lemmatization in form of homographic words, words that have same written form but different meanings, but is relaxed compared to stemming.
+
+One publicly available tool for Finnish lemmatization is Omorfi (\cite{Pirinen2008}, \cite{Linden2009}, \cite{omorfi}). Omorfi is a finite state transducer for doing morphological parsing (\cite{Pirinen2008}, \cite{Linden2009}). Because Omorfi does the full morphological analysis for the input word, it can also produce the lemma for the word by reversing the morphology from the inflected form. However caveat of this tool is that it produces multiple possibilities for the lemma, this is a direct consequence of relying simply for morphological parsing in lemmatization, multiple different lemmas can be inflected in various ways to produce the current written form. \cite{Haverinen2014} used Omorfi for building the Turku Dependency Treebank, which was later translated to Universal Dependencies scheme by \cite{Pyysalo2015}. \cite{Haverinen2014} used machine learning method for disambiquating the Omorfi outputs with fallback to manual annotations.
+
+\cite{Kestemont2016} take neural network approach for lemmatization by classifying lemmas into a predefined vocabulary. This approach of lemmatization as word level classification task only has the drawback that the system of \cite{Kestemont2016} cannot produce lemmas that were not encoutered during training. There were very few if any neural network based methods for lemmatization up until the writing of paper by \cite{Kestemont2016}. There certainly could be research done about neural network lemmatization but the author of this thesis is to the best of his knowledge aware of such research making the lemmatization approach presented in this thesis a fairly novel one. The reason for lack of lemmatization research is that lemmatization is considered practically a solved problem, and since most of the natural language processing research is done for English there is not much research interest seen in studying lemmatization. Lemmatization has certainly seen interest in non-English research teams, but neural network approches are very few. Maybe the most notable lemmatization cabable neural network method is the forementioned UDPipe by \cite{Straka2016} which can achieve reasonably good results for various languages. 
 
 
 \chapter{Experiements on Joint Model for POS-tagging and Lemmatization}
@@ -624,7 +567,7 @@ Last experiment was the training and testing of the joint learning neural networ
 \includegraphics[width=15cm]{joint_model_experiment.png}
 \end{figure}
 
-Comparing results from the baseline, POS-tags as input features for lemmatization and joint model should be enough to test the hypothesis. Experiments don't include other languages than Finnish or other datasets than Finnish Universal Dependencies. Experiments in this thesis with POS-tagging all use the universal POS-tags, effect of using language specific POS-tags with or without universal POS-tags was not tested. Similarly effect of tokenization performance was not tested but all experiments used gold standard tokenization available in the Finnish universal dependencies dataset.
+Comparing results from the baseline, POS-tags as input features for lemmatization and joint model should be enough to test the hypothesis. Experiments don't include other languages than Finnish or other datasets than Finnish Universal Dependencies. Experiments in this thesis with POS-tagging all use the universal POS-tags, effect of using language specific POS-tags with or without universal POS-tags was not tested. Similarly effect of tokenization (process of separating words in a sentence) performance was not tested but all experiments used gold standard tokenization available in the Finnish universal dependencies dataset.
 
 The effect of morphological information such as word inflections and forms were not tested for this thesis even though there is a well founded arguments for improving results by using the morphology also. Since morphological features describe how the word was inflected they should assist the lemmatization because lemmatization can though as a reverse process of inflecting the word. However scope of the thesis was kept as narrow as possible, but wide enough for testing the hypothesis, and therefore morphology was left out. For that same reason also use of language specific POS-tags available in Universal Dependecies datasets was left out of scope of this thesis. 
 
