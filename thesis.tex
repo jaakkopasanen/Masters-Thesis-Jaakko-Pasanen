@@ -241,24 +241,20 @@ Chapter \ref{ch:natural_language_processing} of this thesis goes through the pro
 
 \chapter{Natural Language Processing}
 \label{ch:natural_language_processing}
-\begin{itemize}
-\item Natural Language Processing is vastly wide field, this thesis discusses only on the sections of natural language processing (NLP) relevant to the experiments.
-\item Subfields such as sentence segmentation and sentiment analysis are out of scope of this thesis.
-\item Most of the NLP work has been for english.
-\item Cross-linguistic annotation and parsing has been a reality only after introduction of The Universal Dependencies project and SyntaxNet.
-\item Similarly Finnish parsing has been unreachable until the first Finnish corpus Turku Dependency Treebank \cite{Haverinen2014} and cross-linguistic parsers.
-\item Traditionally NLP systems are tailored to the single problem at hand with hand engineered features suited for the problem. Recently general approach has received interest where feature engineering and task specific architectures are not needed. \cite{Collobert2011}, \cite{Zhang2015}
-\item See section 2.1 for Finnish Language quirks in \cite{Korenius2004}
-\item This chapter focuses on syntactic parsing tasks
-\item There are plenty of other tasks also
-\end{itemize}
+Natural language processing (NLP) is vastly wide problem field where different tasks differ from each other very much, really in some cases the only connecting feature is, as name suggests, the natural human language as input data. During the last few years the field has seen some very impressive improvements as well as new methods and techniques that have been able surpass previous state of the art results in very short time. Tasks vary from machine translation, which tries to translate text from language to another, simpler problems such as sentiment analysis, which in turn tries to deduce if the text has positive or negative emotional load. With such diverse and broad field it is not meaningful, or even possible, to fit a cross section about the entire field in a humbly master's thesis. Therefore it was important to select narrow sub-field for this thesis and simply leave other tasks for other research opportunities.
+
+This chapter focuses on outlying core tasks and problems associated with the objective and research problem of this thesis. As was stated in the introduction, the objective of this thesis is to develop a neural network architecture for lemmatization and POS-tagging using Finnish language. Therefore this section focuses on syntactic parsing of natural language and mainly to said POS-tagging and lemmatization tasks. Other major theme for this chapter is to go through the general problems with using text as input data for neural nets and more specifically problems associated with highly morphological languages such as Finnish.
+
+Vocabulary explosion is a term used to describe a situation with some highly morphological languages where the number of possible unique written forms for the words is extremely high. Finnish suffers from this phenomen very badly, there are about 2000 forms for a noun, 6000 for an adjective and a verb may have up to 12000 different inflectional forms \cite{Korenius2004}. Another contributing factor to vocabulary explosion for Finnish is the richness of compound words in the language. Two thirds of the words in Dictionary of Modern Standard Finnish are compound words \cite{Korenius2004}. But compound words do not end there, Finnish allows to form new compound words with relatively few limitations as to what words can be combined into a compound word. The lemma vocabulary formed for word2vec binary trained with Finnish Internet Parsebank (\cite{Kanerva2014}) contains some 1,7 million unique lemmas , words that are not inflected, majority of those are compound words. And even this massive lemma vocabulary does not provide good coverage even for Finnish Universal Dependencies which is only a bit over 200000 tokens \cite{Haverinen2014} as is discussed in the section \ref{ss:lemmatization_as_classification_only_task}. If one tries to inflect all those millions of lemmas needed for proper coverage with thousands of different inflections, the vocabulary size would grow to several billions. It is obvious that vocabulary of this magnitude introduces problems which cannot be overcome by representing words as independent unique elements.
+
+This section also takes a look at the current and previous states of available datasets and annotations that are and have been used for natural language processing tasks. Most notably Universal Dependencies is discussed as the first truly cross-lingual project for syntactic parsing datasets. As for Finnish, before the introduction of Turku Dependency Treebank, which was later translated to Universal Dependencies annotation scheme, there has not been many high quality datasets for syntactic parsing tasks. Dependency parsing especially has been unreachable for Finnish because of total lack of available corpuses for the task.
 
 \section{Feature Engingeering in NLP}
 \label{ch:feature_engineering_in_nlp}
 \begin{itemize}
 \item Machine learning algorithms require words to be represented quantifiable features such as IDs or real number vectors.
 \item Traditional feature selection requires hand engineered features.
-\item Engineered features hog 95\% of the computation time. \cite{Chen2014}
+\item Engineering the features can hog 95\% of the computation time. \cite{Chen2014}
 \item Traditionally words have been represented by indices. \cite{Mikolov2013}
 \item Next step was to use 1-of-V coding.
 \item Index representation is simple as computationally cheap, making use of huge datasets possible. Simple models with huge data outperform complex models with less data. \cite{Mikolov2013}
@@ -444,6 +440,7 @@ Neural network code was implemented with Python using popular computation librar
 Tensorflow also provides a layer of abstraction to execute the computational graph on either central processing unit (CPU) or gpraphics processing unit (GPU). GPU computations for pleasantly parallel problems such as neural network optimization are significantly faster. Doing the network training and especially hyper-arameter optimization only on CPU would have not been feasible with the hardware resources available. If computations would have been forced to be ran on CPU, there would have not been enough resources to run sufficient number of hyper-parameter optimization runs. Neural network results are often very sensitive to having suitable hyper-parameters and therefore results obtained in the experiments in the worst case could have been unable to provide answer for the hypothesis.
 
 \subsection{Lemmatizations as Classification Only Task}
+\label{ss:lemmatization_as_classification_only_task}
 Approach for lemmatization in this thesis is classification only. POS-tags are a limited set of 31 labels as defined in the Universal Dependencies project but such is not the case for lemmas. When classifying lemmas with neural network one needs an indexed vocabulary of all possible output labels. Having fixed and limited set of lemmas proves to be a challenge for lemmatization.
 
 As discussed earlier the Finnish language suffers from vocabulary explosion even when considering only lemmas and omitting the inflections because Finnish language makes it possible to form compound words very freely. The number of possible combinations created by selecting two or more words for a compound word is way too large to be handled with a linear vocabulary. The word2vec vocabulary which is created from Finnish Internet Parse bank (\cite{Kanerva2014}) contains over 1,7 million unique lemmas. Learning to classify this number of lemmas with a corpus of 160 and some thousand tokens is obviously impossible task.
