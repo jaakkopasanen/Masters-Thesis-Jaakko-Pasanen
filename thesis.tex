@@ -86,10 +86,8 @@
       %\textsf{xxxxxxx tiedekuntaneuvoston}\\
       %\textsf{kokouksessa dd.mm.yyyy}\\
       \textsf{Examiner: Prof. \@examiner}\\
-      \textsf{Examiner and topic approved by the}\\ 
-      \textsf{Faculty Council of the Faculty of}\\
-      \textsf{Engineering Sciences}\\
-      \textsf{on 31st December 2017}\\
+      \textsf{Examiner and topic approved on}\\ 
+      \textsf{11th October 2017}\\
     \end{spacing}
   \end{minipage}
 \end{flushright}
@@ -112,21 +110,23 @@
 \begin{spacing}{1.0}
          {\bf \textsf{\MakeUppercase{\@author}}}: \@title\\   % use \@titleB when thesis is in Finnish
          \textsf{Tampere University of Technology}\\
-         \textsf{\@thesistype, xx pages, x Appendix pages} \\
-         \textsf{December 2016}\\
+         \textsf{\@thesistype, 42 pages, 0 Appendix pages} \\
+         \textsf{October 2017}\\
          \textsf{Master's Degree Programme in Automation Technology}\\
          \textsf{Major: Learning and Intelligent Systems}\\
          \textsf{Examiner: Prof. \@examiner}\\ % 
-         \textsf{Keywords: Hype}\\
+         \textsf{Keywords: Natural Language Processing, Syntactic Parsing, Neural Networks, Deep Learning}\\
 \end{spacing}
 
+Convesational user interfaces have made strong appearance during the last couple of years. Most growth with conversational UIs can be seen with customer service moving from phone to chat. As big as the hype surrounding the conversational user interfaces is, they often cannot surpass traditional alternatives for the use cases they are used without actually understanding the language user speaks. This has crated a large demand for artificial intelligence which can understand users in their natural language.
 
-The abstract is a concise 1-page description of the work: what was the
-problem, what was done, and what are the results. Do not include
-charts or tables in the abstract.
+Natural language used by humans is tremendously complex without people actually realizing that. Understanding something this complex often requires system which divedes the problem into smaller sub-problems are tries to tackle those, a divide and conquer paradigm. Natural language processing tools are often built as pipelines where more information is mined from the text in each step. Finding syntactic features, such as part of speech and lemma,  is one such step, and is the focus of this thesis.
 
-Put the abstract in the primary language of your thesis first and then
-the translation (when that is needed).
+Main objective for this thesis was to build a neural network architecture which can classify lemmas and parts of speech for the input text. Research hypothesis was then to determine if such architecture could be modified to do the both tasks at the same time and if such change would improve classification performance of the model.
+
+Doing experiments with Finnish Universal Dependencies dataset revealed that lemmatization benefits from jointly learning to POS-tag, but POS-tagging performance could not be improved. Best absolute lemmatization results were gained by using correct POS-tags as input features, but since they are not available for live predictions the result has no practical meaning.
+
+ 
 
 
 % Foreign students do not need Fininsh abstract (tiivistelmä). Move
@@ -139,63 +139,42 @@ the translation (when that is needed).
 \begin{spacing}{1.0}
          {\bf \textsf{\MakeUppercase{\@author}}}: \@titleB\\  % or use \@title when thesis is in Finnish
          \textsf{Tampereen teknillinen yliopisto}\\
-         \textsf{Diplomityö, xx sivua, x liitesivua}\\ %
-         \textsf{Joulukuu 2016}\\
+         \textsf{Diplomityö, 42 sivua, 0 liitesivua}\\ %
+         \textsf{Lokakuu 2017}\\
          \textsf{Automaatiotekniikan koulutusohjelma}\\
          \textsf{Pääaine: Oppivat ja älykkäät järjestelmät}\\
-         \textsf{Tarkastajat:  Prof. \@examiner}\\ % automated, if just 1 examiner
-         \textsf{Avainsanat: Hype}\\
+         \textsf{Tarkastajat: Prof. \@examiner}\\ % automated, if just 1 examiner
+         \textsf{Avainsanat: Luonnollisen kielen käsittely, syntaksin parsiminen, neuroverkot, syväoppiminen}\\
 \end{spacing}
 
-The abstract in Finnish. Foreign students do not need this page.
+Keskustelevat käyttöliittymät ovat nousseet vahvasti perinteisten käyttöliittymien rinnalle viimeisen parin vuoden aikana. Suurin kasvu tällä hetkellä on nähtävissä asiakaspalvelun siirtymisessä puhelimesta chattiin. Vaikka hype keskustelevien käyttöliittymien ympärillä on valtavaa, eivät ne useinkaan pysty päihittämään perinteisiä käyttöliittymiä ilman että käyttäjää ymmärretään sen omalla kielellä. Tästä on syntynyt suuri kysyntä tekoälylle joka ymmärtää käyttäjiä heidän luonnollisella kielellään.
 
-Suomenkieliseen diplomityöhön kirjoitetaan tiivistelmä sekä suomeksi
-että englanniksi.
+Ihmisten käyttämä luonnollinen kieli on valtavan monimutkaista ilman että ihmiset useinkaan ymmärtävät sitä. Näin monimutkaisen asian ymmärtäminen usin vaatii että ongelma jaetaan pienenpiin osaongelmiin ja pyritään ratkaisemaan ne. Työkalut luonnollisen kielen käsittelyyn rakennetaan usein sarjaksi askelia joista jokainen kaivaa lisää informaatiota tekstistä. Syntaktisten piirteiden, kuten sanaluokkien ja perusmuotojen, etsiminen yksi tällainen askel, ja onkin tämän opinnäytetyön painopiste.
 
-Kandidaatintyön tiivistelmä kirjoitetaan ainoastaan kerran, samalla
-kielellä kuin työ. Kuitenkin myös suomenkielisillä kandidaatintöillä
-pitää olla englanninkielinen otsikko arkistointia varten.
+Ensisijainen tavoite tälle opinnäytetyölle oli rakentaa neuroverkkoarkkitehtuuri joka pystyy luokittelemaan sanoille sanaluokat ja perusmuodot. Tutkimushypoteesi oli selvittää voiko arkkitehtuurin muokata sellaiseksi että se suorittaa molemmat tehtävät samanaikaisesti ja saavutetaanko muutoksella parannus verkon suorituskykyyn.
+
+Suomenkielisellä Universal Dependencies datasetillä tehdyt kokeet paljastivat että perusmuotojen luokittelu hyötyy samanaikaisesta sanaluokkien luokittelusta, mutta kuitenkaan suorituskykyä sanaluokkien luokitteluun ei pystytty parantamaan. Paras absoluuttinen tulos perusmuotojen luokittelulle saavutettiin käyttämällä oikeita sanaluokkia lisäpiirteenä verkolle, mutta koska täysin oikeita sanaluokkia ei ole käytettävissä todellisessa tilanteessa ei tällä tuloksella ole juuri käytännön merkitystä.
+
+
 
 \end{otherlanguage} % End on 2nd language part
 
 
 \chapter*{Preface}
 
-This document template conforms to Guide to Writing a Thesis at
-Tampere University of Technology (2014) and is based on the previous
-template. The main purpose is to show how the theses are formatted
-using LaTeX (or \LaTeX ~ to be extra fancy) .
+This thesis was done at ultimate.ai, a customer service software company, as part of ongoing research into natural language understanding during 2017.
 
-The thesis text is written into file \texttt{d\_tyo.tex}, whereas
-\texttt{tutthesis.cls} contains the formatting instructions. Both
-files include lots of comments (start with \%) that should help in
-using LaTeX. TUT specific formatting is done by additional settings on
-top of the original \texttt{report.cls} class file. This example needs
-few additional files: TUT logo, example figure, example code, as well
-as example bibliography and its formatting (\texttt{.bst}) An example
-makefile is provided for those preferring command line. You are
-encouraged to comment your work and to keep the length of lines
-moderate, e.g. <80 characters. In Emacs, you can use \texttt{Alt-Q} to
-break long lines in a paragraph and \texttt{Tab} to indent commands
-(e.g. inside figure and table environments). Moreover, tex files are
-well suited for versioning systems, such as Subversion or Git.  
-% \url{http://www.ctan.org/tex-archive/info/lshort/english/lshort.pdf}
-
-Acknowledgements to those who contributed to the thesis are generally
-presented in the preface. It is not appropriate to criticize anyone in
-the preface, even though the preface will not affect your grade. The
-preface must fit on one page. Add the date, after which you have not
-made any revisions to the text, at the end of the preface.
+I would like to thank my examiner professor Ari Visa for his guidance and valuable feedback in formulating the hypothesis, selecting thesis scope and writing process.
 
 ~ 
 % Tilde ~ makes an non-breakable spce in LaTeX. Here it is used to get
 % two consecutive paragraph breaks
 
-Tampere, 11.8.2014
+Tampere, 15.8.2017
 
 ~
 
-On behalf of the working group, Erno Salminen
+Jaakko Pasanen
 
 
 % Add the table of contents, optioanlly also the lists of figures,
@@ -217,20 +196,14 @@ On behalf of the working group, Erno Salminen
 % .tex file more readable
 \begin{termlist}
 \item[ANN] Artificial Neural Network
+\item[CPU] Central Processing Unit
 \item[GPU] Graphics Processing Unit
-\item[LAS] Labelled Attachment Score (\% of tokens with correct dependency head and relation)
-\item[LDA] Latent Dirilecht Allocation
-\item[LSA] Latent Semantic Analysis
-\item[LSTM] Long short term memory; type of RNN with short term memory.
 \item[MLP] Multi-layer perceptron
-\item[NER] Named entity recognition
 \item[NLP] Natural Language Processing
-\item[PMI] Pointwise mutual information
 \item[POS] Part-of-speech; also called lexical category
 \item[RNN] Recurrent neural network
-\item[S-LSTM] Stack long short term memory
 \item[TUT] Tampere University of Technology
-\item[UAS] Unlabelled Attachment Score (\% of tokens with correct dependency head)
+\item[UI] User Interface
 \end{termlist}
 
 
@@ -826,51 +799,6 @@ It was also assumed that typical numerical instability always present at limited
 %\addtocontents{toc}{%               % b) add Finnish heading to table of contents
 %\protect\noindent Lähteet\protect\par
 %} 
-
-
-%
-% Appendices are optional. 
-% This part is semi-ugly at the moment. Please give feedback if can
-% improve it.
-\appendix
-\pagestyle{headings}
-% \renewcommand{\appendixname}{Liite} % Extra. Set Finnish prefix for page header
-
-%
-% a) Not-so-handy way, but at least it works
-% 
-\def\appA{APPENDIX A. Something extra} % Define the name and numbering manually
-\chapter*{\appA}                       % Create chapter heading
-\markboth{\appA}{\appA}                % Set page header
-\addcontentsline{toc}{chapter}{\appA}  % Include this in TOC
-% Note that \label does not work with unnumbered chapter
-
-Appendices are purely optional.  All appendices must be referred to in
-the body text
-
-\def\appB{APPENDIX B. Something completely different} % Define another new command
-\chapter*{\appB}                       % As above, but use \appB instead of \appA
-\label{app:B}
-\markboth{\appB}{\appB}                     
-\addcontentsline{toc}{chapter}{\appB}  
-
-
-You can append to your thesis, for example, lengthy mathematical
-derivations, an important algorithm in a programming language, input
-and output listings, an extract of a standard relating to your thesis,
-a user manual, empirical knowledge produced while preparing the
-thesis, the results of a survey, lists, pictures, drawings, maps,
-complex charts (conceptual schema, circuit diagrams, structure charts)
-and so on.
-
-
-%
-% b) The other option is to use numbered chapter and our baseline
-% template report.cls numbers them as A, B... The heading and TOC do
-% not include prefix 'Appendix' although the page header does.
-%\chapter{name of the appendix}
-%\label{app:A}                          % For cross-references
-
 
 
 \end{document}
