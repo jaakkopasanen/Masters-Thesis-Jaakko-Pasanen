@@ -281,19 +281,21 @@ All word embedding methods, whether they are global matrix factorization based o
 
 One problem rising from using word level word embedding methods for natural language processing tasks in highly morphological languages is that even if the word embedding vocabulary is large there will still be out of vocabulary words. This problem can be relaxed by lemmatizing the words before doing lookup to word embedding vocabulary. Lemmatization done sufficiently accurately may remove the problem for some morphologically rich languages almost entirely, but Finnish still suffers from the rich compound word scheme. Handling these out of vocabulary words in a meaningful manner turns out to be challenging because the word representation cannot be approximated from the written form. Written form of the word contains only a small part of the semantic meaning of the word, that is the reason why local window methods mine the semantic information purely from the context where the word appears in.
 
-\subsection{Charater to Word}
-\begin{itemize}
-\item \cite{Ling2015}
-\item Word embeddings can be generated from character sequences with significantly better performance for morphological languages.
-\item Requires only single vector for each character type. Particularly good for morphological languages where word type count may be infinite.
-\item Orthographical and functional (syntactic and semantic) relationships are non-trivial: \textit{butter} and \textit{batter} are orthographically close but functionally distant, \textit{rich} and \textit{affluent} are orthographically distant but functionally close. \cite{Ling2015} resort to LSTM networks for learning the relationships.
-\item Word lookup tables are unable to generate representations for previously unseen words, as is required for morphology. \cite{Ling2015}
-\item C2W can generate embeddings for unseen words.
-\item C2W is computationally more expensive than word lookup tables, but can be eased by saving word embeddings for most frequent words since the words embedding for a character sequence (word) does not change.
-\item During training word embeddings change but not inside a single batch, thus it is computationally cheaper to use large batches for training.
-\item C2W can be replaced with word lookup tables for inferencing.
-\item Steal pic from original paper!
-\end{itemize}
+\subsection{Character to Word}
+One possible solution to problems experienced with word embeddings using morpohologically rich languages is called character to word (C2W) and is proposed by \cite{Ling2015}. In the solution proposed by \cite{Ling2015} the word embeddings are not on word level but are generated from character sequences by feeding the words as character sequences into an RNN. Figure \ref{figure:c2w} illustrates the architectural difference between word level word embedding method and C2W by \cite{Ling2015}. The upper part of the figure is word level method and lower part is the C2W.
+
+\begin{figure}[htbp]
+\caption{Architectural difference between word and character level word embedding models. Image is taken from the original C2W paper by \cite{Ling2015}}
+\label{figure:c2w}
+\centering
+\includegraphics[width=12cm]{c2w.png}
+\end{figure}
+
+Even character level models require a lookup table which has fixed number of vectors, one for each character. The benefit however comes from the drastically smaller vocabulary size that is required for chracters than words. Character vocabulary cannot contain every possible character that can be ever encoutered but achieving a good coverage is much easier. English alphabet contains 26 lowercase and 26 uppercase letters, totalling 52 letters to which punctuation and appropriate set of other symbols has to added in order to get good coverage over English text. Other languages may have some additional letters added to that set or even have completely different charater set. Regradless of which is the case for most languages the character vocabulary size is still measured in tens, with some exceptions with thousands of characters such as Chinese. Chinese is a bit odd one out because that language doesn't have letters but everything is represented as words, each word has it's own writing sign, and is not therefore of great concern for this method.
+
+Additional and very much appreciated feature of C2W is that it is cabable of, unlike word level embeding methods, producing word representations for previously unseen, and thus out of vocabulary, words natively without any regression addons (\cite{Ling2015}). How well the syntactic and semantic information is embedded with C2W for previously unseen words is not discussed in the original paper of \cite{Ling2015}. The main drawback of C2W is the added computational cost compared to word level methods such as word2vec by \cite{Mikolov2013}. The computational cost can be relaxed during the training by using larger mini-batches since the word embeddings do not change within one mini-batch, as is the case for all network parameters (\cite{Ling2015}). After the neural network model has been trained and is used for live predictions the computational cost for C2W can be relaxed even further by caching the most common words and using them in a similar way as other word level embedding methods (\cite{Ling2015}). Rare and previously unseen words are generated during prediction phase with the RNN encoder. This scheme has the nice properties of being at the same time fast to execute because of the caching and having very limited memory requirements because rare words don't have to be cached.
+
+\cite{Ling2015} show that their character level embedding method outperformed state of the art methods for several different languages. Biggest improvements were gained for morphologically rich languages, but C2W was shown to perform very well even on morphologically poor languages such as english (\cite{Ling2015}). Suitability, in architectural wise as well as performance wise, make C2W a good candidate for  neural networks which are meant to be used in multi-lingual setting.
 
 \section{Annotations}
 \label{se:annotations}
