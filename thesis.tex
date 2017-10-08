@@ -251,15 +251,25 @@ This section also takes a look at the current and previous states of available d
 
 \section{Feature Engingeering in NLP}
 \label{ch:feature_engineering_in_nlp}
-\begin{itemize}
-\item Machine learning algorithms require words to be represented quantifiable features such as IDs or real number vectors.
-\item Traditional feature selection requires hand engineered features.
-\item Engineering the features can hog 95\% of the computation time. \cite{Chen2014}
-\item Traditionally words have been represented by indices. \cite{Mikolov2013}
-\item Next step was to use 1-of-V coding.
-\item Index representation is simple as computationally cheap, making use of huge datasets possible. Simple models with huge data outperform complex models with less data. \cite{Mikolov2013}
-\item See LSA and LDA for previous systems. Neural networks significantly outperform LSA in preserving linearities. LDA doesn't scale for large datasets. \cite{Mikolov2013}
-\end{itemize}
+Machine learning methods, regardless if they are statistical models or neural network based, require text to be represented in some numerical form. Deep down all computer programs function with numbers only as processors arithmetic beings and as such cannot process anything but numbers. For most programming tasks the responsibility of representing text, character strings, lies with the programming language. Such is not the case with natural language tasks because, but the developer is responsible of turning text into numerical representation which conveys information about the text as is needed by the task at hand.
+
+What information needs to be encoded into numrical representations is determined by the requirements of the natural language processing taks. Traditionally machine learning methods for natural language processing includes hand engineered features. The researcher or developer uses her domain and task specific knowledge and experience in determining what features should be selected and how they should be represented. Selected features can be anything from independent words as indices to vocabulary to word counts in the sentence or the last morpheme of each word. Feature selection and engineering requires a lot of konwledge about the task and is usually tuned for each separate task. This makes machine learning methods developed to natural language processing very unique to each task making usage of one general architecture, with minor modifications, for multiple tasks impossible. Additionally generating such features may hog up to 95\% of computation time used for the task as was found by \cite{Chen2014} in their work for dependency parsing. Feature engineering is something we can never get completely rid of because something always has to be represented, but it is possible, and even desirable, to strive for more general features.
+
+Two simplest feature representation schemas that are usually figured out by a new developer approaching natural language processing are indices and one hot coding. Index representation can distinguis the represented features, whether they are characters, words or morphemes, from each other and this way provide a way for the mathematical method to use the input features. Index representation is nice in it's simplicity but the drawback is that the indices them selves cannot encode any additional information or meaning about the feature. Simplicity comes with the benefit of being computationally cheap, enabling use of massive datasets. Usually simple method trained with huge amounts of data outperforms more complex model trained with less data \cite{Mikolov2013}. The dataset assumption is of course only true for unsupervised learning, practically manually annotated corpuses with several billions of tokens do not exist. Step up from the index representation is one hot coding, also called one-of-V coding, which represents features as binary vectors where only the current feature is one and all others are zeros. This has the potentional benefit of being better at separating the unique labels as each vector is equal in it's size and variation. Figures \ref{figure:index_representation} and \ref{figure:one_hot} illustrate the two basic feature representation shemes index representation and one hot coding respectively used for words.
+
+\begin{figure}[htbp]
+\caption{Index representation for words}
+\label{figure:index_representation}
+\centering
+\includegraphics[width=12cm]{index_representation.png}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{One hot coding representation for words}
+\label{figure:one_hot}
+\centering
+\includegraphics[width=12cm]{one_hot.png}
+\end{figure}
 
 \section{Word Embeddings}
 \label{se:word_embeddings}
